@@ -34,7 +34,7 @@ return [
     'boolean' => 'The :attribute field must be true or false.',
     'can' => 'The :attribute field contains an unauthorized value.',
     'confirmed' => 'O campo confirmar :attribute não corresponde.',
-    'current_password' => 'The password is incorrect.',
+    'current_password' => 'A senha está incorreta.',
     'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
     'date_format' => 'The :attribute field must match the format :format.',
