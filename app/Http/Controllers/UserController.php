@@ -20,16 +20,6 @@ class UserController extends Controller
         return view('administrator.users', compact('users'));
     }
 
-    public function create()
-    {
-        # code...
-    }
-
-    public function store(User $user)
-    {
-        # code...
-    }
-
     /**
      * Show the form for editing the specified resource.
      */
