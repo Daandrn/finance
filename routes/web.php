@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TittleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,23 +16,39 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('teste', function () {
+    return view('teste');    
+})->middleware();
+
 Route::get("/", function () {
     return view("auth.login");
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {//Adicionar a validação de ADM do middleware
     Route::delete('/administrador/usuarios/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     Route::put('/administrador/usuarios/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::get('/administrador/usuarios/{id}', [UserController::class, 'edit'])->name('user.edit');
+    Route::get('/administrador/usuarios/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
+    Route::get('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
+    Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');//Não está sendo usado, usar
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
 });
+
+/* Ainda falta as views e terminar o Controller
+Route::middleware('auth')->group(function () {
+    Route::delete('/inicio/titulo/{id}', [TittleController::class, 'destroy'])->name('tittles.destroy');
+    Route::put('/inicio/titulo/{id}', [TittleController::class, 'update'])->name('tittles.update');
+    Route::get('/inicio/titulo/{id}/alterar', [TittleController::class, 'edit'])->name('tittles.edit');
+    Route::get('/inicio/titulo/novo', [TittleController::class, 'create'])->name('tittles.create');
+    Route::get('/inicio/titulo/{id}', [TittleController::class, 'show'])->name('tittles.show');
+    Route::get('/inicio/titulo', [TittleController::class, 'index'])->name('tittles');
+});*/
 
 Route::get('/administrador', function () {
     return view('administrator.administrator');
 })->middleware(['auth'])->name('administrator');
 
 Route::get('/inicio', function () {
-    return view('dashboard');
+    return view('main.dashboard');
 })->middleware(['auth'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

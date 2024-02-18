@@ -17,7 +17,7 @@ class UserController extends Controller
                         ->orderBy('id')
                         ->paginate(15);
 
-        return view('administrator.users', compact('users'));
+        return view('administrator.user.users', compact('users'));
     }
 
     /**
@@ -27,7 +27,7 @@ class UserController extends Controller
     {
         $users = $user->find($id, ['id', 'name', 'email', 'adm', 'status']);
 
-        return view('administrator.alterUser', compact('users'));
+        return view('administrator.user.alterUser', compact('users'));
     }
 
     /**
@@ -36,11 +36,11 @@ class UserController extends Controller
     public function update(User $user, int $id, UserAdmRequest $request)
     {
         $users = $user->find($id);
-        $users->update((array) UserUpdateDTO::userDTO($request));
+        $users->update(UserUpdateDTO::userDTO($request));
 
         return redirect()
                 ->route('users')
-                ->with(["status" => "200", "message" => "sucess"]);
+                ->with(["message" => "sucess"]);
     }
 
     /**
@@ -51,7 +51,7 @@ class UserController extends Controller
         $user->destroy($id);
 
         return redirect()
-                ->Route('users')
+                ->route('users')
                 ->with(["status" => "200", "message" => "sucess"]);
     }
 }

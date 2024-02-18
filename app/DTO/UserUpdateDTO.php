@@ -11,13 +11,13 @@ class UserUpdateDTO
         public string $name,
         public string $email,
         public string $adm,
-        public string $status
+        public bool $status
     )
     {}
 
-    public static function userDTO(UserAdmRequest $request): self
+    public static function userDTO(UserAdmRequest $request): array
     {
-        return new self(
+        return (array) new self(
                 $id ?? $request->id,
                 $request->name,
                 $request->email,
