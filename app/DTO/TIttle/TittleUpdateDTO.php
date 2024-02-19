@@ -1,4 +1,4 @@
-<?php 
+<?php declare(strict_types=1);
 
 namespace App\DTO\Tittle;
 
@@ -19,7 +19,7 @@ class TittleUpdateDTO
     public static function DTO(TittleRequest $request): array
     {
         return (array) new self(
-            $id ?? $request->id,
+            $request->id,
             $request->tittle,
             $request->tax,
             $request->modality,

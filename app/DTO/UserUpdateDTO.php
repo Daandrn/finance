@@ -1,4 +1,4 @@
-<?php 
+<?php declare(strict_types=1);
 
 namespace App\DTO;
 
@@ -18,7 +18,7 @@ class UserUpdateDTO
     public static function userDTO(UserAdmRequest $request): array
     {
         return (array) new self(
-                $id ?? $request->id,
+                $request->id,
                 $request->name,
                 $request->email,
                 $request->adm,
