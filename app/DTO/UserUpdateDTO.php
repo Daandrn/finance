@@ -11,7 +11,7 @@ class UserUpdateDTO
         public string $name,
         public string $email,
         public string $adm,
-        public bool $status
+        public string $status
     )
     {}
 
