@@ -24,12 +24,12 @@ Route::get("/", function () {
     return view("auth.login");
 });
 
-Route::middleware('auth')->group(function () {//Adicionar a validação de ADM do middleware
+Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validação de ADM do middleware
     Route::delete('/administrador/usuarios/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     Route::put('/administrador/usuarios/{id}', [UserController::class, 'update'])->name('user.update');
     Route::get('/administrador/usuarios/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
-    Route::get('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
-    Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');//Não está sendo usado, usar
+    //Route::get('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
+    //Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');//Não está sendo usado, usar
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
 });
 
@@ -43,18 +43,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/inicio/titulo', [TittleController::class, 'index'])->name('tittles');
 });*/
 
-Route::get('/administrador', function () {
-    return view('administrator.administrator');
-})->middleware(['auth'])->name('administrator');
-
-Route::get('/inicio', function () {
-    return view('main.dashboard');
-})->middleware(['auth'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('/administrador', function () {
+    return view('administrator.administrator');
+})->middleware(['auth', 'admin'])->name('administrator');
+
+Route::get('/inicio', function () {
+    return view('main.dashboard');
+})->middleware(['auth'])->name('dashboard');
+
 
 require __DIR__.'/auth.php';
