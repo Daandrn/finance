@@ -33,15 +33,14 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
 });
 
-/* Ainda falta as views e terminar o Controller
 Route::middleware('auth')->group(function () {
-    Route::delete('/inicio/titulo/{id}', [TittleController::class, 'destroy'])->name('tittles.destroy');
+    Route::delete('/inicio/titulo/{Tittle:id}', [TittleController::class, 'destroy'])->name('tittles.destroy');
     Route::put('/inicio/titulo/{id}', [TittleController::class, 'update'])->name('tittles.update');
-    Route::get('/inicio/titulo/{id}/alterar', [TittleController::class, 'edit'])->name('tittles.edit');
+    Route::get('/inicio/titulo/{Tittle:id}/alterar', [TittleController::class, 'edit'])->name('tittles.edit');
     Route::get('/inicio/titulo/novo', [TittleController::class, 'create'])->name('tittles.create');
     Route::get('/inicio/titulo/{id}', [TittleController::class, 'show'])->name('tittles.show');
     Route::get('/inicio/titulo', [TittleController::class, 'index'])->name('tittles');
-});*/
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
