@@ -13,17 +13,18 @@ class TittleCreateDTO
         public string $date_buy,
         public string $date_liquidity,
         public string $date_due,
-    ) {}
+    ) {
+    }
 
-    public static function DTO(TittleRequest $request): array
+    public static function DTO(TittleRequest $tittleRequest): self
     {
-        return (array) new self(
-            $request->tittle,
-            $request->tax,
-            $request->modality,
-            $request->date_buy,
-            $request->date_liquidity,
-            $request->date_due,
+        return new self(
+            $tittleRequest->tittle,
+            $tittleRequest->tax,
+            $tittleRequest->modality,
+            $tittleRequest->date_buy,
+            $tittleRequest->date_liquidity,
+            $tittleRequest->date_due,
         );
     }
 }
