@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tittle_types', function (Blueprint $table) {
+        Schema::create('title_types', function (Blueprint $table) {
             $table->id();
             $table->string("description")->notnullable();
             $table->boolean("has_irpf")->notnullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             ["id" => 10, "description" => "Tesouro IPCA", "has_irpf" => true]
         ];
 
-        DB::table('tittle_types')->insert($types);
+        DB::table('title_types')->insert($types);
     }
 
     /**
@@ -40,6 +40,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tittle_types');
+        Schema::dropIfExists('title_types');
     }
 };

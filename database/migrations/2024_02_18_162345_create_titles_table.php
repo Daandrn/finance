@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tittles', function (Blueprint $table) {
+        Schema::create('titles', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->notNullable();
-            $table->string('tittle')->notNullable();
+            $table->string('title')->notNullable();
             $table->string('tax')->notNullable();
             $table->bigInteger('modality')->notNullable();
             $table->date('date_buy')->notNullable();
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tittles');
+        Schema::dropIfExists('titles');
     }
 };

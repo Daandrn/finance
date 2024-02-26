@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\TittleController;
+use App\Http\Controllers\TitleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,12 +34,12 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
 });
 
 Route::middleware('auth')->group(function () {
-    Route::delete('/inicio/titulo/{Tittle:id}', [TittleController::class, 'destroy'])->name('tittles.destroy');
-    Route::put('/inicio/titulo/{id}', [TittleController::class, 'update'])->name('tittles.update');
-    Route::get('/inicio/titulo/{Tittle:id}/alterar', [TittleController::class, 'edit'])->name('tittles.edit');
-    Route::get('/inicio/titulo/novo', [TittleController::class, 'create'])->name('tittles.create');
-    Route::get('/inicio/titulo/{id}', [TittleController::class, 'show'])->name('tittles.show');
-    Route::get('/inicio/titulo', [TittleController::class, 'index'])->name('tittles');
+    Route::delete('/inicio/titulo/{Title:id}', [TitleController::class, 'destroy'])->name('Titles.destroy');
+    Route::put('/inicio/titulo/{id}', [TitleController::class, 'update'])->name('Titles.update');
+    Route::get('/inicio/titulo/{Title:id}/alterar', [TitleController::class, 'edit'])->name('Titles.edit');
+    Route::get('/inicio/titulo/novo', [TitleController::class, 'create'])->name('Titles.create');
+    Route::get('/inicio/titulo/{id}', [TitleController::class, 'show'])->name('Titles.show');
+    Route::get('/inicio', [TitleController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {
@@ -52,9 +52,9 @@ Route::get('/administrador', function () {
     return view('administrator.administrator');
 })->middleware(['auth', 'admin'])->name('administrator');
 
-Route::get('/inicio', function () {
+/*Route::get('/inicio', function () {
     return view('main.dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth'])->name('dashboard');*/
 
 
 require __DIR__.'/auth.php';
