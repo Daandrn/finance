@@ -11,9 +11,9 @@ class UserUpdateDTO
         public string $name,
         public string $email,
         public string $adm,
-        public string $status
-    )
-    {}
+        public string $status,
+    ) {
+    }
 
     public static function userDTO(UserAdmRequest $request): array
     {
@@ -22,7 +22,7 @@ class UserUpdateDTO
                 $request->name,
                 $request->email,
                 $request->adm,
-                $request->status
+                $request->status,
             );
     }
 }
