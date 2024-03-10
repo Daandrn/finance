@@ -17,7 +17,7 @@ return [
     'accepted_if' => 'The :attribute field must be accepted when :other is :value.',
     'active_url' => 'The :attribute field must be a valid URL.',
     'after' => 'The :attribute field must be a date after :date.',
-    'after_or_equal' => 'The :attribute field must be a date after or equal to :date.',
+    'after_or_equal' => 'O campo :attribute deve ter data igual ou posterior a :date.',
     'alpha' => 'The :attribute field must only contain letters.',
     'alpha_dash' => 'The :attribute field must only contain letters, numbers, dashes, and underscores.',
     'alpha_num' => 'The :attribute field must only contain letters and numbers.',
@@ -37,7 +37,7 @@ return [
     'current_password' => 'A senha está incorreta.',
     'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
-    'date_format' => 'The :attribute field must match the format :format.',
+    'date_format' => 'O campo :attribute deve atender ao formato dia/mes/ano.',
     'decimal' => 'The :attribute field must have :decimal decimal places.',
     'declined' => 'The :attribute field must be declined.',
     'declined_if' => 'The :attribute field must be declined when :other is :value.',
@@ -113,7 +113,7 @@ return [
     'missing_with_all' => 'The :attribute field must be missing when :values are present.',
     'multiple_of' => 'The :attribute field must be a multiple of :value.',
     'not_in' => 'The selected :attribute is invalid.',
-    'not_regex' => 'The :attribute field format is invalid.',
+    'not_regex' => 'O formato do campo :attribute é inválido.',
     'numeric' => 'The :attribute field must be a number.',
     'password' => [
         'letters' => 'The :attribute field must contain at least one letter.',
@@ -131,7 +131,7 @@ return [
     'prohibited_if' => 'The :attribute field is prohibited when :other is :value.',
     'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
-    'regex' => 'The :attribute field format is invalid.',
+    'regex' => 'O formato do campo :attribute é inválido.',
     'required' => 'O campo :attribute é obrigatório.',
     'required_array_keys' => 'The :attribute field must contain entries for: :values.',
     'required_if' => 'The :attribute field is required when :other is :value.',
@@ -186,6 +186,17 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'title' => 'titulo',
+        'tax' => 'taxa',
+        'modality_id' => 'modalidade',
+        'date_buy' => 'data de compra',
+        'date_liquidity' => 'liquidez',
+        'date_due' => 'vencimento',
+        'name' => 'nome',
+        'email' => 'email',
+        'adm' => 'administrador',
+        'status' => 'status',
+    ],
 
 ];
