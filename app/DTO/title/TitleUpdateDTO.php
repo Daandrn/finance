@@ -8,7 +8,6 @@ use Carbon\Carbon;
 class TitleUpdateDTO
 {
     public function __construct(
-        public string $id,
         public string $title,
         public string $tax,
         public string $modality_id,
@@ -21,7 +20,6 @@ class TitleUpdateDTO
     public static function DTO(TitleRequest $titleRequest): self
     {
         return new self(
-            $titleRequest->id,
             $titleRequest->title,
             $titleRequest->tax,
             $titleRequest->modality_id,
@@ -34,7 +32,6 @@ class TitleUpdateDTO
     public function toArray(): array
     {
         return [
-            "id" => $this->id,
             "title" => $this->title,
             "tax" => $this->tax,
             "modality_id" => $this->modality_id,
