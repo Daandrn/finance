@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\DTO\Title\TitleCreateDTO;
-use App\DTO\Title\TitleUpdateDTO;
+use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use App\Repositories\TitleRepository;
+use Illuminate\Database\Eloquent\Collection;
 use stdClass;
 
 class TitleService
@@ -15,36 +15,31 @@ class TitleService
     ) {
     }
 
-    public function all(): stdClass|null
+    public function userAllTitles(int $user_id): Collection|null
     {
-        $titles = $this->titleRepository->getAll();
+        $titles = $this->titleRepository->userAllTitles($user_id);
 
         return $titles;
     }
 
-    public function showOne(string $title_id): stdClass
-    {
-        $oneTitle = $this->titleRepository->findOne($title_id);
-
-        return $oneTitle;
-    }
-
-    public function insert(TitleCreateDTO $createDTO): stdClass
+    public function insert(TitleCreateDTO $createDTO): stdClass|string
     {
         $insertedTitle = $this->titleRepository->insert($createDTO);
 
         return $insertedTitle;
     }
 
-    public function update(TitleUpdateDTO $updateDTO): stdClass
+    public function update(Title $title, TitleUpdateDTO $updateDTO): stdClass
     {
-        $updatedTitle = $this->titleRepository->update($updateDTO);
+        $updatedTitle = $this->titleRepository->update($title, $updateDTO);
 
         return $updatedTitle;
     }
 
-    public function delete(Title $title_id): void
+    public function delete(string $title_id): void
     {
-        $this->titleRepository->delete($title_id);
+        $this->titleRepository->delete((int) $title_id);
+
+        return;
     }
 }

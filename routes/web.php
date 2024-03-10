@@ -27,18 +27,19 @@ Route::get("/", function () {
 Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validação de ADM do middleware
     Route::delete('/administrador/usuarios/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     Route::put('/administrador/usuarios/{id}', [UserController::class, 'update'])->name('user.update');
+    //Route::post('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
     Route::get('/administrador/usuarios/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
-    //Route::get('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
-    //Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');//Não está sendo usado, usar
+    //Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
 });
 
 Route::middleware('auth')->group(function () {
-    Route::delete('/inicio/titulo/{Title:id}', [TitleController::class, 'destroy'])->name('Titles.destroy');
-    Route::put('/inicio/titulo/{id}', [TitleController::class, 'update'])->name('Titles.update');
-    Route::get('/inicio/titulo/{Title:id}/alterar', [TitleController::class, 'edit'])->name('Titles.edit');
-    Route::get('/inicio/titulo/novo', [TitleController::class, 'create'])->name('Titles.create');
-    Route::get('/inicio/titulo/{id}', [TitleController::class, 'show'])->name('Titles.show');
+    Route::delete('/titulo/{id}', [TitleController::class, 'destroy'])->name('titles.destroy');
+    Route::put('/titulo/{title}', [TitleController::class, 'update'])->name('titles.update');
+    Route::post('/titulo', [TitleController::class, 'store'])->name('titles.store');
+    Route::get('/titulo/novo', [TitleController::class, 'create'])->name('titles.create');
+    Route::get('/titulo/{title}/alterar', [TitleController::class, 'edit'])->name('titles.edit');
+    Route::get('/titulo/{title}', [TitleController::class, 'show'])->name('titles.show');
     Route::get('/inicio', [TitleController::class, 'index'])->name('dashboard');
 });
 

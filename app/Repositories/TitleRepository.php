@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\DTO\Title\TitleCreateDTO;
-use App\DTO\Title\TitleUpdateDTO;
+use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
+use Illuminate\Database\Eloquent\Collection;
 use stdClass;
 
 class TitleRepository
@@ -14,37 +14,35 @@ class TitleRepository
     ) {
     }
 
-    public function getAll(): stdClass|null
+    public function userAllTitles(int $user_id): Collection|null
     {
-        $titles = $this->title->select('*');
-        dd($this->title);
-        return $titles ? (object) $titles->toArray() :  null;
-    }
+        $titles = $this->title->where('user_id', $user_id)
+                                ->with('modality')
+                                ->get();
 
-    public function findOne(string $title_id): stdClass
-    {
-        $oneTitle = $this->title->findOrFail($title_id);
-
-        return (object) $oneTitle->toArray();
+        return $titles->isNotEmpty()
+                ? $titles
+                : null;
     }
 
     public function insert(TitleCreateDTO $createDto): stdClass
     {
-        $insertedTitle = $this->title->create((array) $createDto);
+        $insertedTitle = $this->title->create($createDto->toArray());
         
         return (object) $insertedTitle->toArray();
     }
 
-    public function update(TitleUpdateDTO $updateDto): stdClass
+    public function update(Title $updatedTitle, TitleUpdateDTO $updateDto): stdClass
     {
-        $updatedTitle = $this->title->findOrFail($updateDto->id);
-        $updatedTitle->update($updateDto);
+        $updatedTitle->update($updateDto->toArray());
 
         return (object) $updatedTitle->toArray();
     }
 
-    public function delete(Title $title_id): void
+    public function delete(int $title_id): void
     {
         $this->title->destroy($title_id);
+
+        return;
     }
 }
