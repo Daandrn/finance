@@ -47,7 +47,8 @@ class TitleController extends Controller
             TitleCreateDTO::DTO($titleRequest)
         );
 
-        return redirect()->route('dashboard', status: 201)
+        return redirect()
+                ->route('dashboard', status: 201)
                 ->with(['message' => "Título incluído com sucesso"]);
     }
 
@@ -62,7 +63,8 @@ class TitleController extends Controller
     {
         $title = $this->titleService->update($title, TitleUpdateDTO::DTO($titleRequest));
 
-        return redirect()->route('titles.edit', $title->id)
+        return redirect()
+                ->route('titles.edit', $title->id)
                 ->with(['message' => "Título alterado com sucesso!"], compact('title'));
     }
 
@@ -70,7 +72,8 @@ class TitleController extends Controller
     {
         $this->titleService->delete($title_id);
 
-        return redirect()->route('dashboard')
+        return redirect()
+                ->route('dashboard')
                 ->with(['message' => "Título excluído com sucesso!"]);
     }
 }
