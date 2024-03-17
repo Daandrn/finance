@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use Illuminate\Database\Eloquent\Collection;
-use stdClass;
 
 class TitleRepository
 {
@@ -18,6 +17,7 @@ class TitleRepository
     {
         $titles = $this->title->where('user_id', $user_id)
                                 ->with('modality')
+                                ->with('title_type')
                                 ->get();
 
         return $titles->isNotEmpty()
@@ -25,18 +25,25 @@ class TitleRepository
                 : null;
     }
 
-    public function insert(TitleCreateDTO $createDto): stdClass
+    public function userOneTitle(string $id): Title
+    {
+        $oneTitle = $this->title->findOrFail($id);
+        
+        return $oneTitle;
+    }
+
+    public function insert(TitleCreateDTO $createDto): Title
     {
         $insertedTitle = $this->title->create($createDto->toArray());
         
-        return (object) $insertedTitle->toArray();
+        return $insertedTitle;
     }
 
-    public function update(Title $updatedTitle, TitleUpdateDTO $updateDto): stdClass
+    public function update(Title $updatedTitle, TitleUpdateDTO $updateDto): Title
     {
         $updatedTitle->update($updateDto->toArray());
 
-        return (object) $updatedTitle->toArray();
+        return $updatedTitle;
     }
 
     public function delete(int $title_id): void
