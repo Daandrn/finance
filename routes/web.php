@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ModalityController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\UserController;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('teste', function () {
-    return view('teste');    
+    return include __DIR__.'/../tests/teste.php';    
 })->middleware();
 
 Route::get("/", function () {
@@ -27,10 +28,17 @@ Route::get("/", function () {
 Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validação de ADM do middleware
     Route::delete('/administrador/usuarios/{id}', [UserController::class, 'destroy'])->name('user.destroy');
     Route::put('/administrador/usuarios/{id}', [UserController::class, 'update'])->name('user.update');
-    //Route::post('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
     Route::get('/administrador/usuarios/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
+    //Route::post('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
     //Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
+
+    Route::delete('/administrador/modalidades/{id}', [ModalityController::class, 'destroy'])->name('modality.destroy');
+    Route::post('/administrador', [ModalityController::class, 'store'])->name('modality.store');
+    //Route::get('/administrador/modalidades/nova', [ModalityController::class, 'create'])->name('modality.create');
+    Route::put('/administrador/modalidades/{id}', [ModalityController::class, 'update'])->name('modality.update');
+    Route::get('/administrador/modalidades/{id}/alterar', [ModalityController::class, 'edit'])->name('modality.edit');
+    Route::get('/administrador/modalidades', [ModalityController::class, 'index'])->name('modalities');
 });
 
 Route::middleware('auth')->group(function () {
@@ -39,7 +47,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/titulo', [TitleController::class, 'store'])->name('titles.store');
     Route::get('/titulo/novo', [TitleController::class, 'create'])->name('titles.create');
     Route::get('/titulo/{title}/alterar', [TitleController::class, 'edit'])->name('titles.edit');
-    Route::get('/titulo/{title}', [TitleController::class, 'show'])->name('titles.show');
+    Route::get('/titulo/{id}', [TitleController::class, 'show'])->name('titles.show');
     Route::get('/inicio', [TitleController::class, 'index'])->name('dashboard');
 });
 
