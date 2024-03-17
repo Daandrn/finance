@@ -29,10 +29,10 @@ return new class extends Migration
         DB::table('users')->insert(
             [
                 [
-                    'name' => "Danillo Rodrigues",
-                    'email' => "dandrn7@gmail.com",
-                    'password' => Hash::make('1234567890'),
-                    'adm' => true,
+                    'name'       => "Danillo Rodrigues",
+                    'email'      => "dandrn7@gmail.com",
+                    'password'   => Hash::make('1234567890'),
+                    'adm'        => true,
                     'created_at' => Carbon::parse(),
                 ],
             ]
