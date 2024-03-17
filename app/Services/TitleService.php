@@ -6,7 +6,6 @@ use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use App\Repositories\TitleRepository;
 use Illuminate\Database\Eloquent\Collection;
-use stdClass;
 
 class TitleService
 {
@@ -19,17 +18,31 @@ class TitleService
     {
         $titles = $this->titleRepository->userAllTitles($user_id);
 
+        $titles->map(function ($title) {
+            $title->gain = self::calculateGain($title->value_current, $title->value_buy);
+            $title->gain_percent = self::calculateGainPercent($title->gain, $title->value_buy);
+        });
+
         return $titles;
     }
 
-    public function insert(TitleCreateDTO $createDTO): stdClass|string
+    public function userOneTitle(string $id): Title
+    {
+        $oneTitle = $this->titleRepository->userOneTitle($id);
+        $oneTitle->gain = self::calculateGain($oneTitle->value_current, $oneTitle->value_buy);
+        $oneTitle->gain_percent = self::calculateGainPercent($oneTitle->gain, $oneTitle->value_buy);
+        
+        return $oneTitle;
+    }
+
+    public function insert(TitleCreateDTO $createDTO): Title
     {
         $insertedTitle = $this->titleRepository->insert($createDTO);
 
         return $insertedTitle;
     }
 
-    public function update(Title $title, TitleUpdateDTO $updateDTO): stdClass
+    public function update(Title $title, TitleUpdateDTO $updateDTO): Title
     {
         $updatedTitle = $this->titleRepository->update($title, $updateDTO);
 
@@ -41,5 +54,17 @@ class TitleService
         $this->titleRepository->delete((int) $title_id);
 
         return;
+    }
+
+    public static function calculateGain(string $value_current, string $value_buy): string
+    {
+        return bcsub($value_current, $value_buy, 2);
+    }
+
+    public static function calculateGainPercent(string $gain, string $value_buy): string
+    {
+        $percent = bcdiv($gain, $value_buy, 6);
+
+        return bcmul($percent, '100', 2);
     }
 }

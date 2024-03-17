@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TitleRequest;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
+use App\Models\TitleType;
 use App\Repositories\ModalityRepository;
 use App\Services\TitleService;
 use Illuminate\Contracts\View\View;
@@ -15,7 +16,6 @@ class TitleController extends Controller
 {
     public function __construct(
         protected TitleService $titleService,
-        protected ModalityRepository $modalityRepository,
     ) {
     }
     
@@ -27,22 +27,23 @@ class TitleController extends Controller
         return view('main.dashboard', compact('titles'));
     }
     
-    public function show(Title $title): view
+    public function show(string $id): view
     {
-        $title = $title->with('modality')->first();
+        $title = $this->titleService->userOneTitle($id);
         
         return view('main.titles.title', compact('title'));
     }
 
-    public function create(): View
+    public function create(ModalityRepository $modalityRepository, TitleType $titleType): View
     {
-        $modalities = $this->modalityRepository->allModalities();
+        $modalities = $modalityRepository->allModalities();
+        $title_types = $titleType->orderBy('id')->get();
         
-        return view('main.titles.createTitle', compact('modalities'));
+        return view('main.titles.createTitle', compact('modalities', 'title_types'));
     }
 
     public function store(TitleRequest $titleRequest): RedirectResponse
-    {
+    {dd(TitleCreateDTO::DTO($titleRequest));
         $Title = $this->titleService->insert(
             TitleCreateDTO::DTO($titleRequest)
         );
@@ -52,11 +53,12 @@ class TitleController extends Controller
                 ->with(['message' => "Título incluído com sucesso"]);
     }
 
-    public function edit(Title $title): view
+    public function edit(Title $title, ModalityRepository $modalityRepository, TitleType $titleType): view
     {
-        $modalities = $this->modalityRepository->allModalities();
+        $modalities = $modalityRepository->allModalities();
+        $title_types = $titleType->orderBy('id')->get();
 
-        return view('main.titles.alterTitle', compact('title', 'modalities'));
+        return view('main.titles.alterTitle', compact('title', 'modalities', 'title_types'));
     }
 
     public function update(Title $title, TitleRequest $titleRequest): RedirectResponse

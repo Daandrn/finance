@@ -15,14 +15,22 @@ class Title extends Model
         'title',
         'tax',
         'modality_id',
+        'title_type_id',
         'date_buy',
         'date_liquidity',
         'date_due',
+        'value_buy',
+        'value_current',
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function title_type(): BelongsTo
+    {
+        return $this->belongsTo(TitleType::class)->withDefault();
     }
     
     public function modality(): BelongsTo

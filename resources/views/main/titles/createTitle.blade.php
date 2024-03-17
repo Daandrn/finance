@@ -12,7 +12,10 @@
                     <form action="{{ Route('titles.store') }}" method="post">
                         @csrf()
                         @method('POST')
+
                         @include('main.partials.titleForm')
+
+                        <button type="submit">{{ __('Criar') }}</button>
                     </form>
                 </div>
             </div>

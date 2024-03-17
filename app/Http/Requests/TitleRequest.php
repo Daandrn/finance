@@ -27,15 +27,18 @@ class TitleRequest extends FormRequest
                 'min:5',
                 'max:100',
             ],
-            'tax' => [
+            'title_type_id' => [
                 'required',
-                'regex:/\A\d{1,2}\.?\d{0,2}\z/',
-                'min:0',
-                'max:100',
+                'integer',
             ],
             'modality_id' => [
                 'required',
                 'integer',
+            ],
+            'tax' => [
+                'required',
+                'regex:/^\d{1,3}(\.\d{1,2})?$/',
+                'max:6',
             ],
             'date_buy' => [
                 'required',
@@ -49,7 +52,17 @@ class TitleRequest extends FormRequest
             'date_due' => [
                 'required',
                 'date_format:d/m/Y',
-                'after_or_equal:date_buy'
+                'after_or_equal:date_buy',
+            ],
+            'value_buy' => [
+                'required',
+                'regex:/^\d{1,3}(?:\.\d{3})*(?:,\d{2})?$/',
+                'max:14',
+            ],
+            'value_current' => [
+                'required',
+                'regex:/^\d{1,3}(?:\.\d{3})*(?:,\d{2})?$/',
+                'max:14',
             ],
         ];
     }

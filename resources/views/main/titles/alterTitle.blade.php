@@ -14,7 +14,10 @@
                     <form action="{{ Route('titles.update', $title->id) }}" method="POST">
                         @csrf()
                         @method('PUT')
+
                         @include('main.partials.titleForm')
+
+                        <button type="submit">{{ __('Alterar') }}</button>
                     </form>
                 </div>
             </div>

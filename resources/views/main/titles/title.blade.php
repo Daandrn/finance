@@ -5,33 +5,45 @@
         </h2>
     </x-slot>
 
+    <x-input-sucess/>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <table>
                         <thead>
-                            <th>Título</th>
-                            <th>Taxa</th>
-                            <th>Modalidade</th>
-                            <th>Data de compra</th>
-                            <th>Liquidez</th>
-                            <th>Vencimento</th>
+                            <th>{{ __('Título') }}</th>
+                            <th>{{ __('Tipo de título') }}</th>
+                            <th>{{ __('Taxa') }}</th>
+                            <th>{{ __('Modalidade') }}</th>
+                            <th>{{ __('Data de compra') }}</th>
+                            <th>{{ __('Liquidez') }}</th>
+                            <th>{{ __('Vencimento') }}</th>
+                            <th>{{ __('Valor na compra') }}</th>
+                            <th>{{ __('Valor atual') }}</th>
+                            <th>{{ __('Valorização') }}</th>
+                            <th>{{ __('Percentual') }}</th>
                             <th></th>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>{{ $title->title }}</td>
+                                <td>{{ $title->title_type->description }}</td>
                                 <td>{{ $title->tax }}</td>
                                 <td>{{ $title->modality->description }}</td>
                                 <td>{{ @carbonDate($title->date_buy) }}</td>
                                 <td>{{ @carbonDate($title->date_liquidity) }}</td>
                                 <td>{{ @carbonDate($title->date_due) }}</td>
+                                <td>R${{ @valueFormat($title->value_buy) }}</td>
+                                <td>R${{ @valueFormat($title->value_current) }}</td>
+                                <td>R${{ @valueFormat($title->gain) }}</td>
+                                <td>{{ $title->gain_percent }}%</td>
                                 <td>
                                     <form action="{{ Route('titles.destroy', $title->id) }}" method="POST">
                                         @csrf()
                                         @method('DELETE')
-                                        <button type="submit">Excluir</button>
+                                        <button type="submit">{{ __('Excluir') }}</button>
                                     </form>
                                 </td>
                             </tr>
@@ -41,6 +53,5 @@
             </div>
         </div>
     </div>
-
-    <x-input-sucess/>
+    
 </x-app-layout>
