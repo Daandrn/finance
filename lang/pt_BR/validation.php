@@ -91,10 +91,10 @@ return [
     ],
     'mac_address' => 'The :attribute field must be a valid MAC address.',
     'max' => [
-        'array' => 'The :attribute field must not have more than :max items.',
-        'file' => 'The :attribute field must not be greater than :max kilobytes.',
-        'numeric' => 'The :attribute field must not be greater than :max.',
-        'string' => 'The :attribute field must not be greater than :max characters.',
+        'array' => 'O campo :attribute não pode ter mais que :max itens.',
+        'file' => 'O campo :attribute deve ter no máximo :max kilobytes.',
+        'numeric' => 'O campo :attribute não deve ser maior :max.',
+        'string' => 'O campo :attribute deve ter no máximo :max caracteres.',
     ],
     'max_digits' => 'The :attribute field must not have more than :max digits.',
     'mimes' => 'The :attribute field must be a file of type: :values.',
@@ -189,14 +189,18 @@ return [
     'attributes' => [
         'title' => 'titulo',
         'tax' => 'taxa',
+        'title_type_id' => 'tipo',
         'modality_id' => 'modalidade',
         'date_buy' => 'data de compra',
         'date_liquidity' => 'liquidez',
         'date_due' => 'vencimento',
+        'value_buy' => 'valor de compra',
+        'value_current' => 'valor atual',
         'name' => 'nome',
         'email' => 'email',
         'adm' => 'administrador',
         'status' => 'status',
+        'description' => 'descrição',
     ],
 
 ];

@@ -12,13 +12,13 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Código</th>
-                                <th>Nome</th>
-                                <th>E-mail</th>
-                                <th>Administrador</th>
-                                <th>Status</th>
-                                <th>Data de criação</th>
-                                <th></th>
+                                <th>{{ __('Código') }}</th>
+                                <th>{{ __('Nome') }}</th>
+                                <th>{{ __('E-mail') }}</th>
+                                <th>{{ __('Administrador') }}</th>
+                                <th>{{ __('Status') }}</th>
+                                <th>{{ __('Data de criação') }}</th>
+                                <th colspan="6">{{ __('Ações') }}</th>
                             </tr>
                         </thead>
                         @if ($users->count() > 0)
@@ -26,17 +26,17 @@
                             @foreach ($users as $user)
                             <tr>
                                 <td> {{ $user->id }} </td>
-                                <td> {{ $user->name }} </td>
-                                <td> {{ $user->email }} </td>
-                                <td> {{ $user->adm ? 'Sim' : 'Não' }} </td>
-                                <td> {{ $user->status ? 'Ativo' : 'Inativo' }} </td>
+                                <td> {{ __($user->name) }} </td>
+                                <td> {{ __($user->email) }} </td>
+                                <td> {{ __($user->adm ? 'Sim' : 'Não') }} </td>
+                                <td> {{ __($user->status ? 'Ativo' : 'Inativo') }} </td>
                                 <td> {{ $user->created_at->format('d/m/Y') }} </td>
-                                <td><a href="{{ Route('user.edit', $user->id) }}">Alterar</a></td>
+                                <td><a href="{{ Route('user.edit', $user->id) }}">{{ __('Alterar') }}</a></td>
                                 <td>
                                     <form action="{{ Route('user.destroy', $user->id) }}" method="post">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit">Excluir</button>
+                                        <button type="submit">{{ __('Excluir') }}</button>
                                     </form>
                                 </td>
                             </tr>
@@ -45,13 +45,13 @@
                         @else
                         <tbody>
                             <tr>
-                                <td colspan="7">Nenhum usuário encontrado!</td>
+                                <td colspan="8">{{ __('Nenhum usuário encontrado!') }}</td>
                             </tr>
                         </tbody>
                         @endif
                         <tfoot>
                             <tr>
-                                <td colspan="7"> {{ $users->links() }} </td>
+                                <td colspan="8"> {{ $users->links() }} </td>
                             </tr>
                         </tfoot>
                     </table>
