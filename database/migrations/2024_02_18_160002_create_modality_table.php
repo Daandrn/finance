@@ -14,18 +14,18 @@ return new class extends Migration
     {
         Schema::create('modalities', function (Blueprint $table) {
             $table->id();
-            $table->string("description");
+            $table->string('description', 30);
             $table->timestamps();
         });
 
         $modalities = [
-            ["id" => 1, "description" => "Pré-fixado"],
-            ["id" => 2, "description" => "CDI"],
-            ["id" => 3, "description" => "CDI+"],
-            ["id" => 4, "description" => "IPCA"],
-            ["id" => 5, "description" => "IPCA+"],
-            ["id" => 6, "description" => "Selic"],
-            ["id" => 7, "description" => "Selic+"],
+            ['id' => 1, 'description' => "Pré-fixado"  ],
+            ['id' => 2, 'description' => "CDI"         ],
+            ['id' => 3, 'description' => "CDI+"        ],
+            ['id' => 4, 'description' => "IPCA"        ],
+            ['id' => 5, 'description' => "IPCA+"       ],
+            ['id' => 6, 'description' => "Selic"       ],
+            ['id' => 7, 'description' => "Selic+"      ],
         ];
 
         DB::table('modalities')->insert($modalities);

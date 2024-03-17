@@ -14,16 +14,16 @@ return new class extends Migration
     {
         Schema::create('irpf', function (Blueprint $table) {
             $table->id();
-            $table->string("period")->notnullable();
-            $table->string("tax")->notnullable();
+            $table->string('period', 30)->notnullable();
+            $table->string('tax', 5)->notnullable();
             $table->timestamps();
         });
 
         $irpf = [
-            ["id" => 1, "period" => "Até 180 dias", "tax" => "22.5"],
-            ["id" => 2, "period" => "Entre 181 e 360 dias", "tax" => "20"],
-            ["id" => 3, "period" => "Entre 361 e 720 dias", "tax" => "17.5"],
-            ["id" => 4, "period" => "Acima 721 dias", "tax" => "15"],
+            ['id' => 1, 'period' => "Até 180 dias",         'tax' => "22.5"],
+            ['id' => 2, 'period' => "Entre 181 e 360 dias", 'tax' => "20"  ],
+            ['id' => 3, 'period' => "Entre 361 e 720 dias", 'tax' => "17.5"],
+            ['id' => 4, 'period' => "Acima 721 dias",       'tax' => "15"  ],
         ];
 
         DB::table('irpf')->insert($irpf);

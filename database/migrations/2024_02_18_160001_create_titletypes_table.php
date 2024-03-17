@@ -14,22 +14,24 @@ return new class extends Migration
     {
         Schema::create('title_types', function (Blueprint $table) {
             $table->id();
-            $table->string("description")->notnullable();
-            $table->boolean("has_irpf")->notnullable();
+            $table->boolean('has_irpf')->notnullable();
+            $table->string('description', 30)->notnullable();
+            $table->string('name', 255)->notnullable();
             $table->timestamps();
         });
 
         $types = [
-            ["id" => 1, "description" => "Cdb",           "has_irpf" => true],
-            ["id" => 2, "description" => "Lci",           "has_irpf" => false],
-            ["id" => 3, "description" => "Lca",           "has_irpf" => false],
-            ["id" => 4, "description" => "Cri",           "has_irpf" => false],
-            ["id" => 5, "description" => "Cra",           "has_irpf" => false],
-            ["id" => 6, "description" => "Tesouro Selic", "has_irpf" => true],
-            ["id" => 7, "description" => "Ações",         "has_irpf" => true],
-            ["id" => 8, "description" => "Fiis",          "has_irpf" => false],
-            ["id" => 9, "description" => "Rdb",           "has_irpf" => true],
-            ["id" => 10, "description" => "Tesouro IPCA", "has_irpf" => true]
+            ['id' => 1,  'has_irpf' => true,  'description' => "CDB",           'name' => "Certificado de depósito bancário"              ],
+            ['id' => 2,  'has_irpf' => false, 'description' => "LCI",           'name' => "Letra de crédito do setor imobiliário"         ],
+            ['id' => 3,  'has_irpf' => false, 'description' => "LCA",           'name' => "Letra de crédito do agronegócio"               ],
+            ['id' => 4,  'has_irpf' => false, 'description' => "CRI",           'name' => "Certificado de recebíveis do setor imobiliário"],
+            ['id' => 5,  'has_irpf' => false, 'description' => "CRA",           'name' => "Certificado de recebíveis do agronegócio"      ],
+            ['id' => 6,  'has_irpf' => true,  'description' => "SELIC",         'name' => "Tesouro selic"                                 ],
+            ['id' => 7,  'has_irpf' => true,  'description' => "AÇÕES",         'name' => "Ações"                                         ],
+            ['id' => 8,  'has_irpf' => false, 'description' => "FII",           'name' => "Fundos de investimento imobiliário"            ],
+            ['id' => 9,  'has_irpf' => true,  'description' => "RDB",           'name' => "Recibo de depósito bancário"                   ],
+            ['id' => 10, 'has_irpf' => true,  'description' => "TESOURO IPCA",  'name' => "Tesouro IPCA"                                  ],
+            ['id' => 11, 'has_irpf' => true,  'description' => "DEB",           'name' => "Debenture"                                     ],
         ];
 
         DB::table('title_types')->insert($types);
