@@ -23,5 +23,9 @@ class AppServiceProvider extends ServiceProvider
         Blade::directive('carbonDate', function ($expression) {
             return "\Carbon\Carbon::parse({$expression})->format('d/m/Y')";
         });
+        
+        Blade::directive('valueFormat', function ($expression) {
+            return "number_format($expression, 2, ',', '.')";
+        });
     }
 }
