@@ -40,9 +40,9 @@
                         </div>
                         <button type="submit">Alterar</button>
                     </form>
-                    <x-alert-error/>
                 </div>
             </div>
         </div>
     </div>
+    <x-alert-error/>
 </x-app-layout>

@@ -10,10 +10,13 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div>
-                        <a href="{{ Route('users') }}">Usuários</a>
+                        <a href="{{ Route('users') }}">{{ __('Usuários') }}</a>
+                    </div>
+                    <div>
+                        <a href="{{ Route('modalities') }}">{{ __('Modalidades') }}</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+</x-app-layout> 
