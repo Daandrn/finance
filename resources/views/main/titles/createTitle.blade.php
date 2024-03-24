@@ -22,6 +22,7 @@
         </div>
     </div>
 
+    <script src="{{ asset('build/assets/titles.js') }}"></script>
     <x-alert-error/>
     
 </x-app-layout>
