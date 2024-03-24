@@ -36,7 +36,7 @@ class TitleRequest extends FormRequest
                 'integer',
             ],
             'tax' => [
-                'required',
+                'required_unless:modality_id,4,6',
                 'regex:/^\d{1,3}(\.\d{1,2})?$/',
                 'max:6',
             ],

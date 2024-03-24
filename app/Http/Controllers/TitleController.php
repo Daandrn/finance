@@ -23,8 +23,12 @@ class TitleController extends Controller
     {
         $user_id = Auth::user()->id;
         $titles = $this->titleService->userAllTitles($user_id);
+
+        $lastTitle = $titles 
+                        ? $titles->last()->getAppends()[0]
+                        : $titles;
         
-        return view('main.dashboard', compact('titles'));
+        return view('main.dashboard', compact('titles', 'lastTitle'));
     }
     
     public function show(string $id): view
@@ -43,8 +47,8 @@ class TitleController extends Controller
     }
 
     public function store(TitleRequest $titleRequest): RedirectResponse
-    {dd(TitleCreateDTO::DTO($titleRequest));
-        $Title = $this->titleService->insert(
+    {
+        $this->titleService->insert(
             TitleCreateDTO::DTO($titleRequest)
         );
 
@@ -53,7 +57,7 @@ class TitleController extends Controller
                 ->with(['message' => "Título incluído com sucesso"]);
     }
 
-    public function edit(Title $title, ModalityRepository $modalityRepository, TitleType $titleType): view
+    public function edit(Title $title, ModalityRepository $modalityRepository, TitleType $titleType): View
     {
         $modalities = $modalityRepository->allModalities();
         $title_types = $titleType->orderBy('id')->get();

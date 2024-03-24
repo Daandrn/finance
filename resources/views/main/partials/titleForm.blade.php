@@ -7,15 +7,22 @@
     <select name="title_type_id" id="title_type_id">
         <option value=""></option>
         @if ($title_types)
-            @foreach ($title_types as $title_type)
-            <option value="{{ $title_type->id }}" @selected($title_type->id == (isset($title) ? (old('title_type_id') ?? $title->title_type_id) : old('title_type_id')) ? true : false)>{{ $title_type->description }}</option>
-            @endforeach
+            <optgroup label="Isento">
+                @foreach ($title_types as $title_type)
+                @if (! $title_type->has_irpf)
+                <option value="{{ $title_type->id }}" @selected($title_type->id == (isset($title) ? (old('title_type_id') ?? $title->title_type_id) : old('title_type_id')) ? true : false)>{{ $title_type->description }}</option>
+                @endif
+                @endforeach
+            </optgroup>
+            <optgroup label="Não isento">
+                @foreach ($title_types as $title_type)
+                @if ($title_type->has_irpf)
+                <option value="{{ $title_type->id }}" @selected($title_type->id == (isset($title) ? (old('title_type_id') ?? $title->title_type_id) : old('title_type_id')) ? true : false)>{{ $title_type->description }}</option>
+                @endif
+                @endforeach
+            </optgroup>
         @endif
     </select>
-</div>
-<div>
-    <label for="tax">{{ __('Taxa') }}: </label>
-    <input type="text" name="tax" id="tax" placeholder="00.00" value="{{ isset($title) ? (old('tax') ?? $title->tax) : old('tax') }}">
 </div>
 <div>
     <label for="modality_id">{{ __('Modalidade') }}: </label>
@@ -27,6 +34,10 @@
         @endforeach
         @endif
     </select>
+</div>
+<div id="taxDiv" @style((in_array((isset($title) ? (old('modality_id') ?? $title->modality_id) : (old('modality_id') ?? 0)), [4, 6])) ? "display: none;" : "display:;")>
+    <label for="tax">{{ __('Taxa') }}: </label>
+    <input type="text" name="tax" id="tax" value="{{ isset($title) ? (old('tax') ?? $title->tax) : old('tax') }}" placeholder="00.00" @disabled((in_array(((isset($title) ? (old('modality_id') ?? $title->modality_id) : (old('modality_id') ?? 0))), [4, 6])))>
 </div>
 <div>
     <label for="date_buy">{{ __('Data de compra') }}: </label>
