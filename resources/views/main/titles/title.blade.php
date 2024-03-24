@@ -16,7 +16,7 @@
                             <th>{{ __('Título') }}</th>
                             <th>{{ __('Tipo de título') }}</th>
                             <th>{{ __('Taxa') }}</th>
-                            <th>{{ __('Modalidade') }}</th>
+                            <th>{{ __('Isento') }}</th>
                             <th>{{ __('Data de compra') }}</th>
                             <th>{{ __('Liquidez') }}</th>
                             <th>{{ __('Vencimento') }}</th>
@@ -30,8 +30,22 @@
                             <tr>
                                 <td>{{ $title->title }}</td>
                                 <td>{{ $title->title_type->description }}</td>
-                                <td>{{ $title->tax }}</td>
-                                <td>{{ $title->modality->description }}</td>
+                                @switch($title->modality->id)
+                                    @case(1)
+                                        <td>{{ $title->tax."%" }}</td>
+                                        @break
+                                    @case(2)
+                                        <td>{{ $title->tax."% ".$title->modality->description }}</td>
+                                        @break
+                                    @case(3)
+                                    @case(5)
+                                    @case(7)
+                                        <td>{{ $title->modality->description." ".$title->tax."%" }}</td>
+                                        @break
+                                    @default
+                                        <td>{{ $title->modality->description }}</td>
+                                 @endswitch
+                                <td>{{ $title->title_type->has_irpf ? "Não" : "Sim" }}</td>
                                 <td>{{ @carbonDate($title->date_buy) }}</td>
                                 <td>{{ @carbonDate($title->date_liquidity) }}</td>
                                 <td>{{ @carbonDate($title->date_due) }}</td>
