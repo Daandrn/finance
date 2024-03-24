@@ -92,7 +92,7 @@ class TitleService
     public static function calculateGainPercent(string $gain, string $value_buy): string
     {
         $gain_Percent = bcdiv($gain, $value_buy, 8);
-        $gain_Percent = bcmul($gain_Percent, "100", 4);
+        $gain_Percent = bcmul($gain_Percent, "100", 8);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
         
         return $gain_Percent;

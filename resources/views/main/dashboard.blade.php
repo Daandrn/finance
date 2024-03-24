@@ -37,7 +37,7 @@
                                         <td>{{ $title->title_type->description }}</td>
                                         @switch($title->modality->id)
                                             @case(1)
-                                                <td>{{ $title->tax."%" }}</td>
+                                                <td>PRÉ {{ $title->tax."%" }}</td>
                                                 @break
                                             @case(2)
                                                 <td>{{ $title->tax."% ".$title->modality->description }}</td>
