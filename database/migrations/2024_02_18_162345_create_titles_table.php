@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('user_id')->notNullable();
             $table->string('title', 255)->notNullable();
-            $table->bigInteger('title_type_id');
+            $table->bigInteger('title_type_id')->notNullable();
             $table->bigInteger('modality_id')->notNullable();
             $table->string('tax', 6)->notNullable();
             $table->date('date_buy')->notNullable();
