@@ -8,18 +8,19 @@ use Carbon\Carbon;
 class TitleUpdateDTO
 {
     public function __construct(
-        public string $title,
-        public string $title_type_id,
-        public string $modality_id,
-        public string $tax,
-        public Carbon $date_buy,
-        public Carbon $date_liquidity,
-        public Carbon $date_due,
-        public string $value_buy,
-        public string $value_current,
+        public string      $title,
+        public string      $title_type_id,
+        public string      $modality_id,
+        public ?string     $tax,
+        public Carbon      $date_buy,
+        public Carbon      $date_liquidity,
+        public Carbon      $date_due,
+        public string      $value_buy,
+        public string      $value_current,
     ) {
-        $this->value_buy     = self::toValue($this->value_buy);
-        $this->value_current = self::toValue($this->value_current);
+        $this->value_buy     = self::toNumericValue($this->value_buy);
+        $this->value_current = self::toNumericValue($this->value_current);
+        $this->tax           = $this->tax ?? self::setValTax($this->modality_id);
     }
 
     public static function DTO(TitleRequest $titleRequest): self
@@ -37,7 +38,7 @@ class TitleUpdateDTO
         );
     }
 
-    private static function toValue(string $value): string
+    private static function toNumericValue(string $value): string
     {
         $value = preg_replace('/\./', '', $value);
         $value = preg_replace('/\,/', '.', $value);
@@ -45,16 +46,26 @@ class TitleUpdateDTO
         return $value;
     }
 
+    private static function setValTax(string $modality_id): string
+    {
+        $tax = match (true) {
+            $modality_id == "4" => "4.74",
+            $modality_id == "6" => "11.75",
+        };
+        
+        return $tax;
+    }
+
     public function toArray(): array
     {
         return [
-            "title"          => $this->title,
-            "title_type_id"  => $this->title_type_id,
-            "modality_id"    => $this->modality_id,
-            "tax"            => $this->tax,
-            "date_buy"       => $this->date_buy,
-            "date_liquidity" => $this->date_liquidity,
-            "date_due"       => $this->date_due,
+            'title'          => $this->title,
+            'title_type_id'  => $this->title_type_id,
+            'modality_id'    => $this->modality_id,
+            'tax'            => $this->tax,
+            'date_buy'       => $this->date_buy,
+            'date_liquidity' => $this->date_liquidity,
+            'date_due'       => $this->date_due,
             'value_buy'      => $this->value_buy,
             'value_current'  => $this->value_current,
         ];

@@ -21,6 +21,8 @@ class ModalityCreateUpdateDTO
 
     public function toArray(): array
     {
-        return (array) $this->description;
+        return [
+            'description' => $this->description,
+        ];
     }
 }
