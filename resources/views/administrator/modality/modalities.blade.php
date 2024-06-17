@@ -11,13 +11,22 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div id="newModalityModal" @disabled(true) @readonly(true) @style('display:none;')>
+                    <div 
+                        id="newModalityModal" 
+                        @disabled(true) 
+                        @readonly(true) 
+                        @style('display:none;')>
 
-                        <span @style('display: inline-block; background-color: rgba(255, 255, 255, 1); border-radius: 6px; box-shadow: 0 0 10px black; padding: 1%; max-height: 130px; margin-top: 250px;')>
+                        <span 
+                            @style('display: inline-block; background-color: rgba(255, 255, 255, 1); border-radius: 6px; box-shadow: 0 0 10px black; padding: 1%; max-height: 130px; margin-top: 250px;')
+                        >
                             <div>
                                 <button id="fecharNewModality">{{ __('X') }}</button>
                             </div>
-                            <form action="{{ Route('modality.store') }}" method="POST">
+                            <form 
+                                action="{{ Route('modality.store') }}" 
+                                method="POST"
+                            >
                                 @csrf()
                                 @method('POST')
                     
@@ -26,10 +35,8 @@
                                 <button type="submit">{{ __('Criar') }}</button>
                             </form>
                         </span>
-                
                     </div>
                     <div>
-                        {{-- <a href="{{ Route('modality.create') }}">{{ __('Nova modalidade') }}</a> --}}
                         <button id="newModality">{{ __('Nova modalidade') }}</button>
                     </div>
                     <table>

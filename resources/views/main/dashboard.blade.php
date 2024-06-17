@@ -30,31 +30,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                                @if ($titles)
+                                @if ($titles->isNotEmpty())
                                     @foreach ($titles as $title)
                                     <tr>
                                         <td>{{ $title->title }}</td>
                                         <td>{{ $title->title_type->description }}</td>
                                         @switch($title->modality->id)
                                             @case(1)
-                                                <td>PRÉ {{ $title->tax."%" }}</td>
+                                                <td>PRÉ {{ @valueFormat($title->tax) }}% a.a</td>
                                                 @break
                                             @case(2)
-                                                <td>{{ $title->tax."% ".$title->modality->description }}</td>
+                                                <td>{{ @valueFormat($title->tax)."% ".$title->modality->description }} a.a</td>
                                                 @break
                                             @case(3)
                                             @case(5)
                                             @case(7)
-                                                <td>{{ $title->modality->description." ".$title->tax."%" }}</td>
+                                                <td>{{ $title->modality->description." ".@valueFormat($title->tax)}}% a.a</td>
                                                 @break
                                             @default
-                                                <td>{{ $title->modality->description }}</td>
+                                                <td>{{ @valueFormat($title->tax) }}% a.a</td>
                                         @endswitch
                                         <td id="dateDue">{{ @carbonDate($title->date_due) }}<td>
-                                        <td id="valueBuy">R${{ @valueFormat($title->value_buy) }}</td>
-                                        <td id="valueCurrent">R${{ @valueFormat($title->value_current) }}</td>
-                                        <td id="valuegain">R${{ @valueFormat($title->gain) }}</td>
-                                        <td>{{ $title->gain_percent }}%</td>
+                                        <td id="valueBuy">R${{ @valueRealFormat($title->value_buy) }}</td>
+                                        <td id="valueCurrent">R${{ @valueRealFormat($title->value_current) }}</td>
+                                        <td id="valuegain">R${{ @valueRealFormat($title->gain) }}</td>
+                                        <td>{{ @valueFormat($title->gain_percent) }}%</td>
                                         <td><a href="{{ Route('titles.show', $title->id) }}">{{ __("Ver") }}</a></td>
                                         <td><a href="{{ Route('titles.edit', $title->id) }}">{{ __("Alterar") }}</a></td>
                                     </tr>
@@ -75,10 +75,10 @@
                             </tr>
                             <tr>
                                 <td colspan="5"></td>
-                                <td>R${{ @valueFormat($lastTitle->buy_cumulative ?? "00.00") }}</td>
-                                <td>R${{ @valueFormat($lastTitle->patrimony ?? "00.00") }}</td>
-                                <td>R${{ @valueFormat($lastTitle->gain_cumulative ?? "00.00") }}</td>
-                                <td>{{ $lastTitle->gain_percent_cumulative ?? "00.00" }}%</td>
+                                <td>R${{ @valueRealFormat( $totalizers->get('buy_cumulative') ?? "00.00") }}</td>
+                                <td>R${{ @valueRealFormat( $totalizers->get('patrimony') ?? "00.00") }}</td>
+                                <td>R${{ @valueRealFormat( $totalizers->get('gain_cumulative') ?? "00.00") }}</td>
+                                <td>{{ @valueFormat( $totalizers->get('gain_percent_cumulative') ?? "00.00") }}%</td>
                             </tr>
                         </tfoot>
                     </table>

@@ -26,7 +26,6 @@ class ModalityRequest extends FormRequest
                 'required',
                 'max:255',
                 'min:3',
-                'regex:/\A\w{0,255}\z/',
             ]
         ];
     }

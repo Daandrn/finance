@@ -1,17 +1,22 @@
-<?php 
+<?php declare(strict_types=1);
 
-$value = 5645.54449;
+namespace Tests;
 
-$sprintf       = sprintf('%.2f', $value);
-$round         = round($value, 2);
-$number_format = number_format($value, 2, ',', '.');
+use App\Models\User;
 
-echo "<pre>";
+class Teste
+{
+    public function __construct() 
+    {
+        //
+    }
+    
+    public function index(User $user)
+    {
+        $users = $user->get();
 
-print_r([
-    'sprintf'          => $sprintf,
-    'round'            => $round,
-    'number_format'    => $number_format,
-]);
+        echo $users->firstOrFail();
+    }
+}
 
-echo "</pre>"; 
+(new Teste())->index(new User());

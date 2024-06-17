@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('title_types', function (Blueprint $table) {
             $table->id();
-            $table->boolean('has_irpf')->notnullable();
-            $table->string('description', 30)->notnullable();
-            $table->string('name', 255)->notnullable();
+            $table->boolean('has_irpf')->nullable(false);
+            $table->string('description', 30)->nullable(false);
+            $table->string('name', 255)->nullable(false);
             $table->timestamps();
         });
 

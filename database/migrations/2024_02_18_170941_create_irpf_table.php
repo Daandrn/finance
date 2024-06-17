@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('irpf', function (Blueprint $table) {
             $table->id();
-            $table->string('period', 30)->notnullable();
-            $table->string('tax', 5)->notnullable();
+            $table->string('period', 30)->nullable(false);
+            $table->string('tax', 5)->nullable(false);
             $table->timestamps();
         });
 

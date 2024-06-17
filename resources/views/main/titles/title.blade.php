@@ -32,15 +32,15 @@
                                 <td>{{ $title->title_type->description }}</td>
                                 @switch($title->modality->id)
                                     @case(1)
-                                        <td>PRÉ {{ $title->tax."%" }}</td>
+                                        <td>PRÉ {{ @valueFormat($title->tax) ."%" }}</td>
                                         @break
                                     @case(2)
-                                        <td>{{ $title->tax."% ".$title->modality->description }}</td>
+                                        <td>{{ @valueFormat($title->tax) ."% ".$title->modality->description }}</td>
                                         @break
                                     @case(3)
                                     @case(5)
                                     @case(7)
-                                        <td>{{ $title->modality->description." ".$title->tax."%" }}</td>
+                                        <td>{{ $title->modality->description." ".@valueFormat($title->tax) ."%" }}</td>
                                         @break
                                     @default
                                         <td>{{ $title->modality->description }}</td>
@@ -49,10 +49,10 @@
                                 <td>{{ @carbonDate($title->date_buy) }}</td>
                                 <td>{{ @carbonDate($title->date_liquidity) }}</td>
                                 <td>{{ @carbonDate($title->date_due) }}</td>
-                                <td>R${{ @valueFormat($title->value_buy) }}</td>
-                                <td>R${{ @valueFormat($title->value_current) }}</td>
-                                <td>R${{ @valueFormat($title->gain) }}</td>
-                                <td>{{ $title->gain_percent }}%</td>
+                                <td>R${{ @valueRealFormat($title->value_buy) }}</td>
+                                <td>R${{ @valueRealFormat($title->value_current) }}</td>
+                                <td>R${{ @valueRealFormat($title->gain) }}</td>
+                                <td>{{ @valueFormat($title->gain_percent) }}%</td>
                                 <td>
                                     <form action="{{ Route('titles.destroy', $title->id) }}" method="POST">
                                         @csrf()

@@ -33,25 +33,32 @@ class ModalityController extends Controller
 
     public function store(ModalityRequest $modalityRequest): RedirectResponse
     {
-        $this->modalityRepository->newModality(
-            ModalityCreateUpdateDTO::DTO($modalityRequest),
+        $this->modalityRepository->new(
+            ModalityCreateUpdateDTO::make($modalityRequest),
         );
 
         return redirect()
                 ->route('modalities')
-                ->withe('message', "Modalidade criada com sucesso!");
+                ->with(['message' => "Modalidade criada com sucesso!"]);
     }
 
     public function edit(string $id): view
     {
-        $modality = $this->modalityRepository->getOneModality($id);
+        $modality = $this->modalityRepository->getOne($id);
         
         return view('administrator.modality.alterModalities', compact('modality'));
     }
 
-    public function update(ModalityRequest $modalityRequest)
+    public function update(int $id, ModalityRequest $modalityRequest): RedirectResponse
     {
-        //
+        $this->modalityRepository->update(
+            $id,
+            ModalityCreateUpdateDTO::make($modalityRequest)
+        );
+
+        return redirect()
+                ->route('modalities')
+                ->with(['message' => "Modalidade alterada com sucesso!"]);
     }
 
     public function destroy(string $id): RedirectResponse
@@ -60,6 +67,6 @@ class ModalityController extends Controller
 
         return redirect()
                 ->route('modalities')
-                ->with('message', "Modalidade excluída!");
+                ->with(['message' => "Modalidade excluída!"]);
     }
 }

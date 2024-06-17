@@ -8,46 +8,48 @@ use Carbon\Carbon;
 class TitleUpdateDTO
 {
     public function __construct(
-        public string      $title,
-        public string      $title_type_id,
-        public string      $modality_id,
-        public ?string     $tax,
-        public Carbon      $date_buy,
-        public Carbon      $date_liquidity,
-        public Carbon      $date_due,
-        public string      $value_buy,
-        public string      $value_current,
+        public string  $title,
+        public string  $title_type_id,
+        public string  $modality_id,
+        public ?string $tax,
+        public Carbon  $date_buy,
+        public Carbon  $date_liquidity,
+        public Carbon  $date_due,
+        public string  $value_buy,
+        public string  $value_current,
     ) {
-        $this->value_buy     = self::toNumericValue($this->value_buy);
-        $this->value_current = self::toNumericValue($this->value_current);
-        $this->tax           = $this->tax ?? self::setValTax($this->modality_id);
+        $this->value_buy     = $this->toNumericValue($this->value_buy);
+        $this->value_current = $this->toNumericValue($this->value_current);
+        $this->tax           = $this->tax ? $this->toNumericTax($this->tax) : $this->setValTax($this->modality_id);
     }
 
-    public static function DTO(TitleRequest $titleRequest): self
+    public static function make(TitleRequest $titleRequest): self
     {
         return new self(
             $titleRequest->title,
             $titleRequest->title_type_id,
             $titleRequest->modality_id,
             $titleRequest->tax,
-            $titleRequest->date('date_buy', 'd/m/Y'),
-            $titleRequest->date('date_liquidity', 'd/m/Y'),
-            $titleRequest->date('date_due', 'd/m/Y'),
+            $titleRequest->date('date_buy', 'Y-m-d'),
+            $titleRequest->date('date_liquidity', 'Y-m-d'),
+            $titleRequest->date('date_due', 'Y-m-d'),
             $titleRequest->value_buy,
             $titleRequest->value_current,
         );
     }
 
-    private static function toNumericValue(string $value): string
+    private function toNumericValue(string $value): string
     {
-        $value = preg_replace('/\./', '', $value);
-        $value = preg_replace('/\,/', '.', $value);
-        
-        return $value;
+        return str_replace(',', '.', $value);
     }
 
-    private static function setValTax(string $modality_id): string
+    private function toNumericTax(string $tax): string
     {
+        return str_replace(',', '.', $tax);
+    }
+
+    private function setValTax(string $modality_id): string
+    {   
         $tax = match (true) {
             $modality_id == "4" => "4.74",
             $modality_id == "6" => "11.75",

@@ -33,7 +33,10 @@
                                 <td> {{ $user->created_at->format('d/m/Y') }} </td>
                                 <td><a href="{{ Route('user.edit', $user->id) }}">{{ __('Alterar') }}</a></td>
                                 <td>
-                                    <form action="{{ Route('user.destroy', $user->id) }}" method="post">
+                                    <form 
+                                        action="{{ Route('user.destroy', $user->id) }}" 
+                                        method="post"
+                                    >
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit">{{ __('Excluir') }}</button>

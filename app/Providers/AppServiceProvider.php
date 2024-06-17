@@ -24,8 +24,12 @@ class AppServiceProvider extends ServiceProvider
             return "\Carbon\Carbon::parse({$expression})->format('d/m/Y')";
         });
         
-        Blade::directive('valueFormat', function ($expression) {
+        Blade::directive('valueRealFormat', function ($expression) {
             return "number_format($expression, 2, ',', '.')";
+        });
+
+        Blade::directive('valueFormat', function ($expression) {
+            return "number_format($expression, 2, ',', '')";
         });
     }
 }

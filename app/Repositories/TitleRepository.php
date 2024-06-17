@@ -13,16 +13,15 @@ class TitleRepository
     ) {
     }
 
-    public function userAllTitles(int $user_id): Collection|null
+    public function userAllTitles(int $user_id): Collection
     {
         $titles = $this->title->where('user_id', $user_id)
                                 ->with('modality')
                                 ->with('title_type')
+                                ->orderBy('date_due', 'asc')
                                 ->get();
 
-        return $titles->isNotEmpty()
-                ? $titles
-                : null;
+        return $titles;
     }
 
     public function userOneTitle(string $id): Title
@@ -32,9 +31,9 @@ class TitleRepository
         return $oneTitle;
     }
 
-    public function insert(TitleCreateDTO $createDto): Title
+    public function insert(TitleCreateDTO $TitleCreateDto): Title
     {
-        $insertedTitle = $this->title->create($createDto->toArray());
+        $insertedTitle = $this->title->create($TitleCreateDto->toArray());
         
         return $insertedTitle;
     }

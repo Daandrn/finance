@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('teste', function () {
     return include __DIR__.'/../tests/teste.php';    
-})->middleware();
+})->middleware('auth');
 
 Route::get("/", function () {
     return view("auth.login");
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
     Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
 
     Route::delete('/administrador/modalidades/{id}', [ModalityController::class, 'destroy'])->name('modality.destroy');
-    Route::post('/administrador', [ModalityController::class, 'store'])->name('modality.store');
+    Route::post('/administrador/modalidade/store', [ModalityController::class, 'store'])->name('modality.store');
     //Route::get('/administrador/modalidades/nova', [ModalityController::class, 'create'])->name('modality.create');
     Route::put('/administrador/modalidades/{id}', [ModalityController::class, 'update'])->name('modality.update');
     Route::get('/administrador/modalidades/{id}/alterar', [ModalityController::class, 'edit'])->name('modality.edit');
@@ -44,6 +44,7 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
 Route::middleware('auth')->group(function () {
     Route::delete('/titulo/{id}', [TitleController::class, 'destroy'])->name('titles.destroy');
     Route::put('/titulo/{title}', [TitleController::class, 'update'])->name('titles.update');
+    Route::post('/titulo/importar', [TitleController::class, 'import'])->name('titles.import');
     Route::post('/titulo', [TitleController::class, 'store'])->name('titles.store');
     Route::get('/titulo/novo', [TitleController::class, 'create'])->name('titles.create');
     Route::get('/titulo/{title}/alterar', [TitleController::class, 'edit'])->name('titles.edit');

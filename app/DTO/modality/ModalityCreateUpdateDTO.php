@@ -12,7 +12,7 @@ class ModalityCreateUpdateDTO
     ) {
     }
 
-    public static function DTO(ModalityRequest $modalityRequest): self
+    public static function make(ModalityRequest $modalityRequest): self
     {
         return new self(
             $modalityRequest->description,

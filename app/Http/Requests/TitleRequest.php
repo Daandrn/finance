@@ -37,32 +37,32 @@ class TitleRequest extends FormRequest
             ],
             'tax' => [
                 'required_unless:modality_id,4,6',
-                'regex:/^\d{1,3}(\.\d{1,2})?$/',
-                'max:6',
+                'regex:/^\d{1,3}([\,\.]\d{1,2})?$/',
+                'max:5',
             ],
             'date_buy' => [
                 'required',
-                'date_format:d/m/Y',
+                'date_format:Y-m-d',
             ],
             'date_liquidity' => [
                 'required',
-                'date_format:d/m/Y',
+                'date_format:Y-m-d',
                 'after_or_equal:date_buy',
             ],
             'date_due' => [
                 'required',
-                'date_format:d/m/Y',
+                'date_format:Y-m-d',
                 'after_or_equal:date_buy',
             ],
             'value_buy' => [
                 'required',
-                'regex:/^\d{1,3}(?:\.\d{3})*(?:,\d{2})?$/',
-                'max:14',
+                'regex:/^\d{1,19}(?:[\,\.]\d{2})?$/',
+                'max:21',
             ],
             'value_current' => [
                 'required',
-                'regex:/^\d{1,3}(?:\.\d{3})*(?:,\d{2})?$/',
-                'max:14',
+                'regex:/^\d{1,19}(?:[\,\.]\d{2})?$/',
+                'max:21',
             ],
         ];
     }

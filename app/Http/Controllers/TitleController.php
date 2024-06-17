@@ -10,6 +10,7 @@ use App\Repositories\ModalityRepository;
 use App\Services\TitleService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TitleController extends Controller
@@ -20,15 +21,17 @@ class TitleController extends Controller
     }
     
     public function index(): View
-    {
+    {   
         $user_id = Auth::user()->id;
-        $titles = $this->titleService->userAllTitles($user_id);
+        $ttilesAndTotalizers = $this->titleService->userAllTitles($user_id);
 
-        $lastTitle = $titles 
-                        ? $titles->last()->getAppends()[0]
-                        : $titles;
+        $titles = $ttilesAndTotalizers['titles'];
+
+        $totalizers = $ttilesAndTotalizers['totalizers']->isNotEmpty()
+                        ? $ttilesAndTotalizers['totalizers']
+                        : null;
         
-        return view('main.dashboard', compact('titles', 'lastTitle'));
+        return view('main.dashboard', compact('titles', 'totalizers'));
     }
     
     public function show(string $id): view
@@ -40,10 +43,26 @@ class TitleController extends Controller
 
     public function create(ModalityRepository $modalityRepository, TitleType $titleType): View
     {
-        $modalities = $modalityRepository->allModalities();
+        $modalities = $modalityRepository->all();
         $title_types = $titleType->orderBy('id')->get();
         
         return view('main.titles.createTitle', compact('modalities', 'title_types'));
+    }
+
+    public function import(Request $request): RedirectResponse
+    {
+        dd('Calma, ainda não está pronto. usar a Lib maatwebsite/excel para manipular xlsx');
+
+        $dataPath = $request->file('fileUpload')->isValid() 
+                    ? request()->file('fileUpload')->store('files')
+                    : null;
+
+        //dá para ler assim enquanto nao adiciono a lib
+        $data = file_get_contents(__DIR__.'/../../../storage/app/'.$dataPath);
+
+        return redirect()
+                ->route('dashboard', status: 201)
+                ->with(['message' => "Calma, isso ainda não funciona"]);
     }
 
     public function store(TitleRequest $titleRequest): RedirectResponse
@@ -54,20 +73,21 @@ class TitleController extends Controller
 
         return redirect()
                 ->route('dashboard', status: 201)
-                ->with(['message' => "Título incluído com sucesso"]);
+                ->with(['message' => "Título incluído com sucesso!"]);
     }
 
     public function edit(Title $title, ModalityRepository $modalityRepository, TitleType $titleType): View
     {
-        $modalities = $modalityRepository->allModalities();
+        $modalities = $modalityRepository->all();
         $title_types = $titleType->orderBy('id')->get();
+        
 
         return view('main.titles.alterTitle', compact('title', 'modalities', 'title_types'));
     }
 
     public function update(Title $title, TitleRequest $titleRequest): RedirectResponse
     {
-        $title = $this->titleService->update($title, TitleUpdateDTO::DTO($titleRequest));
+        $title = $this->titleService->update($title, TitleUpdateDTO::make($titleRequest));
 
         return redirect()
                 ->route('titles.edit', $title->id)

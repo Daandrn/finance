@@ -5,29 +5,34 @@ namespace App\Services;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use App\Repositories\TitleRepository;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Collection;
 
 class TitleService
 {
     public function __construct(
         protected TitleRepository $titleRepository,
+        protected SelicService $selicService,
     ) {
     }
 
-    public function userAllTitles(int $user_id): Collection|null
+    public function userAllTitles(int $user_id): Collection
     {
         $titles = $this->titleRepository->userAllTitles($user_id);
         
-        $patrimony = "0.00";
-        $buy_cumulative = "0.00";
-        $gain_cumulative = "0.00";
+        $patrimony               = "0.00";
+        $buy_cumulative          = "0.00";
+        $gain_cumulative         = "0.00";
         $gain_percent_cumulative = "0.00";
+        $totalizers = [];
         
-        if ($titles) {
+        if ($titles->isNotEmpty()) {
             $titles->map(function ($title) use (&$patrimony, &$buy_cumulative, &$gain_cumulative) {
                 $title->gain         = self::calculateGain($title->value_current, $title->value_buy);
                 $title->gain_percent = self::calculateGainPercent($title->gain, $title->value_buy);
+                
+                if ($title->tax === "SELIC") {
+                    $title->tax = $this->selicService->getCurrentSelic();
+                }
                 
                 $patrimony       = bcadd($patrimony, $title->value_current, 2);
                 $buy_cumulative  = bcadd($buy_cumulative, $title->value_buy, 2);
@@ -35,18 +40,19 @@ class TitleService
             });
 
             $gain_percent_cumulative = self::calculateGainPercent($gain_cumulative, $buy_cumulative);
-
-            $attributes = (object) [
+            
+            $totalizers = [
                 'patrimony'               => $patrimony,
                 'buy_cumulative'          => $buy_cumulative,
                 'gain_cumulative'         => $gain_cumulative,
                 'gain_percent_cumulative' => $gain_percent_cumulative,
             ];
-            
-            $titles->append([$attributes]);
         }
         
-        return $titles;
+        return collect([
+            'titles' => $titles, 
+            'totalizers' => collect($totalizers)
+        ]);
     }
 
     public function userOneTitle(string $id): Title
@@ -58,9 +64,9 @@ class TitleService
         return $oneTitle;
     }
 
-    public function insert(TitleCreateDTO $createDTO): Title
+    public function insert(TitleCreateDTO $TitleCreateDTO): Title
     {
-        $insertedTitle = $this->titleRepository->insert($createDTO);
+        $insertedTitle = $this->titleRepository->insert($TitleCreateDTO);
 
         return $insertedTitle;
     }
