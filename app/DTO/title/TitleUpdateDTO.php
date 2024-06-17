@@ -18,9 +18,9 @@ class TitleUpdateDTO
         public string  $value_buy,
         public string  $value_current,
     ) {
-        $this->value_buy     = $this->toNumericValue($this->value_buy);
-        $this->value_current = $this->toNumericValue($this->value_current);
-        $this->tax           = $this->tax ? $this->toNumericTax($this->tax) : $this->setValTax($this->modality_id);
+        $this->value_buy     = $this->toNumeric($this->value_buy);
+        $this->value_current = $this->toNumeric($this->value_current);
+        $this->tax           = $this->tax ? $this->toNumeric($this->tax) : $this->setValTax($this->modality_id);
     }
 
     public static function make(TitleRequest $titleRequest): self
@@ -38,14 +38,9 @@ class TitleUpdateDTO
         );
     }
 
-    private function toNumericValue(string $value): string
+    private function toNumeric(string $value): string
     {
         return str_replace(',', '.', $value);
-    }
-
-    private function toNumericTax(string $tax): string
-    {
-        return str_replace(',', '.', $tax);
     }
 
     private function setValTax(string $modality_id): string

@@ -36,7 +36,7 @@ class UserController extends Controller
     public function update(User $user, int $id, UserAdmRequest $request)
     {
         $users = $user->find($id);
-        $users->update(UserUpdateDTO::userDTO($request));
+        $users->update(UserUpdateDTO::make($request)->toArray());
 
         return redirect()
                 ->route('users')

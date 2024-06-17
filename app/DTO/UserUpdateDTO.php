@@ -15,14 +15,25 @@ class UserUpdateDTO
     ) {
     }
 
-    public static function userDTO(UserAdmRequest $request): array
+    public static function make(UserAdmRequest $request): self
     {
-        return (array) new self(
+        return new self(
                 $request->id,
                 $request->name,
                 $request->email,
                 $request->adm,
                 $request->status,
             );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id'     => $this->id,
+            'name'   => $this->name,
+            'email'  => $this->email,
+            'adm'    => $this->adm,
+            'status' => $this->status,
+        ];
     }
 }

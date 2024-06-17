@@ -68,7 +68,7 @@ class TitleController extends Controller
     public function store(TitleRequest $titleRequest): RedirectResponse
     {
         $this->titleService->insert(
-            TitleCreateDTO::DTO($titleRequest)
+            TitleCreateDTO::make($titleRequest)
         );
 
         return redirect()
