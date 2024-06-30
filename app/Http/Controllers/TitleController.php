@@ -23,13 +23,10 @@ class TitleController extends Controller
     public function index(): View
     {   
         $user_id = Auth::user()->id;
-        $ttilesAndTotalizers = $this->titleService->userAllTitles($user_id);
+        $titlesAndTotalizers = $this->titleService->userAllTitles($user_id);
 
-        $titles = $ttilesAndTotalizers['titles'];
-
-        $totalizers = $ttilesAndTotalizers['totalizers']->isNotEmpty()
-                        ? $ttilesAndTotalizers['totalizers']
-                        : null;
+        $titles     = $titlesAndTotalizers['titles'];
+        $totalizers = $titlesAndTotalizers['totalizers'];
         
         return view('main.dashboard', compact('titles', 'totalizers'));
     }

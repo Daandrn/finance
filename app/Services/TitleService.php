@@ -18,40 +18,41 @@ class TitleService
     public function userAllTitles(int $user_id): Collection
     {
         $titles = $this->titleRepository->userAllTitles($user_id);
-        
-        $patrimony               = "0.00";
-        $buy_cumulative          = "0.00";
-        $gain_cumulative         = "0.00";
-        $gain_percent_cumulative = "0.00";
-        $totalizers = [];
-        
-        if ($titles->isNotEmpty()) {
-            $titles->map(function ($title) use (&$patrimony, &$buy_cumulative, &$gain_cumulative) {
-                $title->gain         = self::calculateGain($title->value_current, $title->value_buy);
-                $title->gain_percent = self::calculateGainPercent($title->gain, $title->value_buy);
-                
-                if ($title->tax === "SELIC") {
-                    $title->tax = $this->selicService->getCurrentSelic();
-                }
-                
-                $patrimony       = bcadd($patrimony, $title->value_current, 2);
-                $buy_cumulative  = bcadd($buy_cumulative, $title->value_buy, 2);
-                $gain_cumulative = self::calculateGain($patrimony, $buy_cumulative);
-            });
 
-            $gain_percent_cumulative = self::calculateGainPercent($gain_cumulative, $buy_cumulative);
-            
-            $totalizers = [
-                'patrimony'               => $patrimony,
-                'buy_cumulative'          => $buy_cumulative,
-                'gain_cumulative'         => $gain_cumulative,
-                'gain_percent_cumulative' => $gain_percent_cumulative,
-            ];
-        }
+        $totalizersInit = collect([
+            'patrimony'               => "0.00",
+            'buy_cumulative'          => "0.00",
+            'gain_cumulative'         => "0.00",
+            'gain_percent_cumulative' => "0.00",
+        ]);
         
+        if ($titles->isEmpty()) {
+            return collect([
+                'titles' => $titles, 
+                'totalizers' => $totalizersInit,
+            ]);
+        }
+
+        $totalizers = $titles->reduce(function ($totalizers, $title) {
+            $title->gain         = self::calculateGain($title->value_current, $title->value_buy);
+            $title->gain_percent = self::calculateGainPercent($title->gain, $title->value_buy);
+    
+            if ($title->tax === "SELIC") {
+                $title->tax = $this->selicService->getCurrentSelic();
+            }
+    
+            $totalizers['patrimony']       = bcadd($totalizers['patrimony'], $title->value_current, 2);
+            $totalizers['buy_cumulative']  = bcadd($totalizers['buy_cumulative'], $title->value_buy, 2);
+            $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
+    
+            return $totalizers;
+        }, $totalizersInit);
+    
+        $totalizers['gain_percent_cumulative'] = self::calculateGainPercent($totalizers['gain_cumulative'], $totalizers['buy_cumulative']);
+    
         return collect([
-            'titles' => $titles, 
-            'totalizers' => collect($totalizers)
+            'titles' => $titles,
+            'totalizers' => $totalizers,
         ]);
     }
 

@@ -31,7 +31,7 @@ return new class extends Migration
                 [
                     'name'       => "Danillo Rodrigues",
                     'email'      => "dandrn7@gmail.com",
-                    'password'   => Hash::make('1234567890'),
+                    'password'   => Hash::make('12345678'),
                     'adm'        => true,
                     'created_at' => Carbon::parse(),
                 ],

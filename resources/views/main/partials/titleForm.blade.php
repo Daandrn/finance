@@ -72,7 +72,7 @@
         id="tax" 
         placeholder="00,00" 
         @disabled((in_array(((isset($title) ? (old('modality_id') ?? $title->modality_id) : (old('modality_id') ?? 0))), [4, 6])))
-        value="{{ @valueFormat(isset($title) ? (old('tax') ?? $title->tax) : old('tax')) }}"
+        value="{{ isset($title) ? (old('tax') ?? @valueFormat($title->tax)) : (old('tax') ?? '') }}"
     >
 </div>
 <div>
@@ -81,7 +81,7 @@
         type="date" 
         name="date_buy" 
         id="date_buy" 
-        value="{{ isset($title) ? (old('date_buy') ?? $title->date_buy) : old('date_buy') }}">
+        value="{{ isset($title) ? (old('date_buy') ?? $title->date_buy) : (old('date_buy') ?? '') }}">
 </div>
 <div>
     <label for="date_liquidity">{{ __('Liquidez') }}: </label>
@@ -89,7 +89,7 @@
         type="date" 
         name="date_liquidity" 
         id="date_liquidity" 
-        value="{{ isset($title) ? (old('date_liquidity') ?? $title->date_liquidity) : old('date_liquidity') }}"
+        value="{{ isset($title) ? (old('date_liquidity') ?? $title->date_liquidity) : (old('date_liquidity') ?? '') }}"
     >
 </div>
 <div>
@@ -108,9 +108,10 @@
         name="value_buy" 
         id="value_buy" 
         placeholder="0000,00" 
-        value="{{ @valueFormat(isset($title) ? (old('value_buy') ?? $title->value_buy) : old('value_buy')) }}"
+        value="{{ isset($title) ? (old('value_buy') ?? @valueFormat($title->value_buy)) : (old('value_buy') ?? '') }}"
     >
 </div>
+
 <div>
     <label for="value_current">{{ __('Valor atual') }}: </label>
     <input 
@@ -118,6 +119,6 @@
         name="value_current" 
         id="value_current" 
         placeholder="0000,00" 
-        value="{{ @valueFormat(isset($title) ? (old('value_current') ?? $title->value_current) : old('value_current')) }}"
+        value="{{ isset($title) ? (old('value_current') ?? @valueFormat($title->value_current)) : (old('value_current') ?? '') }}"
     >
 </div>

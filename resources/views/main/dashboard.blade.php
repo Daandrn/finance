@@ -75,10 +75,10 @@
                             </tr>
                             <tr>
                                 <td colspan="5"></td>
-                                <td>R${{ @valueRealFormat( $totalizers->get('buy_cumulative') ?? "00.00") }}</td>
-                                <td>R${{ @valueRealFormat( $totalizers->get('patrimony') ?? "00.00") }}</td>
-                                <td>R${{ @valueRealFormat( $totalizers->get('gain_cumulative') ?? "00.00") }}</td>
-                                <td>{{ @valueFormat( $totalizers->get('gain_percent_cumulative') ?? "00.00") }}%</td>
+                                <td>R${{ @valueRealFormat($totalizers->get('buy_cumulative')) }}</td>
+                                <td>R${{ @valueRealFormat($totalizers->get('patrimony')) }}</td>
+                                <td>R${{ @valueRealFormat($totalizers->get('gain_cumulative')) }}</td>
+                                <td>{{ @valueFormat($totalizers->get('gain_percent_cumulative')) }}%</td>
                             </tr>
                         </tfoot>
                     </table>
