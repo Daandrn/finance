@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('stocks', function (Blueprint $table) {
             $table->smallIncrements('id');
             $table->string('ticker', 6)->nullable(false)->unique();
-            $table->string('name', 30)->nullable(true);
+            $table->string('name', 50)->nullable(true);
+            $table->smallInteger('stocks_types_id')->nullable(false);
+
+            $table->foreign('stocks_types_id')->references('id')->on('stocks_types')->onUpdate('cascade')->onDelete('restrict');
         });
     }
 

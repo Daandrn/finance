@@ -31,8 +31,12 @@ class StocksRequest extends FormRequest
             'name' => [
                 'required',
                 'min:10',
-                'max:30',
+                'max:50',
                 'string',
+            ],
+            'stocks_types_id' => [
+                'required',
+                'integer',
             ],
         ];
     }

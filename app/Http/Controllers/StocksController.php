@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StocksRequest;
-use Illuminate\Console\View\Components\Alert;
+use App\Models\StocksTypes;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
-use App\Models\Stocks;
 use App\DTO\stocks\StocksCreateUpdateDTO;
 use App\Repositories\StocksRepository;
 
@@ -20,8 +19,9 @@ class StocksController extends Controller
     public function index(): View
     {
         $stocksPage = $this->stocksRepository->paginate(15);
+        $stocksTypes = StocksTypes::all();
         
-        return view('administrator.stocks.stocks', compact('stocksPage'));
+        return view('administrator.stocks.stocks', compact('stocksPage', 'stocksTypes'));
     }
 
     public function store(StocksRequest $stocksRequest): RedirectResponse
@@ -38,8 +38,9 @@ class StocksController extends Controller
     public function edit(string $id): view
     {
         $stocksEdit = $this->stocksRepository->getOne($id);
+        $stocksTypes = StocksTypes::all();
         
-        return view('administrator.stocks.alterStocks', compact('stocksEdit'));
+        return view('administrator.stocks.alterStocks', compact('stocksEdit', 'stocksTypes'));
     }
 
     public function update(int $id, StocksRequest $stocksRequest): RedirectResponse

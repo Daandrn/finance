@@ -12,6 +12,7 @@ class Stocks extends Model
     protected $fillable = [
         'ticker',
         'name',
+        'stocks_types_id',
     ];
     
     public $timestamps = false;
