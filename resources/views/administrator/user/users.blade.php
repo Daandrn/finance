@@ -9,6 +9,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
+                    <div>
+                        <button type="button"><a href="{{ Route('administrator') }}">{{ __('Voltar') }}</a></button>
+                    </div>
                     <table>
                         <thead>
                             <tr>
@@ -33,12 +36,15 @@
                                 <td> {{ $user->created_at->format('d/m/Y') }} </td>
                                 <td><a href="{{ Route('user.edit', $user->id) }}">{{ __('Alterar') }}</a></td>
                                 <td>
-                                    <form 
+                                    <form
+                                        id="userDelete"
                                         action="{{ Route('user.destroy', $user->id) }}" 
                                         method="post"
                                     >
                                         @csrf
                                         @method('DELETE')
+
+                                        <input type="hidden" id="delete{{ $user->id }}" value="{{ $user->name }}"></input>
                                         <button type="submit">{{ __('Excluir') }}</button>
                                     </form>
                                 </td>
@@ -62,4 +68,5 @@
             </div>
         </div>
     </div>
+    @vite('resources/js/users.js')
 </x-app-layout>

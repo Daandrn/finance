@@ -122,3 +122,5 @@
         value="{{ isset($title) ? (old('value_current') ?? @valueFormat($title->value_current)) : (old('value_current') ?? '') }}"
     >
 </div>
+
+@vite('resources/js/titles.js')

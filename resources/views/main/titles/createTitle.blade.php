@@ -19,6 +19,7 @@
                         @include('main.partials.titleForm')
 
                         <button type="submit">{{ __('Criar') }}</button>
+                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
                     </form>
                 </div>
 
@@ -45,8 +46,6 @@
             </div>
         </div>
     </div>
-
-    <script src="{{ asset('build/assets/titles.js') }}"></script>
     <x-alert-error/>
     
 </x-app-layout>

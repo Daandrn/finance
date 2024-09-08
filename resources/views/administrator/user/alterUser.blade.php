@@ -64,6 +64,7 @@
                             </select>
                         </div>
                         <button type="submit">Alterar</button>
+                        <button type="button"><a href="{{ Route('users') }}">{{ __('Voltar') }}</a></button>
                     </form>
                 </div>
             </div>

@@ -58,6 +58,7 @@
                                         @csrf()
                                         @method('DELETE')
                                         <button type="submit">{{ __('Excluir') }}</button>
+                                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
                                     </form>
                                 </td>
                             </tr>

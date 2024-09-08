@@ -15,6 +15,9 @@
                     <div>
                         <a href="{{ Route('modalities') }}">{{ __('Modalidades') }}</a>
                     </div>
+                    <div>
+                        <a href="{{ Route('stocks') }}">{{ __('Ações') }}</a>
+                    </div>
                 </div>
             </div>
         </div>
