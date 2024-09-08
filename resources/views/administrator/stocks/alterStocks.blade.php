@@ -12,16 +12,16 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form 
-                        action="{{ Route('modality.update', $modalityEdit->id) }}" 
+                        action="{{ Route('stocks.update', $stocksEdit->id) }}" 
                         method="POST"
                     >
                         @csrf()
                         @method('PUT')
 
-                        @include('administrator.partials.formModality')
+                        @include('administrator.partials.formStocks')
 
                         <button type="submit">{{ __('Alterar') }}</button>
-                        <button type="button"><a href="{{ Route('modalities') }}">{{ __('Voltar') }}</a></button>
+                        <button type="button"><a href="{{ Route('stocks') }}">{{ __('Voltar') }}</a></button>
                     </form>
                 </div>
             </div>

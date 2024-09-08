@@ -44,9 +44,9 @@ class ModalityController extends Controller
 
     public function edit(string $id): view
     {
-        $modality = $this->modalityRepository->getOne($id);
+        $modalityEdit = $this->modalityRepository->getOne($id);
         
-        return view('administrator.modality.alterModalities', compact('modality'));
+        return view('administrator.modality.alterModalities', compact('modalityEdit'));
     }
 
     public function update(int $id, ModalityRequest $modalityRequest): RedirectResponse

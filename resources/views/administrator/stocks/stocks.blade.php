@@ -12,7 +12,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div 
-                        id="newModalityModal" 
+                        id="newStocksModal" 
                         @disabled(true) 
                         @readonly(true) 
                         @style('display:none;')
@@ -21,50 +21,48 @@
                             @style('display: inline-block; background-color: rgba(255, 255, 255, 1); border-radius: 6px; box-shadow: 0 0 10px black; padding: 1%; max-height: 130px; margin-top: 250px;')
                         >
                             <div>
-                                <button id="fecharNewModality">{{ __('X') }}</button>
+                                <button id="fecharNewStocks">{{ __('X') }}</button>
                             </div>
                             <form 
-                                action="{{ Route('modality.store') }}" 
+                                action="{{ Route('stocks.store') }}" 
                                 method="POST"
                             >
                                 @csrf()
                                 @method('POST')
-                    
-                                @include('administrator.partials.formModality')
+                                
+                                @include('administrator.partials.formStocks')
                     
                                 <button type="submit">{{ __('Criar') }}</button>
                             </form>
                         </span>
                     </div>
                     <div>
-                        <button id="newModality">{{ __('Nova modalidade') }}</button>
+                        <button id="newStocks">{{ __('Nova ação') }}</button>
                         <button type="button"><a href="{{ Route('administrator') }}">{{ __('Voltar') }}</a></button>
                     </div>
                     <table>
                         <thead>
                             <tr>
                                 <th>{{ __('Código') }}</th>
-                                <th>{{ __('Descrição') }}</th>
-                                <th colspan="2">{{ __('Ações') }}</th>
+                                <th>{{ __('Código de negociação') }}</th>
+                                <th>{{ __('Nome') }}</th>
+                                <th colspan="3">{{ __('Ações') }}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($modalities)
-                                @foreach ($modalities as $modality)
+                            @if ($stocksPage->isNotEmpty())
+                                @foreach ($stocksPage as $stocks)
                                 <tr>
-                                    <td>{{ $modality->id }}</td>
-                                    <td>{{ $modality->description }}</td>
-                                    <td><a href="{{ Route('modality.edit', $modality->id) }}">{{ __('Alterar') }}</a></td>
+                                    <td>{{ $stocks->id }}</td>
+                                    <td>{{ $stocks->ticker }}</td>
+                                    <td>{{ $stocks->name }}</td>
+                                    <td><a href="{{ Route('stocks.edit', $stocks->id) }}">{{ __('Alterar') }}</a></td>
                                     <td>
-                                        <form 
-                                            id="deleteModality" 
-                                            action="{{ Route('modality.destroy', $modality->id) }}" 
-                                            method="POST"
-                                        >
+                                        <form action="{{ Route('stocks.destroy', $stocks->id) }}" method="POST" id="deleteStock">
                                             @csrf()
                                             @method('DELETE')
                                             
-                                            <input type="hidden" id="modalityDelete" value="{{ $modality->description }}">
+                                            <input type="hidden" id="tickerDelete" value="{{ $stocks->ticker }}">
                                             <button type="submit">{{ __('Excluir') }}</button>
                                         </form>
                                     </td>
@@ -72,13 +70,13 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="4">{{ __('Não há modalidades cadastradas!') }}</td>
+                                    <td colspan="5">{{ __('Não há ações cadastradas!') }}</td>
                                 </tr>
                             @endif
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="4">{{ $modalities->links() }}</td>
+                                <td colspan="5">{{ $stocksPage->links() }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -87,7 +85,7 @@
         </div>
     </div>
     
-    @vite('resources/js/modalities.js')
+    @vite('resources/js/stocks.js')
     <x-alert-error/>
     
 </x-app-layout>

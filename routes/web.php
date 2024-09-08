@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ModalityController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StocksController;
 use App\Http\Controllers\TitleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -35,10 +36,15 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
 
     Route::delete('/administrador/modalidades/{id}', [ModalityController::class, 'destroy'])->name('modality.destroy');
     Route::post('/administrador/modalidade/store', [ModalityController::class, 'store'])->name('modality.store');
-    //Route::get('/administrador/modalidades/nova', [ModalityController::class, 'create'])->name('modality.create');
     Route::put('/administrador/modalidades/{id}', [ModalityController::class, 'update'])->name('modality.update');
     Route::get('/administrador/modalidades/{id}/alterar', [ModalityController::class, 'edit'])->name('modality.edit');
     Route::get('/administrador/modalidades', [ModalityController::class, 'index'])->name('modalities');
+
+    Route::delete('/administrador/acoes/{id}', [StocksController::class, 'destroy'])->name('stocks.destroy');
+    Route::post('/administrador/acao/store', [StocksController::class, 'store'])->name('stocks.store');
+    Route::put('/administrador/acoes/{id}', [StocksController::class, 'update'])->name('stocks.update');
+    Route::get('/administrador/acoes/{id}/alterar', [StocksController::class, 'edit'])->name('stocks.edit');
+    Route::get('/administrador/acoes', [StocksController::class, 'index'])->name('stocks');
 });
 
 Route::middleware('auth')->group(function () {

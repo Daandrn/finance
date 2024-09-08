@@ -1,4 +1,4 @@
-@if (isset($modality))
+@if (isset($modalityEdit))
     <div>
         <label for="id">{{ __('Código') }}: </label>
         <input 
@@ -6,7 +6,7 @@
             name="id" 
             id="id" 
             @disabled(true) 
-            value="{{ $modality->id }}"
+            value="{{ $modalityEdit->id }}"
         >
     </div>
 @endif
@@ -16,6 +16,6 @@
         type="text" 
         name="description" 
         id="description" 
-        value="{{ isset($modality) ? (old('description') ?? $modality->description) : old('description') }}"
+        value="{{ isset($modalityEdit) ? (old('description') ?? $modalityEdit->description) : old('description') }}"
     >
 </div>

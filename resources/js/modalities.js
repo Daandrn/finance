@@ -17,3 +17,15 @@ const fecharNewModality = document.querySelector('#fecharNewModality').addEventL
     newModalityModal.readOnly = false;
     newModalityModal.style.display = "none";
 });
+
+const confirmDeleteModality = document.querySelectorAll('#deleteModality').forEach(element => {
+    element.addEventListener('submit', function (event) {
+        let modalityDelete = event.target[2].value;
+        
+        let deleteModalityConfirm = confirm(`Deseja realmente excluir ${modalityDelete}?`);
+    
+        if (!deleteModalityConfirm) {
+            event.preventDefault();
+        }
+    });
+});

@@ -5,23 +5,20 @@
         </h2>
     </x-slot>
 
-    <x-input-sucess/>
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form 
-                        action="{{ Route('modality.update', $modalityEdit->id) }}" 
+                        action="{{ Route('stocks.store') }}" 
                         method="POST"
                     >
                         @csrf()
-                        @method('PUT')
+                        @method('POST')
 
-                        @include('administrator.partials.formModality')
+                        @include('administrator.partials.formStocks')
 
-                        <button type="submit">{{ __('Alterar') }}</button>
-                        <button type="button"><a href="{{ Route('modalities') }}">{{ __('Voltar') }}</a></button>
+                        <button type="submit">{{ __('Criar') }}</button>
                     </form>
                 </div>
             </div>
