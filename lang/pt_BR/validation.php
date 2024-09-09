@@ -202,6 +202,7 @@ return [
         'status' => 'status',
         'description' => 'descrição',
         'ticker' => 'Código de negociação',
+        'average_value' => 'Valor médio',
+        'quantity' => 'Quantidade',
     ],
-
 ];
