@@ -11,8 +11,8 @@ class TitleCreateDTO
     public function __construct(
         public int     $user_id,
         public string  $title,
-        public string  $title_type_id,
-        public string  $modality_id,
+        public int     $title_type_id,
+        public int     $modality_id,
         public ?string $tax,
         public Carbon  $date_buy,
         public Carbon  $date_liquidity,
@@ -28,10 +28,10 @@ class TitleCreateDTO
     public static function make(TitleRequest $titleRequest): self
     {
         return new self(
-            Auth::user() ->id,
+            Auth::user()->id,
             $titleRequest->title,
-            $titleRequest->title_type_id,
-            $titleRequest->modality_id,
+            (int) $titleRequest->title_type_id,
+            (int) $titleRequest->modality_id,
             $titleRequest->tax,
             $titleRequest->date('date_buy', 'Y-m-d'),
             $titleRequest->date('date_liquidity', 'Y-m-d'),
@@ -46,11 +46,11 @@ class TitleCreateDTO
         return str_replace(',', '.', $value);
     }
 
-    private function setValTax(string $modality_id): string
+    private function setValTax(int $modality_id): string
     {
         return match (true) {
-            $modality_id == "4" => "4.74",
-            $modality_id == "6" => "11.75",
+            $modality_id == 4 => "4.74",
+            $modality_id == 6 => "11.75",
         };
     }
 

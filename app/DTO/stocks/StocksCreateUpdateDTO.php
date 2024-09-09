@@ -10,7 +10,7 @@ class StocksCreateUpdateDTO
     public function __construct(
         public string $ticker,
         public string $name,
-        public string $stocks_types_id,
+        public int    $stocks_types_id,
     ) {
     }
 
@@ -19,7 +19,7 @@ class StocksCreateUpdateDTO
         return new self(
             $stocksRequest->ticker,
             $stocksRequest->name,
-            $stocksRequest->stocks_types_id,
+            (int) $stocksRequest->stocks_types_id,
         );
     }
 

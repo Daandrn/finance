@@ -7,7 +7,7 @@ use App\Http\Requests\UserAdmRequest;
 class UserUpdateDTO
 {
     public function __construct(
-        public string $id,
+        public int    $id,
         public string $name,
         public string $email,
         public string $adm,

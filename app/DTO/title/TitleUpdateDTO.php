@@ -9,8 +9,8 @@ class TitleUpdateDTO
 {
     public function __construct(
         public string  $title,
-        public string  $title_type_id,
-        public string  $modality_id,
+        public int     $title_type_id,
+        public int     $modality_id,
         public ?string $tax,
         public Carbon  $date_buy,
         public Carbon  $date_liquidity,
@@ -27,8 +27,8 @@ class TitleUpdateDTO
     {
         return new self(
             $titleRequest->title,
-            $titleRequest->title_type_id,
-            $titleRequest->modality_id,
+            (int) $titleRequest->title_type_id,
+            (int) $titleRequest->modality_id,
             $titleRequest->tax,
             $titleRequest->date('date_buy', 'Y-m-d'),
             $titleRequest->date('date_liquidity', 'Y-m-d'),
@@ -43,11 +43,11 @@ class TitleUpdateDTO
         return str_replace(',', '.', $value);
     }
 
-    private function setValTax(string $modality_id): string
+    private function setValTax(int $modality_id): string
     {   
         $tax = match (true) {
-            $modality_id == "4" => "4.74",
-            $modality_id == "6" => "11.75",
+            $modality_id == 4 => "4.74",
+            $modality_id == 6 => "11.75",
         };
         
         return $tax;
