@@ -11,7 +11,7 @@ class TitleService
 {
     public function __construct(
         protected TitleRepository $titleRepository,
-        protected SelicService $selicService,
+        protected SelicApiService $selicApiService,
     ) {
     }
 
@@ -38,7 +38,7 @@ class TitleService
             $title->gain_percent = self::calculateGainPercent($title->gain, $title->value_buy);
     
             if ($title->tax === "SELIC") {
-                $title->tax = $this->selicService->getCurrentSelic();
+                $title->tax = $this->selicApiService->getCurrentSelic();
             }
     
             $totalizers['patrimony']       = bcadd($totalizers['patrimony'], $title->value_current, 2);
@@ -61,7 +61,7 @@ class TitleService
         $oneTitle               = $this->titleRepository->userOneTitle($id);
         $oneTitle->gain         = self::calculateGain($oneTitle->value_current, $oneTitle->value_buy);
         $oneTitle->gain_percent = self::calculateGainPercent($oneTitle->gain, $oneTitle->value_buy);
-        
+
         return $oneTitle;
     }
 
@@ -101,7 +101,7 @@ class TitleService
         $gain_Percent = bcdiv($gain, $value_buy, 8);
         $gain_Percent = bcmul($gain_Percent, "100", 8);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
-        
+
         return $gain_Percent;
     }
 }

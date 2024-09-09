@@ -61,7 +61,7 @@
                                     @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="10">{{ __('Nenhum título encontrado!') }}</td>
+                                    <td colspan="9">{{ __('Nenhum título encontrado!') }}</td>
                                 </tr>
                                 @endif
                         </tbody>
@@ -79,6 +79,73 @@
                                 <td>R${{ @valueRealFormat($totalizers->get('patrimony')) }}</td>
                                 <td>R${{ @valueRealFormat($totalizers->get('gain_cumulative')) }}</td>
                                 <td>{{ @valueFormat($totalizers->get('gain_percent_cumulative')) }}%</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-gray-900">
+                    <div>
+                        <a href="{{ Route('userStocksMovement.create') }}">{{ __('Nova movimentação') }}</a>
+                        <a href="{{ Route('userStocks.create') }}">{{ __('Nova ação') }}</a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>{{ __('Id') }}</th>
+                                <th>{{ __('Ticker') }}</th>
+                                <th>{{ __('Quantidade') }}</th>
+                                <th></th>
+                                <th>{{ __('Valor médio') }}</th>
+                                <th>{{ __('Valor atual') }}</th>
+                                <th>{{ __('Valor total') }}</th>
+                                <th>{{ __('Valorização') }}</th>
+                                <th>{{ __('Percentual') }}</th>
+                                <th colspan="2">{{ __('Ações') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                @if ($userAllStocks->isNotEmpty())
+                                    @foreach ($userAllStocks as $stock)
+                                    <tr>
+                                        <td>{{ $stock->id }}</td>
+                                        <td>{{ $stock->ticker }}</td>
+                                        <td>{{ $stock->quantity }}<td>
+                                        <td id="valueBuy">R${{ @valueRealFormat($stock->average_value) }}</td>
+                                        <td id="valueCurrent">R${{ @valueRealFormat($stock->value_current) }}</td>
+                                        <td id="valueTotal">R${{ @valueRealFormat($stock->value_total_current) }}</td>
+                                        <td id="valuegain">R${{ @valueRealFormat($stock->gain_total) }}</td>
+                                        <td>{{ @valueFormat($stock->gain_percent) }}%</td>
+                                        <td><a href="{{ Route('userStocks.show', $stock->id) }}">{{ __("Ver") }}</a></td>
+                                        <td><a href="{{ Route('userStocks.edit', $stock->id) }}">{{ __("Alterar") }}</a></td>
+                                    </tr>
+                                    @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="10">{{ __('Nenhuma ação encontrada!') }}</td>
+                                </tr>
+                                @endif
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="5"></td>
+                                <td>{{ __("Total aplicado") }}</td>
+                                <td>{{ __("Patrimônio") }}</td>
+                                <td>{{ __("Valorização") }}</td>
+                                <td>{{ __("Percentual") }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5"></td>
+                                <td>R${{ @valueRealFormat($userStockstotalizers->get('buy_cumulative')) }}</td>
+                                <td>R${{ @valueRealFormat($userStockstotalizers->get('patrimony')) }}</td>
+                                <td>R${{ @valueRealFormat($userStockstotalizers->get('gain_cumulative')) }}</td>
+                                <td>{{ @valueFormat($userStockstotalizers->get('gain_percent_cumulative')) }}%</td>
                             </tr>
                         </tfoot>
                     </table>

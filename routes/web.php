@@ -1,10 +1,15 @@
 <?php
 
-use App\Http\Controllers\ModalityController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StocksController;
-use App\Http\Controllers\TitleController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\{
+    DashBoardController,
+    ModalityController,
+    ProfileController,
+    StocksController,
+    TitleController,
+    UserController,
+    UserStocksController,
+    UserStocksMovementController
+};
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +53,8 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('/inicio', [DashBoardController::class, 'index'])->name('dashboard');
+
     Route::delete('/titulo/{id}', [TitleController::class, 'destroy'])->name('titles.destroy');
     Route::put('/titulo/{title}', [TitleController::class, 'update'])->name('titles.update');
     Route::post('/titulo/importar', [TitleController::class, 'import'])->name('titles.import');
@@ -55,7 +62,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/titulo/novo', [TitleController::class, 'create'])->name('titles.create');
     Route::get('/titulo/{title}/alterar', [TitleController::class, 'edit'])->name('titles.edit');
     Route::get('/titulo/{id}', [TitleController::class, 'show'])->name('titles.show');
-    Route::get('/inicio', [TitleController::class, 'index'])->name('dashboard');
+
+    Route::delete('/acoes/{id}', [UserStocksController::class, 'destroy'])->name('userStocks.destroy');
+    Route::put('/acoes/{userStocks}', [UserStocksController::class, 'update'])->name('userStocks.update');
+    Route::post('/acoes/importar', [UserStocksController::class, 'import'])->name('userStocks.import');
+    Route::post('/acoes', [UserStocksController::class, 'store'])->name('userStocks.store');
+    Route::get('/acoes/novo', [UserStocksController::class, 'create'])->name('userStocks.create');
+    Route::get('/acoes/{userStocks}/alterar', [UserStocksController::class, 'edit'])->name('userStocks.edit');
+    Route::get('/acoes/{id}', [UserStocksController::class, 'show'])->name('userStocks.show');
+
+    Route::delete('/acoes/movimentacao/{id}', [UserStocksMovementController::class, 'destroy'])->name('userStocksMovement.destroy');
+    Route::put('/acoes/movimentacao/{userStocksMovement}', [UserStocksMovementController::class, 'update'])->name('userStocksMovement.update');
+    Route::post('/acoes/movimentacao/importar', [UserStocksMovementController::class, 'import'])->name('userStocksMovement.import');
+    Route::post('/acoes/movimentacao', [UserStocksMovementController::class, 'store'])->name('userStocksMovement.store');
+    Route::get('/acoes/movimentacao/novo', [UserStocksMovementController::class, 'create'])->name('userStocksMovement.create');
+    Route::get('/acoes/movimentacao/{userStocksMovement}/alterar', [UserStocksMovementController::class, 'edit'])->name('userStocksMovement.edit');
 });
 
 Route::middleware('auth')->group(function () {

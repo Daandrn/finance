@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StocksRequest;
-use App\Models\StocksTypes;
+use App\Models\StocksType;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\DTO\stocks\StocksCreateUpdateDTO;
 use App\Repositories\StocksRepository;
+use Illuminate\Database\Eloquent\Collection;
 
 class StocksController extends Controller
 {
@@ -19,7 +20,7 @@ class StocksController extends Controller
     public function index(): View
     {
         $stocksPage = $this->stocksRepository->paginate(15);
-        $stocksTypes = StocksTypes::all();
+        $stocksTypes = StocksType::all();
         
         return view('administrator.stocks.stocks', compact('stocksPage', 'stocksTypes'));
     }
@@ -38,7 +39,7 @@ class StocksController extends Controller
     public function edit(string $id): view
     {
         $stocksEdit = $this->stocksRepository->getOne($id);
-        $stocksTypes = StocksTypes::all();
+        $stocksTypes = StocksType::all();
         
         return view('administrator.stocks.alterStocks', compact('stocksEdit', 'stocksTypes'));
     }
@@ -62,5 +63,12 @@ class StocksController extends Controller
         return redirect()
                 ->route('stocks')
                 ->with(['message' => "Código de negociação excluído!"]);
+    }
+
+    public function all(): Collection
+    {
+        $stocks = $this->stocksRepository->all();
+
+        return $stocks;
     }
 }

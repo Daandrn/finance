@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\RepositoriesApi\SelicRepository;
 
-class SelicService
+class SelicApiService
 {
     public function __construct(
         protected SelicRepository $selicRepository,

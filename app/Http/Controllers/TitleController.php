@@ -11,6 +11,7 @@ use App\Services\TitleService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class TitleController extends Controller
@@ -20,15 +21,15 @@ class TitleController extends Controller
     ) {
     }
     
-    public function index(): View
+    public function userAllTitles(): Collection
     {   
         $user_id = Auth::user()->id;
         $titlesAndTotalizers = $this->titleService->userAllTitles($user_id);
 
-        $titles     = $titlesAndTotalizers['titles'];
-        $totalizers = $titlesAndTotalizers['totalizers'];
-        
-        return view('main.dashboard', compact('titles', 'totalizers'));
+        return collect([
+            'titles'     => $titlesAndTotalizers['titles'], 
+            'totalizers' => $titlesAndTotalizers['totalizers']
+        ]);
     }
     
     public function show(string $id): view

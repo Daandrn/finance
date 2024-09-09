@@ -21,17 +21,15 @@ return new class extends Migration
         });
 
         $types = [
-            ['id' => 1,  'has_irpf' => true,  'description' => "CDB",           'name' => "Certificado de depósito bancário"              ],
-            ['id' => 2,  'has_irpf' => false, 'description' => "LCI",           'name' => "Letra de crédito do setor imobiliário"         ],
-            ['id' => 3,  'has_irpf' => false, 'description' => "LCA",           'name' => "Letra de crédito do agronegócio"               ],
-            ['id' => 4,  'has_irpf' => false, 'description' => "CRI",           'name' => "Certificado de recebíveis do setor imobiliário"],
-            ['id' => 5,  'has_irpf' => false, 'description' => "CRA",           'name' => "Certificado de recebíveis do agronegócio"      ],
-            ['id' => 6,  'has_irpf' => true,  'description' => "SELIC",         'name' => "Tesouro selic"                                 ],
-            ['id' => 7,  'has_irpf' => true,  'description' => "AÇÕES",         'name' => "Ações"                                         ],
-            ['id' => 8,  'has_irpf' => false, 'description' => "FII",           'name' => "Fundos de investimento imobiliário"            ],
-            ['id' => 9,  'has_irpf' => true,  'description' => "RDB",           'name' => "Recibo de depósito bancário"                   ],
-            ['id' => 10, 'has_irpf' => true,  'description' => "TESOURO IPCA",  'name' => "Tesouro IPCA"                                  ],
-            ['id' => 11, 'has_irpf' => true,  'description' => "DEB",           'name' => "Debenture"                                     ],
+            ['id' => 1, 'has_irpf' => true,  'description' => "CDB",          'name' => "Certificado de depósito bancário"              ],
+            ['id' => 2, 'has_irpf' => false, 'description' => "LCI",          'name' => "Letra de crédito do setor imobiliário"         ],
+            ['id' => 3, 'has_irpf' => false, 'description' => "LCA",          'name' => "Letra de crédito do agronegócio"               ],
+            ['id' => 4, 'has_irpf' => false, 'description' => "CRI",          'name' => "Certificado de recebíveis do setor imobiliário"],
+            ['id' => 5, 'has_irpf' => false, 'description' => "CRA",          'name' => "Certificado de recebíveis do agronegócio"      ],
+            ['id' => 6, 'has_irpf' => true,  'description' => "SELIC",        'name' => "Tesouro selic"                                 ],
+            ['id' => 7, 'has_irpf' => true,  'description' => "TESOURO IPCA", 'name' => "Tesouro IPCA"                                  ],
+            ['id' => 8, 'has_irpf' => true,  'description' => "DEB",          'name' => "Debenture"                                     ],
+            ['id' => 9, 'has_irpf' => true,  'description' => "RDB",          'name' => "Recibo de depósito bancário"                   ],
         ];
 
         DB::table('title_types')->insert($types);
