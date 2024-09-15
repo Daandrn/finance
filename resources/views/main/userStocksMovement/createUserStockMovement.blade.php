@@ -19,7 +19,7 @@
                         @include('main.partials.userStocksMovementForm')
 
                         <button type="submit" id="createUserStockMovement">{{ __('Criar') }}</button>
-                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
+                        <button type="button" onclick="window.history.back()">{{ __('Voltar') }}</button>
                     </form>
                 </div>
 

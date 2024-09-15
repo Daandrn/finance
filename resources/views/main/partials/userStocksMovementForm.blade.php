@@ -21,7 +21,7 @@
 
         @isset($stocks)
             @foreach ($stocks as $stocksElement)
-                <option 
+                <option
                     value="{{ $stocksElement->id }}" 
                     data-ticker="{{ $stocksElement->ticker }}"
                     @selected((isset($userStocksMovement->stocks_id) ? $userStocksMovement->stocks_id : old('stocks_id')) == $stocksElement->id)
