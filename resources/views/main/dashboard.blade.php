@@ -112,18 +112,18 @@
                         </thead>
                         <tbody>
                                 @if ($userAllStocks->isNotEmpty())
-                                    @foreach ($userAllStocks as $stock)
+                                    @foreach ($userAllStocks as $userStocks)
                                     <tr>
-                                        <td>{{ $stock->id }}</td>
-                                        <td>{{ $stock->ticker }}</td>
-                                        <td>{{ $stock->quantity }}<td>
-                                        <td id="valueBuy">R${{ @valueRealFormat($stock->average_value) }}</td>
-                                        <td id="valueCurrent">R${{ @valueRealFormat($stock->value_current) }}</td>
-                                        <td id="valueTotal">R${{ @valueRealFormat($stock->value_total_current) }}</td>
-                                        <td id="valuegain">R${{ @valueRealFormat($stock->gain_total) }}</td>
-                                        <td>{{ @valueFormat($stock->gain_percent) }}%</td>
-                                        <td><a href="{{ Route('userStocks.show', $stock->id) }}">{{ __("Ver") }}</a></td>
-                                        <td><a href="{{ Route('userStocks.edit', $stock->id) }}">{{ __("Alterar") }}</a></td>
+                                        <td>{{ $userStocks->id }}</td>
+                                        <td>{{ $userStocks->stocks->ticker }}</td>
+                                        <td>{{ $userStocks->quantity }}<td>
+                                        <td id="valueBuy">R${{ @valueRealFormat($userStocks->average_value) }}</td>
+                                        <td id="valueCurrent">R${{ @valueRealFormat($userStocks->value_current) }}</td>
+                                        <td id="valueTotal">R${{ @valueRealFormat($userStocks->value_total_current) }}</td>
+                                        <td id="valuegain">R${{ @valueRealFormat($userStocks->gain_total) }}</td>
+                                        <td>{{ @valueFormat($userStocks->gain_percent) }}%</td>
+                                        <td><a href="{{ Route('userStocks.show', $userStocks->id) }}">{{ __("Ver") }}</a></td>
+                                        <td><a href="{{ Route('userStocks.edit', $userStocks->id) }}">{{ __("Alterar") }}</a></td>
                                     </tr>
                                     @endforeach
                                 @else

@@ -16,6 +16,6 @@ class Modality extends Model
 
     public function titles(): HasMany
     {
-        return $this->hasMany(Title::class);
+        return $this->hasMany(Title::class, 'modality_id', 'id');
     }
 }

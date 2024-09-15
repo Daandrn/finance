@@ -25,16 +25,16 @@ class Title extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->withDefault();
+        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
     }
 
     public function title_type(): BelongsTo
     {
-        return $this->belongsTo(TitleType::class)->withDefault();
+        return $this->belongsTo(TitleType::class, 'title_type_id', 'id')->withDefault();
     }
     
     public function modality(): BelongsTo
     {
-        return $this->belongsTo(Modality::class)->withDefault();
+        return $this->belongsTo(Modality::class, 'modality_id', 'id')->withDefault();
     }
 }

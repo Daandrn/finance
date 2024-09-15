@@ -16,26 +16,34 @@ class UserStocksRepository
 
     public function userAllStocks(int $user_id): Collection
     {
-        $userAllStocks = $this->userStocks->where('user_id', $user_id)
-                    ->join('stocks', 'stocks_id', '=', 'stocks.id', 'inner')
+        $userAllStocks = $this->userStocks
+                    ->with('stocks')
+                    ->where('user_id', $user_id)
                     ->get();
-
+                    
         return $userAllStocks;
     }
 
-    public function userStockForUpdate(int $id): UserStocks
+    public function userStockForUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
     {
-        $userStockForUpdate = $this->userStocks->find($id)->lockForUpdate();
+        $userStockForUpdate = $this->userStocks
+                    ->lockForUpdate()
+                    ->firstOrCreate([
+                        'user_id'   => $user_id,
+                        'stocks_id' => $stocks_id,
+                    ], [
+                        'quantity' => $dto->quantity,
+                        'average_value' => $dto->average_value,
+                    ]);
 
-        dd($userStockForUpdate);
-        
         return $userStockForUpdate;
     }
 
-    public function userOneStock(int $id): UserStocks
+    public function userOneStock(int $user_stock_id): UserStocks
     {
-        $userOneStock = $this->userStocks->where('user_stocks.id', $id)
-                    ->join('stocks', 'stocks_id', '=', 'stocks.id', 'inner')
+        $userOneStock = $this->userStocks
+                    ->with('stocks')
+                    ->where('id', $user_stock_id)
                     ->firstOrFail();
         
         return $userOneStock;

@@ -24,7 +24,10 @@ class StocksRepository
 
     public function paginate(int $perPage): Paginator
     {
-        return $this->stocks->orderBy('id')->simplePaginate($perPage);
+        return $this->stocks
+                ->orderBy('stocks.id')
+                ->with('stocks_types')
+                ->simplePaginate($perPage);
     }
 
     public function getOne(string $id): Model|null

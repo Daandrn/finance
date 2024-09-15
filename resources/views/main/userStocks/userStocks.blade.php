@@ -24,7 +24,7 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>{{ $showUserStocks->ticker }}</td>
+                                <td>{{ $showUserStocks->stocks->ticker }}</td>
                                 <td>{{ @valueFormat($showUserStocks->quantity) }}</td>
                                 <td>R${{ @valueRealFormat($showUserStocks->average_value) }}</td>
                                 <td>R${{ @valueRealFormat($showUserStocks->current_value) }}</td>
@@ -67,7 +67,7 @@
                             @forelse ($userStocksMovements as $movement)
                             <tr>
                                 <td>{{ $movement->id }}</td>
-                                <td>{{ $movement->description }}</td>
+                                <td>{{ $movement->stocks_movement_types->description }}</td>
                                 <td>{{ @valueFormat($movement->quantity) }}</td>
                                 <td>R${{ @valueRealFormat($movement->value) }}</td>
                                 <td>R${{ @valueRealFormat($movement->value_total) }}</td>
@@ -83,7 +83,9 @@
                                 </td>
                             </tr>
                             @empty
-                                <tr colspan="5">Não há movimentações para esta ação!</tr>
+                                <tr>
+                                    <td colspan="8">{{ __('Não há movimentações para esta ação!') }}</td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>

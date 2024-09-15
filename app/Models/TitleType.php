@@ -17,6 +17,6 @@ class TitleType extends Model
 
     public function titles(): HasMany
     {
-        return $this->hasMany(Title::class);
+        return $this->hasMany(Title::class, 'title_type_id', 'id');
     }
 }

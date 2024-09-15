@@ -46,7 +46,8 @@
                                 <th>{{ __('Código') }}</th>
                                 <th>{{ __('Código de negociação') }}</th>
                                 <th>{{ __('Nome') }}</th>
-                                <th colspan="3">{{ __('Ações') }}</th>
+                                <th>{{ __('Tipo') }}</th>
+                                <th colspan="2">{{ __('Ações') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,6 +57,7 @@
                                     <td>{{ $stocks->id }}</td>
                                     <td>{{ $stocks->ticker }}</td>
                                     <td>{{ $stocks->name }}</td>
+                                    <td>{{ $stocks->stocks_types->description }}</td>
                                     <td><a href="{{ Route('stocks.edit', $stocks->id) }}">{{ __('Alterar') }}</a></td>
                                     <td>
                                         <form action="{{ Route('stocks.destroy', $stocks->id) }}" method="POST" id="deleteStock">
@@ -70,13 +72,13 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="5">{{ __('Não há ações cadastradas!') }}</td>
+                                    <td colspan="6">{{ __('Não há ações cadastradas!') }}</td>
                                 </tr>
                             @endif
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="5">{{ $stocksPage->links() }}</td>
+                                <td colspan="6">{{ $stocksPage->links() }}</td>
                             </tr>
                         </tfoot>
                     </table>
