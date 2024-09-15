@@ -15,6 +15,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('user_id');
             $table->smallInteger('stocks_id')->nullable(false);
+            $table->smallInteger('user_stocks_id')->nullable(false);
             $table->smallInteger('movement_type_id')->nullable(false);
             $table->decimal('quantity', 11)->nullable(false);
             $table->decimal('value', 8, 2)->nullable(false);
@@ -22,7 +23,8 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('stocks_id')->references('id')->on('stocks')->onUpdate('cascade')->onDelete('restrict');
-            $table->foreign('movement_type_id')->references('id')->on('movement_types')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('movement_type_id')->references('id')->on('stocks_movement_types')->onUpdate('cascade')->onDelete('restrict');
+            $table->foreign('user_stocks_id')->references('id')->on('user_stocks')->onUpdate('cascade')->onDelete('restrict');
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('restrict');
         });
     }

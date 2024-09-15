@@ -34,7 +34,7 @@ class UserStocksService
         }
 
         $totalizers = $userStocks->reduce(function ($totalizers, $userStocks) {
-            $userStocks->value_current = $this->acoesApiService->getCurrentValue($userStocks->ticker);
+            $userStocks->value_current = $this->acoesApiService->getCurrentValue($userStocks->stocks->ticker);
             $userStocks->gain          = self::calculateGain($userStocks->value_current, $userStocks->average_value);
             $userStocks->gain_percent  = self::calculateGainPercent($userStocks->gain, $userStocks->average_value);
 
@@ -57,21 +57,19 @@ class UserStocksService
         ]);
     }
 
-    public function userStockForUpdate(int $id): UserStocks
+    public function userStockForUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
     {
-        $oneUserStock = $this->userStocksRepository->userStockForUpdate($id);
-
-        return $oneUserStock;
+        return $this->userStocksRepository->userStockForUpdateOrCreate($user_id, $stocks_id, $dto);
     }    
 
-    public function userOneStock(int $id): UserStocks
+    public function userStockWithGain(int $user_stock_id): UserStocks
     {
-        $oneUserStock                = $this->userStocksRepository->userOneStock($id);
-        $oneUserStock->current_value = $this->acoesApiService->getCurrentValue($oneUserStock->ticker);
-        $oneUserStock->gain          = self::calculateGain($oneUserStock->current_value, $oneUserStock->average_value);
-        $oneUserStock->gain_percent  = self::calculateGainPercent($oneUserStock->gain, $oneUserStock->average_value);
+        $oneUserStocks                = $this->userStocksRepository->userOneStock($user_stock_id);
+        $oneUserStocks->current_value = $this->acoesApiService->getCurrentValue($oneUserStocks->stocks->ticker);
+        $oneUserStocks->gain          = self::calculateGain($oneUserStocks->current_value, $oneUserStocks->average_value);
+        $oneUserStocks->gain_percent  = self::calculateGainPercent($oneUserStocks->gain, $oneUserStocks->average_value);
 
-        return $oneUserStock;
+        return $oneUserStocks;
     }
 
     public function insert(UserStocksCreateUpdateDTO $userStocksCreateUpdateDTO): UserStocks

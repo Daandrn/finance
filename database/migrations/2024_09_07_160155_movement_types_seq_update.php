@@ -9,9 +9,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $lastMovementType = DB::table('movement_types')->aggregate('max', ['id']);
+        $lastMovementType = DB::table('stocks_movement_types')->aggregate('max', ['id']);
         if ($lastMovementType) {
-            DB::statement("SELECT setval('movement_types_id_seq', $lastMovementType, true)");
+            DB::statement("SELECT setval('stocks_movement_types_id_seq', $lastMovementType, true)");
         }
     }
 

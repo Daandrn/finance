@@ -79,7 +79,7 @@ class UserStocksMovementController extends Controller
 
     public function edit(UserStocksMovement $userStocksMovement): View
     {
-        $userStocksMovement = $userStocksMovement->join('stocks', 'stocks_id', '=', 'stocks.id', 'inner')->firstOrFail();
+        $userStocksMovement = $userStocksMovement->with('stocks')->firstOrFail();
         $stocks = $this->stocksController->all()->where('id', '=', $userStocksMovement->stocks_id);
 
         return view('main.userStocksMovement.alterUserStockMovement', compact('userStocksMovement', 'stocks'));

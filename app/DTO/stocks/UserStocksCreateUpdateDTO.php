@@ -7,8 +7,8 @@ use App\Http\Requests\UserStocksRequest;
 class UserStocksCreateUpdateDTO
 {
     public function __construct(
-        public int   $user_id,
-        public string $ticker,
+        public int    $user_id,
+        public int    $stocks_id,
         public string $quantity,
         public string $average_value,
     ) {
@@ -19,7 +19,7 @@ class UserStocksCreateUpdateDTO
     {
         return new self(
             (int) $request->user_id,
-            $request->ticker,
+            (int) $request->stocks_id,
             $request->quantity,
             $request->average_value,
         );
@@ -29,7 +29,7 @@ class UserStocksCreateUpdateDTO
     {
         return [
             'user_id'       => $this->user_id,
-            'ticker'        => $this->ticker,
+            'stocks_id'     => $this->stocks_id,
             'quantity'      => $this->quantity,
             'average_value' => $this->average_value,
         ];

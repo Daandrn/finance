@@ -33,11 +33,11 @@ class UserStocksController extends Controller
         ]);
     }
     
-    public function show(int $ticker_id): View
+    public function show(int $user_stock_id): View
     {
         $user_id             = Auth::id();
-        $showUserStocks      = $this->userStocksService->userOneStock($ticker_id);
-        $userStocksMovements = $this->userStocksMovementService->userAllStocksMovements($user_id, $ticker_id);
+        $showUserStocks      = $this->userStocksService->userStockWithGain($user_stock_id);
+        $userStocksMovements = $this->userStocksMovementService->userAllStocksMovements($user_id, $showUserStocks->stocks_id);
 
         return view('main.userStocks.userStocks', compact('showUserStocks', 'userStocksMovements'));
     }
@@ -78,7 +78,7 @@ class UserStocksController extends Controller
 
     public function edit(UserStocks $userStocks): View
     {
-        $userStocks = $userStocks->join('stocks', 'stocks_id', '=', 'stocks.id', 'inner')->firstOrFail();
+        $userStocks = $userStocks->with('stocks')->firstOrFail();
         $stocks = $this->stocksController->all()->where('id', '=', $userStocks->stocks_id);
         
         return view('main.userStocks.alterUserStock', compact('userStocks', 'stocks'));
