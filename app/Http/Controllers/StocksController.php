@@ -38,7 +38,7 @@ class StocksController extends Controller
 
     public function edit(string $id): view
     {
-        $stocksEdit = $this->stocksRepository->getOne($id);
+        $stocksEdit = $this->stocksRepository->get($id);
         $stocksTypes = StocksType::all();
         
         return view('administrator.stocks.alterStocks', compact('stocksEdit', 'stocksTypes'));

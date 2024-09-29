@@ -14,6 +14,7 @@ class ModalityController extends Controller
     public function __construct(
         protected ModalityRepository $modalityRepository,
     ) {
+        //
     }
     
     public function index(Modality $modality): View
@@ -44,7 +45,7 @@ class ModalityController extends Controller
 
     public function edit(string $id): view
     {
-        $modalityEdit = $this->modalityRepository->getOne($id);
+        $modalityEdit = $this->modalityRepository->get($id);
         
         return view('administrator.modality.alterModalities', compact('modalityEdit'));
     }
@@ -63,7 +64,7 @@ class ModalityController extends Controller
 
     public function destroy(string $id): RedirectResponse
     {
-        $this->modalityRepository->deleteOne($id);
+        $this->modalityRepository->delete($id);
 
         return redirect()
                 ->route('modalities')

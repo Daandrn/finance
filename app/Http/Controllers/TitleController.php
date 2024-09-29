@@ -19,12 +19,13 @@ class TitleController extends Controller
     public function __construct(
         protected TitleService $titleService,
     ) {
+        //
     }
     
-    public function userAllTitles(): Collection
+    public function getUserTitles(): Collection
     {   
         $user_id = Auth::user()->id;
-        $titlesAndTotalizers = $this->titleService->userAllTitles($user_id);
+        $titlesAndTotalizers = $this->titleService->getAll($user_id);
 
         return collect([
             'titles'     => $titlesAndTotalizers['titles'], 
@@ -34,7 +35,7 @@ class TitleController extends Controller
     
     public function show(string $id): view
     {
-        $title = $this->titleService->userOneTitle($id);
+        $title = $this->titleService->get($id);
         
         return view('main.titles.title', compact('title'));
     }
@@ -76,7 +77,7 @@ class TitleController extends Controller
 
     public function edit(Title $title, ModalityRepository $modalityRepository, TitleType $titleType): View
     {
-        $modalities = $modalityRepository->all();
+        $modalities  = $modalityRepository->all();
         $title_types = $titleType->orderBy('id')->get();
         
 

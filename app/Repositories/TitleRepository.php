@@ -11,9 +11,10 @@ class TitleRepository
     public function __construct(
         protected Title $title,
     ) {
+        //
     }
 
-    public function userAllTitles(int $user_id): Collection
+    public function all(int $user_id): Collection
     {
         $titles = $this->title->where('user_id', $user_id)
                                 ->with('modality')
@@ -24,7 +25,7 @@ class TitleRepository
         return $titles;
     }
 
-    public function userOneTitle(string $id): Title
+    public function get(string $id): Title
     {
         $oneTitle = $this->title->findOrFail($id);
         

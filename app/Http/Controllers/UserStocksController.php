@@ -20,12 +20,13 @@ class UserStocksController extends Controller
         protected UserStocksMovementService $userStocksMovementService,
         protected StocksController $stocksController,
     ) {
+        //
     }
 
-    public function userAllStocks(): Collection
+    public function getUserStocks(): Collection
     {   
         $user_id = Auth::user()->id;
-        $userStocksAndTotalizers = $this->userStocksService->userAllStocks($user_id);
+        $userStocksAndTotalizers = $this->userStocksService->getAll($user_id);
 
         return collect([
             'userAllStocks' => $userStocksAndTotalizers['userAllStocks'], 
@@ -36,8 +37,8 @@ class UserStocksController extends Controller
     public function show(int $user_stock_id): View
     {
         $user_id             = Auth::id();
-        $showUserStocks      = $this->userStocksService->userStockWithGain($user_stock_id);
-        $userStocksMovements = $this->userStocksMovementService->userAllStocksMovements($user_id, $showUserStocks->stocks_id);
+        $showUserStocks      = $this->userStocksService->userStocksWithGain($user_stock_id);
+        $userStocksMovements = $this->userStocksMovementService->getAll($user_id, $showUserStocks->stocks_id);
 
         return view('main.userStocks.userStocks', compact('showUserStocks', 'userStocksMovements'));
     }
@@ -93,9 +94,9 @@ class UserStocksController extends Controller
                 ->with(['message' => "Ação alterada com sucesso!"], compact('userStocks'));
     }
 
-    public function destroy(string $userStock_id): RedirectResponse
+    public function destroy(int $userStocks_id): RedirectResponse
     {
-        $this->userStocksService->delete($userStock_id);
+        $this->userStocksService->delete($userStocks_id);
 
         return redirect()
                 ->route('dashboard')

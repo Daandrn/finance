@@ -15,9 +15,9 @@ class TitleService
     ) {
     }
 
-    public function userAllTitles(int $user_id): Collection
+    public function getAll(int $user_id): Collection
     {
-        $titles = $this->titleRepository->userAllTitles($user_id);
+        $titles = $this->titleRepository->all($user_id);
 
         $totalizersInit = collect([
             'patrimony'               => "0.00",
@@ -56,9 +56,9 @@ class TitleService
         ]);
     }
 
-    public function userOneTitle(string $id): Title
+    public function get(string $id): Title
     {
-        $oneTitle               = $this->titleRepository->userOneTitle($id);
+        $oneTitle               = $this->titleRepository->get($id);
         $oneTitle->gain         = self::calculateGain($oneTitle->value_current, $oneTitle->value_buy);
         $oneTitle->gain_percent = self::calculateGainPercent($oneTitle->gain, $oneTitle->value_buy);
 

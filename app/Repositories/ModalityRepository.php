@@ -22,7 +22,7 @@ class ModalityRepository
         return $modalities;
     }
 
-    public function getOne(string $id): Model|null
+    public function get(string $id): Model|null
     {
         $oneModality = $this->modality->findOrFail($id);
 
@@ -43,7 +43,7 @@ class ModalityRepository
         return $updatedModality->updateOrFail($modalityCreateUpdateDTO->toArray());;
     }
 
-    public function deleteOne(string $id): void
+    public function delete(string $id): void
     {
         $modalityDeleted = $this->modality->findOrFail($id);
         $modalityDeleted->delete();

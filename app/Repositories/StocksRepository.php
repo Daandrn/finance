@@ -30,7 +30,7 @@ class StocksRepository
                 ->simplePaginate($perPage);
     }
 
-    public function getOne(string $id): Model|null
+    public function get(string $id): Model|null
     {
         $oneStocks = $this->stocks->findOrFail($id);
 

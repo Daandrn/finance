@@ -15,8 +15,8 @@ class DashBoardController extends Controller
 
     public function index(): View
     {
-        $userTitles = $this->titleController->userAllTitles();
-        $userStocks = $this->userStocksController->userAllStocks();
+        $userTitles = $this->titleController->getUserTitles();
+        $userStocks = $this->userStocksController->getUserStocks();
 
         return view('main.dashboard', [
             'titles'               => $userTitles->get('titles'), 
