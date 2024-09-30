@@ -12,6 +12,7 @@ class StocksCreateUpdateDTO
         public string $name,
         public int    $stocks_types_id,
     ) {
+        //
     }
 
     public static function make(StocksRequest $stocksRequest): self

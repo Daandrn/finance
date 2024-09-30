@@ -10,6 +10,7 @@ class ModalityCreateUpdateDTO
     public function __construct(
         public string $description,
     ) {
+        //
     }
 
     public static function make(ModalityRequest $modalityRequest): self

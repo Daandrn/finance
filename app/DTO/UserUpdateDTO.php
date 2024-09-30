@@ -13,6 +13,7 @@ class UserUpdateDTO
         public string $adm,
         public string $status,
     ) {
+        //
     }
 
     public static function make(UserAdmRequest $request): self
