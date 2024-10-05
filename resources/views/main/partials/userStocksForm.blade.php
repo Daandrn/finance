@@ -12,19 +12,20 @@
         type="text" 
         name="ticker" 
         id="ticker" 
-        value="{{ isset($userStocks->ticker) ? (old('ticker') ?? $userStocks->ticker) : old('ticker') }}"
+        value="{{ isset($userStocks->stocks->ticker) ? (old('ticker') ?? $userStocks->stocks->ticker) : old('ticker') }}"
+        @disabled($disabledSelect)
     >
-    <select name="stocks_id" id="stocks_id">
-        @if (!isset($userStocks->ticker))
-            <option value="">Selecione</option>   
+    
+    <select name="stocks_id" id="stocks_id" @disabled($disabledSelect)>
+        @if (!isset($userStocks->stocks->ticker))
+            <option value="">Selecione</option>
         @endif
-
         @isset($stocks)
             @foreach ($stocks as $stocksElement)
                 <option 
                     value="{{ $stocksElement->id }}" 
                     data-ticker="{{ $stocksElement->ticker }}"
-                    @selected((isset($userStocks->ticker) ? $userStocks->ticker : old('ticker')) == $stocksElement->ticker)
+                    @selected((isset($userStocks->stocks->ticker) ? $userStocks->stocks->ticker : old('ticker')) == $stocksElement->ticker)
                 >{{ $stocksElement->ticker }}</option>
             @endforeach
         @endisset

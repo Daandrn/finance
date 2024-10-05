@@ -11,13 +11,14 @@ class UserStocksService
 {
     public function __construct(
         protected UserStocksRepository $userStocksRepository,
-        protected AcoesApiService $acoesApiService,
+        protected StocksServiceApi $stocksServiceApi,
     ) {
+        //
     }
 
-    public function userAllStocks(int $user_id): Collection
+    public function getAll(int $user_id): Collection
     {
-        $userStocks = $this->userStocksRepository->userAllStocks($user_id);
+        $userStocks = $this->userStocksRepository->all($user_id);
 
         $totalizersInit = collect([
             'patrimony'               => "0.00",
@@ -34,7 +35,7 @@ class UserStocksService
         }
 
         $totalizers = $userStocks->reduce(function ($totalizers, $userStocks) {
-            $userStocks->value_current = $this->acoesApiService->getCurrentValue($userStocks->stocks->ticker);
+            $userStocks->value_current = $userStocks->stocks->current_value;
             $userStocks->gain          = self::calculateGain($userStocks->value_current, $userStocks->average_value);
             $userStocks->gain_percent  = self::calculateGainPercent($userStocks->gain, $userStocks->average_value);
 
@@ -45,27 +46,32 @@ class UserStocksService
             $totalizers['buy_cumulative']  = bcadd($totalizers['buy_cumulative'], $userStocks->value_total_buy, 2);
             $totalizers['patrimony']       = bcadd($totalizers['patrimony'], $userStocks->value_total_current, 2);
             $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
-    
+
             return $totalizers;
         }, $totalizersInit);
-    
+
         $totalizers['gain_percent_cumulative'] = self::calculateGainPercent($totalizers['gain_cumulative'], $totalizers['buy_cumulative']);
-    
+
         return collect([
             'userAllStocks' => $userStocks,
             'totalizers'    => $totalizers,
         ]);
     }
 
-    public function userStockForUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
+    public function forUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
     {
-        return $this->userStocksRepository->userStockForUpdateOrCreate($user_id, $stocks_id, $dto);
-    }    
+        return $this->userStocksRepository->forUpdateOrCreate($user_id, $stocks_id, $dto);
+    }
 
-    public function userStockWithGain(int $user_stock_id): UserStocks
+    public function forUpdate(int $user_stocks_id): UserStocks
     {
-        $oneUserStocks                = $this->userStocksRepository->userOneStock($user_stock_id);
-        $oneUserStocks->current_value = $this->acoesApiService->getCurrentValue($oneUserStocks->stocks->ticker);
+        return $this->userStocksRepository->forUpdate($user_stocks_id);
+    } 
+
+    public function userStocksWithGain(int $user_stocks_id): UserStocks
+    {
+        $oneUserStocks                = $this->userStocksRepository->get($user_stocks_id);
+        $oneUserStocks->current_value = $oneUserStocks->stocks->current_value;
         $oneUserStocks->gain          = self::calculateGain($oneUserStocks->current_value, $oneUserStocks->average_value);
         $oneUserStocks->gain_percent  = self::calculateGainPercent($oneUserStocks->gain, $oneUserStocks->average_value);
 
@@ -86,11 +92,23 @@ class UserStocksService
         return $updatedUserStocks;
     }
 
-    public function delete(string $userStocks_id): void
+    public function delete(int $user_stocks_id): array
     {
-        $this->userStocksRepository->delete((int) $userStocks_id);
+        $userStockDeleted = $this->userStocksRepository->get($user_stocks_id);
 
-        return;
+        if ($userStockDeleted->user_stocks_movements->isNotEmpty()) {
+            return [
+                'message' => "Não foi posível excluir {$userStockDeleted->stocks->ticker} pois existem movimentações lançadas. Verifique!",
+                'status'  => false
+            ];
+        }
+
+        $this->userStocksRepository->delete($userStockDeleted->id);
+
+        return [
+            'message' => "{$userStockDeleted->stocks->ticker} excluído(a) com sucesso!",
+            'status'  => true
+        ];
     }
 
     public static function irpfPrevision(): string
