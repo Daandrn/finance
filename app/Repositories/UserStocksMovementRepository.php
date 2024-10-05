@@ -14,7 +14,7 @@ class UserStocksMovementRepository
         //
     }
 
-    public function userAllStocksMovements(int $user_id, ?int $stocks_id = null): Collection
+    public function all(int $user_id, ?int $stocks_id = null): Collection
     {
         $userAllStocksMovements = $this->userStocksMovement
                     ->with('stocks_movement_types')
@@ -27,14 +27,14 @@ class UserStocksMovementRepository
         return $userAllStocksMovements->get();
     }
 
-    public function userOneStockMovement(int $id): UserStocksMovement
+    public function get(int $id): UserStocksMovement
     {
-        $userOneStock = $this->userStocksMovement
+        $userStocks = $this->userStocksMovement
                     ->with('stocks')
-                    ->where('user_stocks.id', $id)
+                    ->where('id', $id)
                     ->firstOrFail();
 
-        return $userOneStock;
+        return $userStocks;
     }
 
     public function insert(UserStocksMovementCreateUpdateDTO $userStocksMovementCreateUpdateDTO): UserStocksMovement
