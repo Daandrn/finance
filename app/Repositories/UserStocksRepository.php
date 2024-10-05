@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\DTO\stocks\UserStocksCreateUpdateDTO;
 use App\Models\UserStocks;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserStocksRepository
@@ -14,17 +15,24 @@ class UserStocksRepository
         //
     }
 
-    public function userAllStocks(int $user_id): Collection
+    /**
+     * @param int $user_id
+     * @return Collection
+     */
+    public function all(int $user_id): Collection
     {
         $userAllStocks = $this->userStocks
-                    ->with('stocks')
-                    ->where('user_id', $user_id)
+                    ->with([
+                        'stocks' => function ($query) {
+                            $query->orderBy('ticker', 'asc');
+                    }])
+                    ->where('quantity', '>', '0.00')
                     ->get();
-                    
+
         return $userAllStocks;
     }
 
-    public function userStockForUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
+    public function forUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
     {
         $userStockForUpdate = $this->userStocks
                     ->lockForUpdate()
@@ -39,14 +47,24 @@ class UserStocksRepository
         return $userStockForUpdate;
     }
 
-    public function userOneStock(int $user_stock_id): UserStocks
+    public function forUpdate(int $user_stocks_id): UserStocks
     {
-        $userOneStock = $this->userStocks
+        $userStockForUpdate = $this->userStocks
+                    ->where('id', '=', $user_stocks_id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+        return $userStockForUpdate;
+    }
+
+    public function get(int $user_stocks_id): UserStocks
+    {
+        $userOneStocks = $this->userStocks
                     ->with('stocks')
-                    ->where('id', $user_stock_id)
+                    ->where('id', '=', $user_stocks_id)
                     ->firstOrFail();
         
-        return $userOneStock;
+        return $userOneStocks;
     }
 
     public function insert(UserStocksCreateUpdateDTO $userStocksCreateUpdateDTO): UserStocks
@@ -63,9 +81,9 @@ class UserStocksRepository
         return $updatedUserStocks;
     }
 
-    public function delete(int $userStocks_id): void
+    public function delete(int $user_stocks_id): void
     {
-        $this->userStocks->destroy($userStocks_id);
+        $this->userStocks->destroy($user_stocks_id);
 
         return;
     }

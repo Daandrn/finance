@@ -4,15 +4,16 @@ namespace App\Repositories;
 
 use App\DTO\stocks\StocksCreateUpdateDTO;
 use App\Models\Stocks;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\Paginator;
 
 class StocksRepository
 {
     public function __construct(
         protected Stocks $stocks,
     ) {
+        //
     }
 
     public function all(string $direction = 'asc'): Collection
@@ -22,15 +23,15 @@ class StocksRepository
         return $stocks;
     }
 
-    public function paginate(int $perPage): Paginator
+    public function paginate(int $perPage): LengthAwarePaginator 
     {
         return $this->stocks
                 ->orderBy('stocks.id')
                 ->with('stocks_types')
-                ->simplePaginate($perPage);
+                ->Paginate($perPage);
     }
 
-    public function get(string $id): Model|null
+    public function get(int $id): Model|null
     {
         $oneStocks = $this->stocks->findOrFail($id);
 
@@ -51,10 +52,9 @@ class StocksRepository
         return $updatedStocks->updateOrFail($stocksCreateUpdateDTO->toArray());;
     }
 
-    public function deleteOne(string $id): void
+    public function delete(Stocks $stocks): void
     {
-        $stocksDeleted = $this->stocks->findOrFail($id);
-        $stocksDeleted->delete();
+        $stocks->delete();
 
         return;
     }
