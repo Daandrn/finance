@@ -15,6 +15,11 @@ class Stocks extends Model
         'ticker',
         'name',
         'stocks_types_id',
+        'current_value',
+        'high_value',
+        'low_value',
+        'last_close_value',
+        'last_update_values',
     ];
     
     public $timestamps = false;

@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'brapi' => [
+        'key' => env('BRAPI_APY_KEY'),
+        'endpoint' => env('BRAPI_BASE_URL')
+    ],
+
 ];

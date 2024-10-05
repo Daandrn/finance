@@ -36,9 +36,10 @@
                             </form>
                         </span>
                     </div>
-                    <div>
+                    <div id="buttons">
                         <button id="newStocks">{{ __('Nova ação') }}</button>
                         <button type="button"><a href="{{ Route('administrator') }}">{{ __('Voltar') }}</a></button>
+                        <button type="button"><a href="{{ Route('userStocks.updateValues') }}">{{ __('Atualizar Valores') }}</a></button>
                     </div>
                     <table>
                         <thead>
@@ -87,6 +88,8 @@
         </div>
     </div>
     
+    <x-modal-loading/>
+
     @vite('resources/js/stocks.js')
     <x-alert-error/>
     
