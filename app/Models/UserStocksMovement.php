@@ -20,7 +20,17 @@ class UserStocksMovement extends Model
         'date',
     ];
 
-    public function user(): BelongsTo
+    /**
+     * Get the user_stocks that owns the UserStocksMovement
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user_stocks(): BelongsTo
+    {
+        return $this->belongsTo(UserStocks::class, 'user_stocks_id', 'id');
+    }
+
+    public function users(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
     }
