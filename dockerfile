@@ -5,6 +5,7 @@ ARG uid=1000
 
 # Instala dependencias
 RUN apt-get update && apt-get install -y \
+    sudo \
     git \
     curl \
     libpng-dev \
@@ -36,6 +37,8 @@ RUN pecl install -o -f redis \
 
 # Escolhe pasta de trabalho principal
 WORKDIR /var/www
+
+RUN composer require "maatwebsite/excel:^3.1"
 
 # Copia os dados do custom.ini do PHP
 COPY docker/php/custom.ini /usr/local/etc/php/conf.d/custom.ini
