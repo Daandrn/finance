@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('teste', function () {
-    return include __DIR__.'/../tests/teste.php';    
+    return include __DIR__.'/../tests/Teste.php';    
 })->middleware('auth');
 
 Route::get("/", function () {
@@ -48,6 +48,7 @@ Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validaÃ§Ã
     Route::delete('/administrador/acoes/{id}', [StocksController::class, 'destroy'])->name('stocks.destroy');
     Route::post('/administrador/acao/store', [StocksController::class, 'store'])->name('stocks.store');
     Route::put('/administrador/acoes/{id}', [StocksController::class, 'update'])->name('stocks.update');
+    Route::get('/administrador/acoes/atualizarValores', [StocksController::class, 'updateStocksValues'])->name('userStocks.updateValues');
     Route::get('/administrador/acoes/{id}/alterar', [StocksController::class, 'edit'])->name('stocks.edit');
     Route::get('/administrador/acoes', [StocksController::class, 'index'])->name('stocks');
 });

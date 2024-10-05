@@ -6,6 +6,7 @@
     </x-slot>
 
     <x-input-sucess/>
+    <x-input-errors/>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -146,6 +147,9 @@
                                 <td>R${{ @valueRealFormat($userStockstotalizers->get('patrimony')) }}</td>
                                 <td>R${{ @valueRealFormat($userStockstotalizers->get('gain_cumulative')) }}</td>
                                 <td>{{ @valueFormat($userStockstotalizers->get('gain_percent_cumulative')) }}%</td>
+                            </tr>
+                            <tr>
+                                <td colspan="10">{{ $userAllStocks->links() }}</td>
                             </tr>
                         </tfoot>
                     </table>
