@@ -32,5 +32,7 @@
                 {{ $slot }}
             </main>
         </div>
+        
+        @vite('resources/css/loadingModal.css')
     </body>
 </html>

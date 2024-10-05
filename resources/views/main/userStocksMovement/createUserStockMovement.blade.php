@@ -25,7 +25,8 @@
 
                 <div class="p-6 text-gray-900">
                     <form 
-                        action="{{ Route('userStocks.import') }}" 
+                        id="userStocksMovement_import"
+                        action="{{ Route('userStocksMovement.import') }}" 
                         method="post" 
                         enctype="multipart/form-data"
                     >
@@ -45,7 +46,10 @@
                 </div>
             </div>
         </div>
+
     </div>
     <x-alert-error/>
+    <x-modal-loading/>
     
+    @vite('resources/js/userStocksMovements.js')
 </x-app-layout>

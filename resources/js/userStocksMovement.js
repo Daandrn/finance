@@ -53,3 +53,11 @@ const confirmDeleteUserStockMovement = document.querySelectorAll('#userStocksMov
         }
     });
 });
+
+const userStocksMovement_import = document.querySelector('#userStocksMovement_import');
+
+if (userStocksMovement_import != undefined) {
+    userStocksMovement_import.addEventListener('submit', function () {
+        document.querySelector('#loadingModal').style.display = '';
+    });
+}
