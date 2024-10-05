@@ -14,7 +14,7 @@ class SelicRepository
         protected Http $http,
     ) {
         $codigoSGS     = 1178;
-        $this->baseUrl = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.$codigoSGS/dados";
+        $this->baseUrl = "https://api.bcb.gov.br/dados/serie/bcdata.sgs.{$codigoSGS}/dados";
     }
     
     /**
