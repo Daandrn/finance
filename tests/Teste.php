@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use App\Models\Stocks;
 use App\Models\User;
+use Carbon\Carbon;
 
 class Teste
 {
@@ -11,12 +13,12 @@ class Teste
         //
     }
     
-    public function index(User $user)
+    public function index()
     {
-        $users = $user->get();
-
-        echo $users->firstOrFail();
+        //
     }
 }
 
-(new Teste())->index(new User());
+dd(
+    Carbon::parse(Stocks::find(1)->last_update_values)->lt('today')
+);
