@@ -4,11 +4,13 @@ namespace App\Repositories;
 
 use App\DTO\stocks\UserStocksCreateUpdateDTO;
 use App\Models\UserStocks;
-use Illuminate\Contracts\Pagination\Paginator;
+use App\Traits\TransactionStatments;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserStocksRepository
 {
+    use TransactionStatments;
+
     public function __construct(
         protected UserStocks $userStocks,
     ) {
@@ -19,17 +21,17 @@ class UserStocksRepository
      * @param int $user_id
      * @return Collection
      */
-    public function all(int $user_id): Collection
+    public function all(int $user_id, ?bool $activeOnly = true): Collection
     {
         $userAllStocks = $this->userStocks
-                    ->with([
-                        'stocks' => function ($query) {
-                            $query->orderBy('ticker', 'asc');
-                    }])
-                    ->where('quantity', '>', '0.00')
-                    ->get();
+                            ->with('stocks')
+                            ->where('user_id', '=', $user_id);
 
-        return $userAllStocks;
+        if ($activeOnly) {
+            $userAllStocks->where('quantity', '>', '0.00');
+        }
+
+        return $userAllStocks->get();
     }
 
     public function forUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks

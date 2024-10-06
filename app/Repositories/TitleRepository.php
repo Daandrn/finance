@@ -4,10 +4,13 @@ namespace App\Repositories;
 
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
+use App\Traits\TransactionStatments;
 use Illuminate\Database\Eloquent\Collection;
 
 class TitleRepository
 {
+    use TransactionStatments;
+
     public function __construct(
         protected Title $title,
     ) {

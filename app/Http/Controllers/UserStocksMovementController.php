@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use App\DTO\stocks\UserStocksMovementCreateUpdateDTO;
 use App\Http\Requests\UserStocksMovementRequest;
 use App\Imports\UserStocksMovementsImport;
-use App\Models\StocksMovementType;
-use App\Models\UserStocksMovement;
+use App\Models\{StocksMovementType, UserStocksMovement};
 use App\Services\UserStocksMovementService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\{RedirectResponse, Request};
+use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Excel as ExcelType;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -48,12 +45,15 @@ class UserStocksMovementController extends Controller
         return view('main.userStocksMovement.userStocksMovement', compact('showUserStocksMovement', 'userStocksMovements'));
     }
 
-    public function create(): View
+    public function create(int $stocks_id = null): View
     {
         $stocks = $this->stocksController->all();
+
+        $selectedStocks = empty($stocks_id) ? null : $stocks->find($stocks_id);
+
         $userMovementType = $this->stocksMovementType->get();
 
-        return view('main.userStocksMovement.createUserStockMovement', compact('stocks', 'userMovementType'));
+        return view('main.userStocksMovement.createUserStockMovement', compact('stocks', 'userMovementType', 'selectedStocks'));
     }
 
     public function import(Request $request): RedirectResponse
@@ -108,8 +108,8 @@ class UserStocksMovementController extends Controller
         }
         
         return redirect()
-                ->route('dashboard')
-                ->with('errors', $userStocksMovement['errors']);
+                ->back()
+                ->withErrors(['error' => $userStocksMovement['errors']]);
     }
 
     public function edit(UserStocksMovement $userStocksMovement): View
@@ -136,10 +136,16 @@ class UserStocksMovementController extends Controller
 
     public function destroy(int $user_stock_movement_id): RedirectResponse
     {
-        $userStocks = $this->userStocksMovementService->delete($user_stock_movement_id);
+        $response = $this->userStocksMovementService->delete($user_stock_movement_id);
 
+        if ($response['error']) {
+            return redirect()
+                ->route('userStocks.show', $response['user_stocks_id'])
+                ->withErrors(['error' => $response['message']]);
+        }
+            
         return redirect()
-                ->route('userStocks.show', $userStocks)
-                ->with(['message' => "Movimento excluído com sucesso!"]);
+            ->route('userStocks.show', $response['user_stocks_id'])
+            ->with(['message' => "Movimento {$user_stock_movement_id} excluído com sucesso!"]);
     }
 }

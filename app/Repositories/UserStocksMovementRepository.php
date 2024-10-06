@@ -4,10 +4,13 @@ namespace App\Repositories;
 
 use App\DTO\stocks\UserStocksMovementCreateUpdateDTO;
 use App\Models\UserStocksMovement;
+use App\Traits\TransactionStatments;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserStocksMovementRepository
 {
+    use TransactionStatments;
+
     public function __construct(
         protected UserStocksMovement $userStocksMovement,
     ) {

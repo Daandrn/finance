@@ -76,7 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/acoes/movimentacao/{userStocksMovement}', [UserStocksMovementController::class, 'update'])->name('userStocksMovement.update');
     Route::post('/acoes/movimentacao/importar', [UserStocksMovementController::class, 'import'])->name('userStocksMovement.import');
     Route::post('/acoes/movimentacao', [UserStocksMovementController::class, 'store'])->name('userStocksMovement.store');
-    Route::get('/acoes/movimentacao/novo', [UserStocksMovementController::class, 'create'])->name('userStocksMovement.create');
+    Route::get('/acoes/movimentacao/novo/{id?}', [UserStocksMovementController::class, 'create'])->name('userStocksMovement.create');
     Route::get('/acoes/movimentacao/{userStocksMovement}/alterar', [UserStocksMovementController::class, 'edit'])->name('userStocksMovement.edit');
 });
 

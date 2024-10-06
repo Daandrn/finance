@@ -20,16 +20,8 @@ class ModalityController extends Controller
     public function index(Modality $modality): View
     {
         $modalities = $modality->orderBy('id')->simplePaginate(15);
-        
-        return view('administrator.modality.modalities', compact('modalities'));
-    }
 
-    /**
-     * Sem uso
-     */
-    public function create()
-    {
-        return view('administrator.modality.createModalities');
+        return view('administrator.modality.modalities', compact('modalities'));
     }
 
     public function store(ModalityRequest $modalityRequest): RedirectResponse
@@ -46,7 +38,7 @@ class ModalityController extends Controller
     public function edit(string $id): view
     {
         $modalityEdit = $this->modalityRepository->get($id);
-        
+
         return view('administrator.modality.alterModalities', compact('modalityEdit'));
     }
 

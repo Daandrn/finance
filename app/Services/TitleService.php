@@ -5,10 +5,14 @@ namespace App\Services;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use App\Repositories\TitleRepository;
+use App\Traits\{MoneyOperations, Scales};
 use Illuminate\Support\Collection;
 
 class TitleService
 {
+    use MoneyOperations;
+    use Scales;
+
     public function __construct(
         protected TitleRepository $titleRepository,
         protected SelicApiService $selicApiService,
@@ -41,8 +45,8 @@ class TitleService
                 $title->tax = $this->selicApiService->getCurrentSelic();
             }
     
-            $totalizers['patrimony']       = bcadd($totalizers['patrimony'], $title->value_current, 2);
-            $totalizers['buy_cumulative']  = bcadd($totalizers['buy_cumulative'], $title->value_buy, 2);
+            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $title->value_current, self::TWO_DECIMALS);
+            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $title->value_buy, self::TWO_DECIMALS);
             $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
     
             return $totalizers;
@@ -93,13 +97,19 @@ class TitleService
 
     public static function calculateGain(string $value_current, string $value_buy): string
     {
-        return bcsub($value_current, $value_buy, 2);
+        return $value_buy === '0.00'
+                ? $value_buy
+                : self::sub($value_current, $value_buy, 2);
     }
 
     public static function calculateGainPercent(string $gain, string $value_buy): string
     {
-        $gain_Percent = bcdiv($gain, $value_buy, 8);
-        $gain_Percent = bcmul($gain_Percent, "100", 8);
+        if ($value_buy === '0.00') {
+            return $value_buy;
+        }
+        
+        $gain_Percent = self::div($gain, $value_buy, self::EIGHT_DECIMALS);
+        $gain_Percent = self::mult($gain_Percent, "100", self::EIGHT_DECIMALS);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
 
         return $gain_Percent;

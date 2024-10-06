@@ -18,6 +18,7 @@ class UserStocksMovement extends Model
         'quantity',
         'value',
         'date',
+        'average_value',
     ];
 
     /**
