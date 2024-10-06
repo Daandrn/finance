@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserStocksMovementRequest extends FormRequest

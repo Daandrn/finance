@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\RepositoriesApi\BrapiStocksApi;
-use Exception;
 use Illuminate\Http\RedirectResponse;
 
 class StocksServiceApi

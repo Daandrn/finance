@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\DTO\stocks\UserStocksCreateUpdateDTO;
 use App\Http\Requests\UserStocksRequest;
 use App\Models\UserStocks;
-use App\Services\UserStocksMovementService;
-use App\Services\UserStocksService;
+use App\Services\{UserStocksMovementService, UserStocksService};
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 
