@@ -16,8 +16,10 @@ class UserStocksMovementCreateUpdateDTO
         public string $quantity,
         public string $value,
         public Carbon $date,
+        public ?string $average_value,
     ) {
         $this->quantity = $this->toNumeric($this->quantity);
+        $this->value = $this->toNumeric($this->value);
     }
 
     public static function make(UserStocksMovementRequest $request): self
@@ -30,6 +32,7 @@ class UserStocksMovementCreateUpdateDTO
             $request->quantity,
             $request->value,
             Carbon::parse($request->date),
+            $request->average_value,
         );
     }
 
@@ -38,11 +41,12 @@ class UserStocksMovementCreateUpdateDTO
         return [
             'user_id'          => $this->user_id,
             'stocks_id'        => $this->stocks_id,
-            'user_stocks_id'        => $this->user_stocks_id,
+            'user_stocks_id'   => $this->user_stocks_id,
             'movement_type_id' => $this->movement_type_id,
             'quantity'         => $this->quantity,
             'value'            => $this->value,
             'date'             => $this->date,
+            'average_value'    => $this->average_value,
         ];
     }
 

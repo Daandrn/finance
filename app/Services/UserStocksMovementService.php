@@ -2,148 +2,232 @@
 
 namespace App\Services;
 
-use App\DTO\stocks\UserStocksCreateUpdateDTO;
-use App\DTO\stocks\UserStocksMovementCreateUpdateDTO;
+use App\DTO\stocks\{UserStocksCreateUpdateDTO, UserStocksMovementCreateUpdateDTO};
+use App\Traits\{MoneyOperations, Scales};
 use App\Http\Requests\UserStocksRequest;
-use App\Models\UserStocks;
-use App\Models\UserStocksMovement;
+use App\Models\{UserStocks, UserStocksMovement};
 use App\Repositories\UserStocksMovementRepository;
-use DB;
 use Exception;
 use Illuminate\Support\Collection;
-use Request;
 
 class UserStocksMovementService
 {
-    protected const BUY = 1;
-    protected const SALE = 2;
+    protected const int BUY = 1;
+    protected const int SALE = 2;
+
+    use MoneyOperations;
+    use Scales;
     
     public function __construct(
         protected UserStocksMovementRepository $userStocksMovementRepository,
         protected UserStocksService $userStocksService,
-        protected AcoesApiService $acoesApiService,
+        protected StocksServiceApi $stocksServiceApi,
     ) {
         //
     }
 
-    public function userAllStocksMovements(int $user_id, ?int $stocks_id = null): Collection
+    public function getAll(int $user_id, ?int $stocks_id = null): Collection
     {
-        $allStocksMovements = $this->userStocksMovementRepository->userAllStocksMovements($user_id, $stocks_id);
+        $allStocksMovements = $this->userStocksMovementRepository->all($user_id, $stocks_id);
         $allStocksMovements->map(function ($movement) {
-            $movement->value_total = $this->valueTotal($movement->quantity, $movement->value);
+            $movement->value_total = $this->valueTotal($movement->quantity, $movement->value, 8);
         });
 
         return $allStocksMovements;
     }
 
-    public function userOneStockMovement(int $id): UserStocksMovement
+    public function get(int $id): UserStocksMovement
     {
-        $oneUserStockMovement                = $this->userStocksMovementRepository->userOneStockMovement($id);
-        $oneUserStockMovement->value_total   = $this->valueTotal($oneUserStockMovement->quantity, $oneUserStockMovement->value);
-        $oneUserStockMovement->current_value = $this->acoesApiService->getCurrentValue($oneUserStockMovement->ticker);
+        $oneUserStockMovement                = $this->userStocksMovementRepository->get($id);
+        $oneUserStockMovement->value_total   = $this->valueTotal($oneUserStockMovement->quantity, $oneUserStockMovement->value, 8);
+        $oneUserStockMovement->current_value = $oneUserStockMovement->stocks->current_value;
         
         return $oneUserStockMovement;
     }
 
-    public function insert(UserStocksMovementCreateUpdateDTO $dto): UserStocksMovement
+    public function insert(UserStocksMovementCreateUpdateDTO $dto): array
     {
-        DB::beginTransaction();
+        $this->userStocksMovementRepository->begin();
         
         try {
-            $userStocks = $this->userStocksService->userStockForUpdateOrCreate(
+            $userStocks = $this->userStocksService->forUpdateOrCreate(
                 $dto->user_id,
                 $dto->stocks_id,
                 UserStocksCreateUpdateDTO::make(
                     new UserStocksRequest([
-                        'user_id'        => $dto->user_id,
-                        'stocks_id'      => $dto->stocks_id,
-                        'quantity'       => '0.00',
-                        'average_value'  => '0.00'
+                        'user_id'       => $dto->user_id,
+                        'stocks_id'     => $dto->stocks_id,
+                        'quantity'      => '0.00',
+                        'average_value' => '0.00'
                     ])
                 )
             );
 
+            if (
+                $dto->movement_type_id === self::SALE
+                && $userStocks->quantity < 1
+            ) {                
+                return [
+                    'body'    => null,
+                    'message' => null,
+                    'errors'  => "Não é possível realizar venda para este ativo. Não há quantidades disponiveis!",
+                    'status'  => false
+                ];
+            }
+
             $dto->user_stocks_id = $userStocks->id;
-            $insertedUserStocksMovement = $this->userStocksMovementRepository->insert($dto);
-            
+
             match ($dto->movement_type_id) {
-                self::BUY => $this->buy($userStocks, $dto->quantity, $dto->value),
-                self::SALE => $this->sale($userStocks, $dto->quantity),
-                default => throw new Exception("Tipo de movimento inválido! Tipo informado: {$dto->movement_type_id}")
+                self::BUY  => $this->buy($userStocks, $dto->quantity, $dto->value),
+                self::SALE => $this->sale($userStocks, $dto->quantity, $dto),
+                default    => throw new Exception("Tipo de movimento inválido! Tipo informado: {$dto->movement_type_id}")
             };
-    
+
+            $insertedUserStocksMovement = $this->userStocksMovementRepository->insert($dto);
             $userStocks->updateOrFail();
-            
-            DB::commit();
+
+            $this->userStocksMovementRepository->commit();
+
+            return [
+                'body'    => $insertedUserStocksMovement,
+                'message' => "Movimentação incluída com sucesso!",
+                'errors'  => null,
+                'status'  => true
+            ];
         } catch (\Throwable $error) {
-            DB::rollBack();
+            $this->userStocksMovementRepository->rollBack();
 
-            throw new Exception("Erro ao incluir movimentação. Verifique! " . $error->getMessage());
+            return [
+                'body'    => null,
+                'message' => null,
+                'errors'  => match ($error->getCode()) {
+                    '23503' => "Erro ao incluir movimentação. O ativo selecionado não existe!",
+                    1 => 0,
+                    default => "Erro ao incluir movimentação. Verifique! " . $error->getMessage() . $error->getTraceAsString()
+                },
+                'status'  => false
+            ];
         }
-
-        return $insertedUserStocksMovement;
     }
 
-    public function update(UserStocksMovement $userStocksMovement, UserStocksMovementCreateUpdateDTO $userStocksMovementCreateUpdateDTO): UserStocksMovement
-    {
-        $updatedUserStocksMovement = $this->userStocksMovementRepository->update($userStocksMovement, $userStocksMovementCreateUpdateDTO);
+    public function update(
+        UserStocksMovement $userStocksMovement, 
+        UserStocksMovementCreateUpdateDTO $userStocksMovementCreateUpdateDTO,
+    ): UserStocksMovement {
+        $updatedUserStocksMovement = $this->userStocksMovementRepository->update(
+            $userStocksMovement,
+            $userStocksMovementCreateUpdateDTO
+        );
 
         return $updatedUserStocksMovement;
     }
 
-    public function delete(int $stocks_movement_id): void
+    public function delete(int $stocks_movement_id): array
     {
-        $this->userStocksMovementRepository->delete($stocks_movement_id);
+        try {
+            $this->userStocksMovementRepository->begin();
+            $userStockMovement = $this->get($stocks_movement_id);
+            $userStocks        = $this->userStocksService->forUpdate($userStockMovement->user_stocks_id);
 
-        return;
+            match ($userStockMovement->movement_type_id) {
+                self::BUY => $this->revertBuy($userStockMovement, $userStocks),
+                self::SALE => $this->revertSale($userStockMovement, $userStocks),
+                default => throw new Exception("Tipo de movimento Inválido. Class: UserStocksMovementService. Method: delete. Valor informado: {$userStockMovement->movement_type_id}")
+            };
+
+            if ($userStocks->quantity < 0) {
+                return [
+                    'user_stocks_id' => $userStocks->id,
+                    'error' => true,
+                    'message' => "Erro ao excluir movimento. Não há quantidade suficiente. quantidade após movimentação: {$userStocks->quantity}!"
+                ];
+            }
+            
+            $userStocks->updateOrFail();
+            $this->userStocksMovementRepository->delete($stocks_movement_id);
+    
+            $this->userStocksMovementRepository->commit();
+            
+            return [
+                'user_stocks_id' => $userStocks->id,
+                'error' => false
+            ];
+        } catch (\Throwable $error) {
+            $this->userStocksMovementRepository->rollBack();
+            
+            return [
+                'user_stocks_id' => $userStocks->id,
+                'error' => true,
+                'message' => 'Erro ao excluir movimento. Verifique! ' . $error->getMessage()
+            ];
+        }
     }
 
     public function buy(UserStocks $userStocks, string $quantity, string $value): void
     {
-        $user_stock_value_total = $this->valueTotal($userStocks->quantity, $userStocks->average_value);
-        $value_total_buy        = $this->valueTotal($quantity, $value);
+        $value_total_buy        = $this->valueTotal($quantity, $value, 8);
+        $user_stock_value_total = $this->valueTotal($userStocks->quantity, $userStocks->average_value, 8);
 
         $userStocks->quantity   = $this->newQuantity($userStocks->quantity, $quantity, self::BUY);
-        $user_stock_value_total = bcadd($user_stock_value_total, $value_total_buy);
+        $user_stock_value_total = self::add($user_stock_value_total, $value_total_buy, self::EIGHT_DECIMALS);
 
         $userStocks->average_value = $this->calculateAverageValue($user_stock_value_total, $userStocks->quantity);
     }
 
-    public function sale(UserStocks $userStocks, string $quantity): void
+    public function sale(UserStocks $userStocks, string $quantity, UserStocksMovementCreateUpdateDTO $dto): void
     {
+        $dto->average_value  = $userStocks->average_value;
         $userStocks->quantity = $this->newQuantity($userStocks->quantity, $quantity, self::SALE);
     }
 
-    public static function calculateGain(string $value_current, string $average_value): string
+    public function revertBuy(UserStocksMovement $userStocksMovement, UserStocks $userStocks): void
     {
-        return bcsub($value_current, $average_value, 2);
+        $userStocks->value_total   = $this->valueTotal($userStocks->quantity, $userStocks->average_value, 8);
+        $userStocks->value_total   = self::sub($userStocks->value_total, $userStocksMovement->value_total);
+        $userStocks->quantity      = $this->newQuantity($userStocks->quantity, $userStocksMovement->quantity, self::SALE);
+
+        $userStocks->average_value = $userStocks->quantity > 0
+        ? $this->calculateAverageValue($userStocks->value_total, $userStocks->quantity) 
+        : $userStocks->value_total;
+
+        unset($userStocks->value_total); //exclui value_total pois nao existe este campo no modelo
+    }
+
+    public function revertSale(UserStocksMovement $userStocksMovement, UserStocks $userStocks): void
+    {
+        $this->buy($userStocks, $userStocksMovement->quantity, $userStocksMovement->current_value);
     }
 
     public static function calculateGainPercent(string $gain, string $average_value): string
     {
-        $gain_Percent = bcdiv($gain, $average_value, 8);
-        $gain_Percent = bcmul($gain_Percent, "100", 8);
+        if ($average_value === '0.00') {
+            return $average_value;
+        }
+        
+        $gain_Percent = self::div($gain, $average_value, self::EIGHT_DECIMALS);
+        $gain_Percent = self::mult($gain_Percent, "100", self::EIGHT_DECIMALS);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
         
         return $gain_Percent;
     }
 
-    public function valueTotal(string $quantity, string $value, ?int $decimals = 2): string
+    public function valueTotal(string $quantity, string $value, ?int $decimals = self::TWO_DECIMALS): string
     {
-        return bcmul($quantity, $value, $decimals);
+        return self::mult($quantity, $value, $decimals);
     }
 
-    public function newQuantity(string $leftQuantity, string $rightQuantity, int $buyOrSale): string
+    public function newQuantity(string $leftQuantity, string $rightQuantity, int $addOrSub): string
     {
-        return match ($buyOrSale) {
-            self::BUY => bcadd($leftQuantity, $rightQuantity, 0),
-            self::SALE => bcsub($leftQuantity, $rightQuantity, 0)
+        return match ($addOrSub) {
+            1 => self::add($leftQuantity, $rightQuantity, self::NO_DECIMALS),
+            2 => self::sub($leftQuantity, $rightQuantity, self::NO_DECIMALS),
+            default => throw new Exception("Tipo de calculo não informado! Class: UserStocksMovementService. Method: newQuantity. Valor informado: {$addOrSub}.")
         };
     }
 
     public function calculateAverageValue(string $value, string $quantity): string
     {
-        $averageValue = bcdiv($value, $quantity, 2);
+        $averageValue = self::div($value, $quantity, self::EIGHT_DECIMALS);
 
         return $averageValue;
     }

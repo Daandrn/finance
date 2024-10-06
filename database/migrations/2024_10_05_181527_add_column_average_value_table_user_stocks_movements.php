@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('user_stocks_movments', function (Blueprint $table) {
-            $table->numeric('average_value', 8, 2)->nullable(true);
+        Schema::table('user_stocks_movements', function (Blueprint $table) {
+            $table->unsignedDecimal('average_value', 8, 2)->nullable(true);
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('user_stocks_movments', function (Blueprint $table) {
+        Schema::table('user_stocks_movements', function (Blueprint $table) {
             $table->dropColumn('average_value');
         });
     }
