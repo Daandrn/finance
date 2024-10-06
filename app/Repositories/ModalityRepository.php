@@ -4,12 +4,14 @@ namespace App\Repositories;
 
 use App\DTO\modality\ModalityCreateUpdateDTO;
 use App\Models\Modality;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use App\Traits\TransactionStatments;
+use Illuminate\Database\Eloquent\{Collection, Model};
 use Illuminate\Support\Facades\DB;
 
 class ModalityRepository
 {
+    use TransactionStatments;
+
     public function __construct(
         protected Modality $modality,
     ) {

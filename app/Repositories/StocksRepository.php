@@ -4,12 +4,14 @@ namespace App\Repositories;
 
 use App\DTO\stocks\StocksCreateUpdateDTO;
 use App\Models\Stocks;
+use App\Traits\TransactionStatments;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\{Model, Collection};
 
 class StocksRepository
 {
+    use TransactionStatments;
+
     public function __construct(
         protected Stocks $stocks,
     ) {
