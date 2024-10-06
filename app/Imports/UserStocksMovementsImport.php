@@ -2,21 +2,19 @@
 
 namespace App\Imports;
 
-use App\DTO\stocks\UserStocksCreateUpdateDTO;
-use App\DTO\stocks\UserStocksMovementCreateUpdateDTO;
-use App\Http\Requests\UserStocksMovementRequest;
-use App\Http\Requests\UserStocksRequest;
-use App\Models\Stocks;
-use App\Models\StocksMovementType;
-use App\Services\UserStocksMovementService;
-use App\Services\UserStocksService;
+use App\DTO\stocks\{UserStocksCreateUpdateDTO, UserStocksMovementCreateUpdateDTO};
+use App\Http\Requests\{UserStocksMovementRequest, UserStocksRequest};
+use App\Models\{Stocks, StocksMovementType};
+use App\Services\{UserStocksMovementService, UserStocksService};
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Concerns\OnEachRow;
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
-use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Concerns\{
+    OnEachRow, 
+    WithValidation, 
+    SkipsEmptyRows, 
+    WithChunkReading, 
+    WithHeadingRow
+};
 use Maatwebsite\Excel\Row;
 
 class UserStocksMovementsImport implements OnEachRow, WithValidation, WithHeadingRow, SkipsEmptyRows, WithChunkReading 
@@ -103,8 +101,8 @@ class UserStocksMovementsImport implements OnEachRow, WithValidation, WithHeadin
         ]));
 
         $movement_type_id = match ($row['tipo_movimentacao']) {
-            'compra' => stocksMovementType::BUY,
-            'venda'  => stocksMovementType::SALE,
+            'compra' => $this->stocksMovementType::BUY,
+            'venda'  => $this->stocksMovementType::SALE,
         };
 
         $userStocks = $this->userStocksService->forUpdateOrCreate($user_id, $stocks->id, $userStocksDto);

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StocksMovementType extends Model
 {
+    public const int BUY = 1;
+    public const int SALE = 2;
+
     use HasFactory;
 
     protected $fillable = [

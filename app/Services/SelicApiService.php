@@ -9,6 +9,7 @@ class SelicApiService
     public function __construct(
         protected SelicRepository $selicRepository,
     ) {
+        //
     }
 
     public function getCurrentSelic()

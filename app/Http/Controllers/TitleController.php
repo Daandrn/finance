@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TitleRequest;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
-use App\Models\Title;
-use App\Models\TitleType;
+use App\Models\{Title, TitleType};
 use App\Repositories\ModalityRepository;
 use App\Services\TitleService;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 

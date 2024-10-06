@@ -17,6 +17,7 @@ class TitleService
         protected TitleRepository $titleRepository,
         protected SelicApiService $selicApiService,
     ) {
+        //
     }
 
     public function getAll(int $user_id): Collection
