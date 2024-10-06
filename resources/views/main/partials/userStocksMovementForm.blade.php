@@ -12,7 +12,7 @@
         type="text" 
         name="ticker" 
         id="ticker" 
-        value="{{ isset($userStocksMovement->ticker) ? (old('ticker') ?? $userStocksMovement->ticker) : old('ticker') }}"
+        value="{{ $selectedStocks->ticker ?? (isset($userStocksMovement->ticker) ? (old('ticker') ?? $userStocksMovement->ticker) : old('ticker')) }}"
     >
     <select name="stocks_id" id="stocks_id">
         @if (!isset($userStocksMovement->ticker))
@@ -24,7 +24,7 @@
                 <option
                     value="{{ $stocksElement->id }}" 
                     data-ticker="{{ $stocksElement->ticker }}"
-                    @selected((isset($userStocksMovement->stocks_id) ? $userStocksMovement->stocks_id : old('stocks_id')) == $stocksElement->id)
+                    @selected(($selectedStocks->id ?? (isset($userStocksMovement->stocks_id) ? $userStocksMovement->stocks_id : old('stocks_id'))) == $stocksElement->id)
                 >{{ $stocksElement->ticker }}</option>
             @endforeach
         @endisset
