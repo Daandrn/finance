@@ -18,6 +18,7 @@ class StocksController extends Controller
         protected StocksRepository $stocksRepository,
         protected StocksServiceApi $stocksServiceApi,
     ) {
+        //
     }
     
     public function index(): View
@@ -86,7 +87,7 @@ class StocksController extends Controller
         return $stocks;
     }
 
-    public function updateStocksValues(): RedirectResponse
+    public function updateStocksValues()
     {
         $stocks = $this->stocksRepository->all();
 
@@ -95,9 +96,14 @@ class StocksController extends Controller
         });
 
         if ($stocks->isEmpty()) {
-            return redirect()
-                    ->route('stocks')
-                    ->with(['message' => "Nenhuma pendencia para atualizar!"]);
+            echo(
+                json_encode([
+                    'message' => "Nenhuma pendencia para atualizar!",
+                    'error' => false
+                ])
+            );
+
+            return;
         }
 
         $stocks->get('ticker');
@@ -107,11 +113,16 @@ class StocksController extends Controller
             isset($stocksValues['error'])
             && $stocksValues['error']
         ) {
-            return redirect()
-                ->route('stocks')
-                ->withErrors($stocksValues['message']);
+            echo(
+                json_encode([
+                    'message' => $stocksValues['message'],
+                    'error' => true
+                ])
+            );
+
+            return;
         }
-        
+
         $stocks->each(function ($stocks) use ($stocksValues) {            
             $stocksDetails = $stocksValues[$stocks->ticker];
 
@@ -124,9 +135,14 @@ class StocksController extends Controller
 
             $stocks->save();
         });
-        
-        return redirect()
-                ->route('stocks')
-                ->with(['message' => "Ações atualizadas com sucesso!"]);
+
+        echo(
+            json_encode([
+                'message' => "Ações atualizadas com sucesso!",
+                'error' => false
+            ])
+        );
+
+        return;
     }
 }

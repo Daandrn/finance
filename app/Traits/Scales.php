@@ -13,4 +13,8 @@ trait Scales
     public const int SIX_DECIMALS   = 6;
     public const int SEVEN_DECIMALS = 7;
     public const int EIGHT_DECIMALS = 8;
+    public const int TEN_DECIMALS = 10;
+    public const int TWELVE_DECIMALS = 12;
+    public const int FOURTEN_DECIMALS = 14;
+    public const int SIXTEN_DECIMALS = 16;
 }

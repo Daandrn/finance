@@ -43,12 +43,12 @@ class UserStocksService
             $userStocks->gain          = self::calculateGain($userStocks->value_current, $userStocks->average_value);
             $userStocks->gain_percent  = self::calculateGainPercent($userStocks->gain, $userStocks->average_value);
 
-            $userStocks->gain_total          = self::mult(strval($userStocks->quantity), $userStocks->gain, self::TWO_DECIMALS);
-            $userStocks->value_total_buy     = self::mult(strval($userStocks->quantity), $userStocks->average_value, self::TWO_DECIMALS);
-            $userStocks->value_total_current = self::mult(strval($userStocks->quantity), $userStocks->value_current, self::TWO_DECIMALS);
+            $userStocks->gain_total          = self::mult(strval($userStocks->quantity), $userStocks->gain, self::EIGHT_DECIMALS);
+            $userStocks->value_total_buy     = self::mult(strval($userStocks->quantity), $userStocks->average_value, self::EIGHT_DECIMALS);
+            $userStocks->value_total_current = self::mult(strval($userStocks->quantity), $userStocks->value_current, self::EIGHT_DECIMALS);
 
-            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $userStocks->value_total_buy, self::TWO_DECIMALS);
-            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $userStocks->value_total_current, self::TWO_DECIMALS);
+            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $userStocks->value_total_buy, self::EIGHT_DECIMALS);
+            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $userStocks->value_total_current, self::EIGHT_DECIMALS);
             $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
 
             return $totalizers;
@@ -122,17 +122,17 @@ class UserStocksService
 
     public static function calculateGain(string $value_current, string $average_value): string
     {
-        return $average_value === '0.00'
+        return $average_value == '0.00'
                 ? $average_value
-                : self::sub($value_current, $average_value, self::TWO_DECIMALS);
+                : self::sub($value_current, $average_value, self::EIGHT_DECIMALS);
     }
 
     public static function calculateGainPercent(string $gain, string $average_value): string
     {
-        if ($average_value === '0.00') {
+        if ($average_value == '0.00') {
             return $average_value;
         }
-        
+
         $gain_Percent = self::div($gain, $average_value, self::EIGHT_DECIMALS);
         $gain_Percent = self::mult($gain_Percent, "100", self::EIGHT_DECIMALS);
         $gain_Percent = sprintf('%.2f', $gain_Percent);

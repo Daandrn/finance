@@ -31,3 +31,37 @@ const confirmDeleteStock = document.querySelectorAll('#deleteStock').forEach(ele
         }
     });
 });
+
+function updateStocksValues() {
+    const loadingModal = document.querySelector('#loadingModal');
+
+    loadingModal.style.display = '';
+    
+    fetch('acoes/atualizarValores',{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response =>
+        response.json()
+    )
+    .then(data =>
+        alert(data.message)
+    )
+    .catch(error => {
+        alert('Erro durante a requisição');
+        console.error('Erro durante a requisição.', error);
+    })
+    .finally(() =>{
+        loadingModal.style.display = 'none';
+
+        window.location.reload();
+    });
+}
+
+const btUpdateValues = document.querySelector('#btUpdateValues');
+
+if (btUpdateValues) {
+    btUpdateValues.addEventListener('click', updateStocksValues);
+}

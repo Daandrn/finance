@@ -63,9 +63,17 @@ class UserStocksMovementService
                 )
             );
 
+            $dto->user_stocks_id = $userStocks->id;
+
+            match ($dto->movement_type_id) {
+                self::BUY  => $this->buy($userStocks, $dto->quantity, $dto->value),
+                self::SALE => $this->sale($userStocks, $dto->quantity, $dto),
+                default    => throw new Exception("Tipo de movimento inválido! Tipo informado: {$dto->movement_type_id}")
+            };
+
             if (
                 $dto->movement_type_id === self::SALE
-                && $userStocks->quantity < 1
+                && $userStocks->quantity < 0
             ) {                
                 return [
                     'body'    => null,
@@ -74,14 +82,6 @@ class UserStocksMovementService
                     'status'  => false
                 ];
             }
-
-            $dto->user_stocks_id = $userStocks->id;
-
-            match ($dto->movement_type_id) {
-                self::BUY  => $this->buy($userStocks, $dto->quantity, $dto->value),
-                self::SALE => $this->sale($userStocks, $dto->quantity, $dto),
-                default    => throw new Exception("Tipo de movimento inválido! Tipo informado: {$dto->movement_type_id}")
-            };
 
             $insertedUserStocksMovement = $this->userStocksMovementRepository->insert($dto);
             $userStocks->updateOrFail();
@@ -142,7 +142,7 @@ class UserStocksMovementService
                     'message' => "Erro ao excluir movimento. Não há quantidade suficiente. quantidade após movimentação: {$userStocks->quantity}!"
                 ];
             }
-            
+
             $userStocks->updateOrFail();
             $this->userStocksMovementRepository->delete($stocks_movement_id);
     
@@ -165,8 +165,8 @@ class UserStocksMovementService
 
     public function buy(UserStocks $userStocks, string $quantity, string $value): void
     {
-        $value_total_buy        = $this->valueTotal($quantity, $value, 8);
-        $user_stock_value_total = $this->valueTotal($userStocks->quantity, $userStocks->average_value, 8);
+        $value_total_buy        = $this->valueTotal($quantity, $value, self::TWELVE_DECIMALS);
+        $user_stock_value_total = $this->valueTotal($userStocks->quantity, $userStocks->average_value, self::TWELVE_DECIMALS);
 
         $userStocks->quantity   = $this->newQuantity($userStocks->quantity, $quantity, self::BUY);
         $user_stock_value_total = self::add($user_stock_value_total, $value_total_buy, self::EIGHT_DECIMALS);
@@ -182,25 +182,25 @@ class UserStocksMovementService
 
     public function revertBuy(UserStocksMovement $userStocksMovement, UserStocks $userStocks): void
     {
-        $userStocks->value_total   = $this->valueTotal($userStocks->quantity, $userStocks->average_value, 8);
-        $userStocks->value_total   = self::sub($userStocks->value_total, $userStocksMovement->value_total);
-        $userStocks->quantity      = $this->newQuantity($userStocks->quantity, $userStocksMovement->quantity, self::SALE);
+        $userStocks->value_total = $this->valueTotal($userStocks->quantity, $userStocks->average_value, self::EIGHT_DECIMALS);
+        $userStocks->value_total = self::sub($userStocks->value_total, $userStocksMovement->value_total, self::EIGHT_DECIMALS);
+        $userStocks->quantity    = $this->newQuantity($userStocks->quantity, $userStocksMovement->quantity, self::SALE);
 
         $userStocks->average_value = $userStocks->quantity > 0
-        ? $this->calculateAverageValue($userStocks->value_total, $userStocks->quantity) 
-        : $userStocks->value_total;
+                ? $this->calculateAverageValue($userStocks->value_total, $userStocks->quantity) 
+                : $userStocks->value_total;
 
         unset($userStocks->value_total); //exclui value_total pois nao existe este campo no modelo
     }
 
     public function revertSale(UserStocksMovement $userStocksMovement, UserStocks $userStocks): void
     {
-        $this->buy($userStocks, $userStocksMovement->quantity, $userStocksMovement->current_value);
+        $this->buy($userStocks, $userStocksMovement->quantity, $userStocksMovement->average_value);
     }
 
     public static function calculateGainPercent(string $gain, string $average_value): string
     {
-        if ($average_value === '0.00') {
+        if ($average_value == '0.00') {
             return $average_value;
         }
         
@@ -211,9 +211,11 @@ class UserStocksMovementService
         return $gain_Percent;
     }
 
-    public function valueTotal(string $quantity, string $value, ?int $decimals = self::TWO_DECIMALS): string
+    public function valueTotal(string $quantity, string $value, ?int $decimals = self::TWELVE_DECIMALS): string
     {
-        return self::mult($quantity, $value, $decimals);
+        $valueTotal = self::mult($quantity, $value, $decimals);
+
+        return sprintf('%.2f', $valueTotal);
     }
 
     public function newQuantity(string $leftQuantity, string $rightQuantity, int $addOrSub): string
@@ -227,8 +229,8 @@ class UserStocksMovementService
 
     public function calculateAverageValue(string $value, string $quantity): string
     {
-        $averageValue = self::div($value, $quantity, self::EIGHT_DECIMALS);
+        $averageValue = self::div($value, $quantity, self::TWELVE_DECIMALS);
 
-        return $averageValue;
+        return sprintf('%.8f', $averageValue);
     }
 }

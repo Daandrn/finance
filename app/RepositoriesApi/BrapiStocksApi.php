@@ -16,7 +16,7 @@ class BrapiStocksApi implements StocksApiInterface
     private string $token;
     protected string $errorMessage;
     protected bool $error = false;
-    
+
     public function __construct(
         protected Http $http,
         protected StocksRepository $stocksRepository,
@@ -48,7 +48,7 @@ class BrapiStocksApi implements StocksApiInterface
 
             return null;
         }
-        
+
         $stocksDetails = $response['results'][0];
 
         return (string) $stocksDetails['regularMarketPrice'];
@@ -57,7 +57,7 @@ class BrapiStocksApi implements StocksApiInterface
     public function getStocksValues(array $stocks): array|null
     {
         $stocksDetails = [];
-        
+
         foreach ($stocks as $item) {
             $response = $this->http->get(
                 "{$this->baseUrl}/quote/{$item['ticker']}",
@@ -70,17 +70,17 @@ class BrapiStocksApi implements StocksApiInterface
                     'token'       => $this->token,
                 ]
             )->json();
-    
+
             if (
                 isset($response['error'])
                 && $response['error'] == true
             ) {
                 $this->error = $response['error'];
                 $this->errorMessage = $response['message'];
-    
+
                 return null;
             }
-            
+
             $stocksDetails[$item['ticker']] = $response['results'][0];
         }
 

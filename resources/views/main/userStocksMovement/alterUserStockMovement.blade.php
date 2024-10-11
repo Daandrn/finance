@@ -30,4 +30,5 @@
 
     <x-alert-error/>
 
+    @vite('resources/js/userStocksMovement.js')
 </x-app-layout>
