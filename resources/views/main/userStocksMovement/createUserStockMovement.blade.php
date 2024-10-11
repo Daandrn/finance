@@ -52,5 +52,5 @@
     <x-alert-error/>
     <x-modal-loading/>
     
-    @vite('resources/js/userStocksMovements.js')
+    @vite('resources/js/userStocksMovement.js')
 </x-app-layout>

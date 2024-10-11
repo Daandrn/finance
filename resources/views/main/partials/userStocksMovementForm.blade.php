@@ -55,7 +55,7 @@
     >
 </div>
 <div>
-    <label for="value">{{ __('Valor médio') }}: </label>
+    <label for="value">{{ __('Valor') }}: </label>
     <input 
         type="text"
         name="value"

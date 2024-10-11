@@ -36,7 +36,8 @@ class UserStocksMovementRequest extends FormRequest
             ],
             'quantity' => [
                 'required',
-                'regex:/^\d{1,12}(\,\d{1,2})?$/',
+                'integer',
+                'min:1',
             ],
             'value' => [
                 'required',

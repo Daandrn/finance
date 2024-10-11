@@ -59,12 +59,12 @@ class UserStocksMovementController extends Controller
     public function import(Request $request): RedirectResponse
     {
         $file = $request->file('fileUpload');
-        $xlsxVerify = $file->getMimeType() !== "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        $xlsx = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
         
         $message = match (true) {
             empty($file)         => 'Anexe um arquivo.',
             !$file->isValid()    => 'Arquivo inválido. Formato aceito: XLSX. Em breve: CSV!',
-            $xlsxVerify          => 'A extensão do arquivo é inválida. Extensões aceitas: XLSX. Em breve: CSV!',
+            $file->getMimeType() !== $xlsx => 'A extensão do arquivo é inválida. Extensões aceitas: XLSX. Em breve: CSV!',
             !$file->isReadable() => 'O arquivo nao permite leitura. Verifique!',
             default => null
         };
@@ -108,7 +108,7 @@ class UserStocksMovementController extends Controller
         }
         
         return redirect()
-                ->back()
+                ->route('userStocksMovement.create')
                 ->withErrors(['error' => $userStocksMovement['errors']]);
     }
 

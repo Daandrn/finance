@@ -102,7 +102,7 @@ return [
     'min' => [
         'array' => 'The :attribute field must have at least :min items.',
         'file' => 'The :attribute field must be at least :min kilobytes.',
-        'numeric' => 'The :attribute field must be at least :min.',
+        'numeric' => 'O campo :attribute deve ser no mínimo :min.',
         'string' => 'O campo :attribute deve ter minimo :min caracteres.',
     ],
     'min_digits' => 'The :attribute field must have at least :min digits.',
@@ -204,5 +204,8 @@ return [
         'ticker' => 'Código de negociação',
         'average_value' => 'Valor médio',
         'quantity' => 'Quantidade',
+        'movement_type_id' => 'Tipo de Movimento',
+        'date' => 'Data',
+        'value' => 'Valor',
     ],
 ];
