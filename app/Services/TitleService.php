@@ -98,14 +98,14 @@ class TitleService
 
     public static function calculateGain(string $value_current, string $value_buy): string
     {
-        return $value_buy === '0.00'
+        return $value_buy == '0.00'
                 ? $value_buy
                 : self::sub($value_current, $value_buy, 2);
     }
 
     public static function calculateGainPercent(string $gain, string $value_buy): string
     {
-        if ($value_buy === '0.00') {
+        if ($value_buy == '0.00') {
             return $value_buy;
         }
         
