@@ -215,7 +215,7 @@ class UserStocksMovementService
     {
         $valueTotal = self::mult($quantity, $value, $decimals);
 
-        return sprintf('%.2f', $valueTotal);
+        return sprintf('%.8f', $valueTotal);
     }
 
     public function newQuantity(string $leftQuantity, string $rightQuantity, int $addOrSub): string
