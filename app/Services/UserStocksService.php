@@ -3,26 +3,27 @@
 namespace App\Services;
 
 use App\DTO\stocks\UserStocksCreateUpdateDTO;
+use App\Http\Controllers\StocksController;
 use App\Models\UserStocks;
 use App\Repositories\UserStocksRepository;
-use App\Traits\{MoneyOperations, Scales};
+use App\Traits\{Operations, Scales};
 use Illuminate\Support\Collection;
 
 class UserStocksService
 {
-    use MoneyOperations;
+    use Operations;
     use Scales;
 
     public function __construct(
-        protected UserStocksRepository $userStocksRepository,
-        protected StocksServiceApi $stocksServiceApi,
+        protected UserStocksRepository $repository,
+        protected StocksController $stocksController,
     ) {
         //
     }
 
     public function getAll(int $user_id): Collection
     {
-        $userStocks = $this->userStocksRepository->all($user_id);
+        $userStocks = $this->repository->all($user_id);
 
         $totalizersInit = collect([
             'patrimony'               => "0.00",
@@ -43,18 +44,22 @@ class UserStocksService
             $userStocks->gain          = self::calculateGain($userStocks->value_current, $userStocks->average_value);
             $userStocks->gain_percent  = self::calculateGainPercent($userStocks->gain, $userStocks->average_value);
 
-            $userStocks->gain_total          = self::mult(strval($userStocks->quantity), $userStocks->gain, self::EIGHT_DECIMALS);
-            $userStocks->value_total_buy     = self::mult(strval($userStocks->quantity), $userStocks->average_value, self::EIGHT_DECIMALS);
-            $userStocks->value_total_current = self::mult(strval($userStocks->quantity), $userStocks->value_current, self::EIGHT_DECIMALS);
+            $userStocks->gain_total          = self::mult(strval($userStocks->quantity), $userStocks->gain, self::DECIMALS_EIGHT);
+            $userStocks->value_total_buy     = self::mult(strval($userStocks->quantity), $userStocks->average_value, self::DECIMALS_EIGHT);
+            $userStocks->value_total_current = self::mult(strval($userStocks->quantity), $userStocks->value_current, self::DECIMALS_EIGHT);
 
-            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $userStocks->value_total_buy, self::EIGHT_DECIMALS);
-            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $userStocks->value_total_current, self::EIGHT_DECIMALS);
+            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $userStocks->value_total_buy, self::DECIMALS_EIGHT);
+            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $userStocks->value_total_current, self::DECIMALS_EIGHT);
             $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
 
             return $totalizers;
         }, $totalizersInit);
 
         $totalizers['gain_percent_cumulative'] = self::calculateGainPercent($totalizers['gain_cumulative'], $totalizers['buy_cumulative']);
+        
+        $userStocks = $userStocks->sortBy(function ($item) {
+            return $item->value_total_current;
+        }, descending: true);
 
         return collect([
             'userAllStocks' => $userStocks,
@@ -64,41 +69,41 @@ class UserStocksService
 
     public function forUpdateOrCreate(int $user_id, int $stocks_id, UserStocksCreateUpdateDTO $dto): UserStocks
     {
-        return $this->userStocksRepository->forUpdateOrCreate($user_id, $stocks_id, $dto);
+        return $this->repository->forUpdateOrCreate($user_id, $stocks_id, $dto);
     }
 
     public function forUpdate(int $user_stocks_id): UserStocks
     {
-        return $this->userStocksRepository->forUpdate($user_stocks_id);
+        return $this->repository->forUpdate($user_stocks_id);
     } 
 
     public function userStocksWithGain(int $user_stocks_id): UserStocks
     {
-        $oneUserStocks                = $this->userStocksRepository->get($user_stocks_id);
-        $oneUserStocks->current_value = $oneUserStocks->stocks->current_value;
-        $oneUserStocks->gain          = self::calculateGain($oneUserStocks->current_value, $oneUserStocks->average_value);
-        $oneUserStocks->gain_percent  = self::calculateGainPercent($oneUserStocks->gain, $oneUserStocks->average_value);
+        $userStocks                = $this->repository->get($user_stocks_id);
+        $userStocks->current_value = $userStocks->stocks->current_value;
+        $userStocks->gain          = self::calculateGain($userStocks->current_value, $userStocks->average_value);
+        $userStocks->gain_percent  = self::calculateGainPercent($userStocks->gain, $userStocks->average_value);
 
-        return $oneUserStocks;
+        return $userStocks;
     }
 
     public function insert(UserStocksCreateUpdateDTO $userStocksCreateUpdateDTO): UserStocks
     {
-        $insertedUserStocks = $this->userStocksRepository->insert($userStocksCreateUpdateDTO);
+        $insertedUserStocks = $this->repository->insert($userStocksCreateUpdateDTO);
 
         return $insertedUserStocks;
     }
 
     public function update(UserStocks $userStocks, UserStocksCreateUpdateDTO $userStocksCreateUpdateDTO): UserStocks
     {
-        $updatedUserStocks = $this->userStocksRepository->update($userStocks, $userStocksCreateUpdateDTO);
+        $updatedUserStocks = $this->repository->update($userStocks, $userStocksCreateUpdateDTO);
 
         return $updatedUserStocks;
     }
 
     public function delete(int $user_stocks_id): array
     {
-        $userStockDeleted = $this->userStocksRepository->get($user_stocks_id);
+        $userStockDeleted = $this->repository->get($user_stocks_id);
 
         if ($userStockDeleted->user_stocks_movements->isNotEmpty()) {
             return [
@@ -107,7 +112,7 @@ class UserStocksService
             ];
         }
 
-        $this->userStocksRepository->delete($userStockDeleted->id);
+        $this->repository->delete($userStockDeleted->id);
 
         return [
             'message' => "{$userStockDeleted->stocks->ticker} excluído(a) com sucesso!",
@@ -122,19 +127,19 @@ class UserStocksService
 
     public static function calculateGain(string $value_current, string $average_value): string
     {
-        return $average_value == '0.00'
+        return $average_value <= 0.01
                 ? $average_value
-                : self::sub($value_current, $average_value, self::EIGHT_DECIMALS);
+                : self::sub($value_current, $average_value, self::DECIMALS_EIGHT);
     }
 
     public static function calculateGainPercent(string $gain, string $average_value): string
     {
-        if ($average_value == '0.00') {
+        if ($average_value <= 0.01) {
             return $average_value;
         }
 
-        $gain_Percent = self::div($gain, $average_value, self::EIGHT_DECIMALS);
-        $gain_Percent = self::mult($gain_Percent, "100", self::EIGHT_DECIMALS);
+        $gain_Percent = self::div($gain, $average_value, self::DECIMALS_EIGHT);
+        $gain_Percent = self::mult($gain_Percent, "100", self::DECIMALS_EIGHT);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
 
         return $gain_Percent;

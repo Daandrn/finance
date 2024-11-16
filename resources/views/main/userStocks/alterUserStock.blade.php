@@ -4,7 +4,8 @@
             {{ __('Inicio') }}
         </h2>
     </x-slot>
-
+    
+    <x-alert-error/>
     <x-input-sucess/>
 
     <div class="py-12">
@@ -20,14 +21,17 @@
 
                         @include('main.partials.userStocksForm')
 
-                        <button type="submit">{{ __('Alterar') }}</button>
-                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
+                        <x-primary-button>
+                            {{ __('Alterar') }}
+                        </x-primary-button>
+
+                        <x-link-as-secondary-button href="{{ Route('dashboard') }}" class="ms-3">
+                            {{ __('Voltar') }}
+                        </x-link-as-secondary-button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <x-alert-error/>
 
 </x-app-layout>

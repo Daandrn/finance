@@ -10,13 +10,19 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div>
-                        <a href="{{ Route('users') }}">{{ __('Usuários') }}</a>
+                        <x-responsive-nav-link href="{{ Route('users') }}">
+                            {{ __('Usuários') }}
+                        </x-responsive-nav-link>
                     </div>
                     <div>
-                        <a href="{{ Route('modalities') }}">{{ __('Modalidades') }}</a>
+                        <x-responsive-nav-link href="{{ Route('modalities') }}">
+                            {{ __('Modalidades') }}
+                        </x-responsive-nav-link>
                     </div>
                     <div>
-                        <a href="{{ Route('stocks') }}">{{ __('Ações') }}</a>
+                        <x-responsive-nav-link href="{{ Route('stocks') }}">
+                            {{ __('Ações') }}
+                        </x-responsive-nav-link>
                     </div>
                 </div>
             </div>

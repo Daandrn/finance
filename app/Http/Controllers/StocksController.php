@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Collection;
 class StocksController extends Controller
 {
     public function __construct(
-        protected StocksRepository $stocksRepository,
+        protected StocksRepository $repository,
         protected StocksServiceApi $stocksServiceApi,
     ) {
         //
@@ -23,7 +23,7 @@ class StocksController extends Controller
     
     public function index(): View
     {
-        $stocksPage = $this->stocksRepository->paginate(20);
+        $stocksPage = $this->repository->paginate(20);
         $stocksTypes = StocksType::all();
         
         return view('administrator.stocks.stocks', compact('stocksPage', 'stocksTypes'));
@@ -31,7 +31,7 @@ class StocksController extends Controller
 
     public function store(StocksRequest $stocksRequest): RedirectResponse
     {
-        $this->stocksRepository->new(
+        $this->repository->new(
             StocksCreateUpdateDTO::make($stocksRequest),
         );
 
@@ -42,7 +42,7 @@ class StocksController extends Controller
 
     public function edit(int $id): view
     {
-        $stocksEdit = $this->stocksRepository->get($id);
+        $stocksEdit = $this->repository->get($id);
         $stocksTypes = StocksType::all();
         
         return view('administrator.stocks.alterStocks', compact('stocksEdit', 'stocksTypes'));
@@ -50,7 +50,7 @@ class StocksController extends Controller
 
     public function update(int $id, StocksRequest $stocksRequest): RedirectResponse
     {
-        $this->stocksRepository->update(
+        $this->repository->update(
             $id,
             StocksCreateUpdateDTO::make($stocksRequest)
         );
@@ -61,19 +61,24 @@ class StocksController extends Controller
     }
 
     public function destroy(int $id): RedirectResponse
-    {
-        $stocksDeleted = $this->stocksRepository
-                    ->get($id)
-                    ->with('user_stocks')
-                    ->find($id);
+    {dd('concerta aqui');
+        $stocksDeleted = $this->repository->get($id)
+            ->select([
+                'stocks.id', 'stocks.ticker', 'user_stocks.stocks_id'
+            ])
+            ->join('user_stocks', 'stocks.id', '=', 'user_stocks.stocks_id')
+            ->where('stocks.id', $id)
+            ->first();
+            
+            ddd($stocksDeleted->isNotEmpty());
 
-        if (isset($stocksDeleted->user_stocks)) {
+        if ($stocksDeleted->isNotEmpty()) {
             return redirect()
                 ->back()
                 ->withErrors(['error' => "Não foi possível realizar exclusão. O código de negociação {$stocksDeleted->ticker} já está sendo utilizado!"]);
         }
         
-        $this->stocksRepository->delete($stocksDeleted);
+        $this->repository->delete($stocksDeleted);
 
         return redirect()
                 ->route('stocks')
@@ -82,14 +87,14 @@ class StocksController extends Controller
 
     public function all(): Collection
     {
-        $stocks = $this->stocksRepository->all();
+        $stocks = $this->repository->all();
 
         return $stocks;
     }
 
     public function updateStocksValues()
     {
-        $stocks = $this->stocksRepository->all();
+        $stocks = $this->repository->all();
 
         $stocks = $stocks->filter(function ($stocks) {
             return empty($stocks->last_update_values) || Carbon::parse($stocks->last_update_values)->lt('today');

@@ -33,11 +33,11 @@ class StocksRepository
                 ->Paginate($perPage);
     }
 
-    public function get(int $id): Model|null
+    public function get(int $id): Stocks|null
     {
-        $oneStocks = $this->stocks->findOrFail($id);
+        $stocks = $this->stocks->findOrFail($id);
 
-        return $oneStocks;
+        return $stocks;
     }
 
     public function new(stocksCreateUpdateDTO $stocksCreateUpdateDTO): stocks

@@ -57,8 +57,13 @@
                                     <form action="{{ Route('titles.destroy', $title->id) }}" method="POST">
                                         @csrf()
                                         @method('DELETE')
-                                        <button type="submit">{{ __('Excluir') }}</button>
-                                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
+                                        <x-danger-button>
+                                            {{ __('Excluir') }}
+                                        </x-danger-button>
+                                        
+                                        <x-link-as-secondary-button href="{{ Route('dashboard') }}" class="ms-3">
+                                            {{ __('Voltar') }}
+                                        </x-link-as-secondary-button>
                                     </form>
                                 </td>
                             </tr>

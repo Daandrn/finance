@@ -4,6 +4,7 @@ use App\Http\Controllers\{
     DashBoardController,
     ModalityController,
     ProfileController,
+    SplitController,
     StocksController,
     TitleController,
     UserController,
@@ -32,25 +33,32 @@ Route::get("/", function () {
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {//Adicionar a validação de ADM do middleware
-    Route::delete('/administrador/usuarios/{id}', [UserController::class, 'destroy'])->name('user.destroy');
-    Route::put('/administrador/usuarios/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::get('/administrador/usuarios/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
-    //Route::post('/administrador/usuarios/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
-    //Route::get('/administrador/usuarios/{id}', [UserController::class, 'show'])->name('user.show');
-    Route::get('/administrador/usuarios', [UserController::class, 'index'])->name('users');
+    Route::delete('/administrador/usuario/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::put('/administrador/usuario/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::get('/administrador/usuario/{id}/alterar', [UserController::class, 'edit'])->name('user.edit');
+    //Route::post('/administrador/usuario/novo', [UserController::class, 'create'])->name('user.create');//Não está sendo usado, usar
+    //Route::get('/administrador/usuario/{id}', [UserController::class, 'show'])->name('user.show');
+    Route::get('/administrador/usuario', [UserController::class, 'index'])->name('users');
 
-    Route::delete('/administrador/modalidades/{id}', [ModalityController::class, 'destroy'])->name('modality.destroy');
-    Route::post('/administrador/modalidade/store', [ModalityController::class, 'store'])->name('modality.store');
-    Route::put('/administrador/modalidades/{id}', [ModalityController::class, 'update'])->name('modality.update');
-    Route::get('/administrador/modalidades/{id}/alterar', [ModalityController::class, 'edit'])->name('modality.edit');
-    Route::get('/administrador/modalidades', [ModalityController::class, 'index'])->name('modalities');
+    Route::delete('/administrador/modalidade/{id}', [ModalityController::class, 'destroy'])->name('modality.destroy');
+    Route::post('/administrador/modalidade/salvar', [ModalityController::class, 'store'])->name('modality.store');
+    Route::put('/administrador/modalidade/{id}', [ModalityController::class, 'update'])->name('modality.update');
+    Route::get('/administrador/modalidade/{id}/alterar', [ModalityController::class, 'edit'])->name('modality.edit');
+    Route::get('/administrador/modalidade', [ModalityController::class, 'index'])->name('modalities');
 
     Route::delete('/administrador/acoes/{id}', [StocksController::class, 'destroy'])->name('stocks.destroy');
-    Route::post('/administrador/acao/store', [StocksController::class, 'store'])->name('stocks.store');
+    Route::post('/administrador/acoes/salvar', [StocksController::class, 'store'])->name('stocks.store');
     Route::put('/administrador/acoes/{id}', [StocksController::class, 'update'])->name('stocks.update');
     Route::get('/administrador/acoes/atualizarValores', [StocksController::class, 'updateStocksValues'])->name('userStocks.updateValues');
     Route::get('/administrador/acoes/{id}/alterar', [StocksController::class, 'edit'])->name('stocks.edit');
     Route::get('/administrador/acoes', [StocksController::class, 'index'])->name('stocks');
+
+    Route::delete('/administrador/agrupamento', [SplitController::class, 'destroy'])->name('split.destroy');
+    Route::post('/administrador/agrupamento/salvar', [SplitController::class, 'store'])->name('split.store');
+    Route::put('/administrador/agrupamento/{id}', [SplitController::class, 'update'])->name('split.update');
+    Route::get('/administrador/agrupamento/{id}/alterar', [SplitController::class, 'edit'])->name('split.edit');
+    Route::get('/administrador/agrupamento/{id}', [SplitController::class, 'get'])->name('split.show');
+    Route::get('/administrador/agrupamento', [SplitController::class, 'index'])->name('split');
 });
 
 Route::middleware('auth')->group(function () {
@@ -72,7 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/acoes/{userStocks}/alterar', [UserStocksController::class, 'edit'])->name('userStocks.edit');
     Route::get('/acoes/{id}', [UserStocksController::class, 'show'])->name('userStocks.show');
 
-    Route::delete('/acoes/movimentacao/{id}', [UserStocksMovementController::class, 'destroy'])->name('userStocksMovement.destroy');
+    Route::delete('/acoes/movimentacao/delete', [UserStocksMovementController::class, 'destroy'])->name('userStocksMovement.destroy');
     Route::put('/acoes/movimentacao/{userStocksMovement}', [UserStocksMovementController::class, 'update'])->name('userStocksMovement.update');
     Route::post('/acoes/movimentacao/importar', [UserStocksMovementController::class, 'import'])->name('userStocksMovement.import');
     Route::post('/acoes/movimentacao', [UserStocksMovementController::class, 'store'])->name('userStocksMovement.store');

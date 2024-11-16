@@ -20,6 +20,27 @@ if (createUserStockMovement != undefined) {
         ticker.value = stocks_id.options[stocks_id.options.selectedIndex].dataset.ticker ?? '';
     })
 
+    quantity.addEventListener('keypress', (event) => {
+
+        alert('esta errado aqui corrigir no arquivo: userStocksMovment.js');
+        
+        const validKeys = RegExp('[0-9]');
+        if (!validKeys.test(event.key)) {
+            event.preventDefault();
+
+            alert('Digite apenas números!');
+        }
+
+        if (
+            quantity.value.length > 9
+            && validKeys.test(event.key)
+        ) {
+            event.preventDefault();
+
+            alert('Informe no máximo 10 dígitos!');
+        }
+    });
+
     function numberAndSeparatorValidKeys(element) {
         const validKeys = RegExp('[0-9.,]');
         element.addEventListener('keypress', function (event) {
@@ -42,16 +63,23 @@ if (createUserStockMovement != undefined) {
     });
 }
 
-const confirmDeleteUserStockMovement = document.querySelectorAll('#userStocksMovementDelete').forEach(element => {
-    element.addEventListener('submit', function (event) {
-        let movementId = event.target[2].value;        
+const verifyStockMovementDelete = document.querySelector('#userStocksMovementDelete');
+verifyStockMovementDelete.addEventListener('submit', function (event) {
+    const values = document.querySelectorAll('input[type="checkbox"]:checked');
 
-        let deleteUserStockMovementConfirm = confirm(`Deseja realmente excluir a movimentação ${movementId}?`);
+    if (values.length < 1) {
+        alert('Nenhum movimento selecionado!');
 
-        if (!deleteUserStockMovementConfirm) {
-            event.preventDefault();
-        }
-    });
+        event.preventDefault();
+
+        return;
+    }
+
+    let deleteUserStockMovementConfirm = confirm(`Deseja realmente excluir a(s) movimentação(ões) selecionada(s)?`);
+
+    if (!deleteUserStockMovementConfirm) {
+        event.preventDefault();
+    }
 });
 
 const userStocksMovement_import = document.querySelector('#userStocksMovement_import');
@@ -61,3 +89,26 @@ if (userStocksMovement_import != undefined) {
         document.querySelector('#loadingModal').style.display = '';
     });
 }
+
+const selectAllMovements = document.querySelector('#selectAllMovements');
+
+selectAllMovements.addEventListener('click', function () {
+    const movementsChecked = document.querySelectorAll('input[type="checkbox"]:checked');
+    const movements = document.querySelectorAll('input[type="checkbox"]');
+
+    let numMovementsChecked = movementsChecked.length;
+    let numMovements = movements.length;
+    
+    movements.forEach(item => {
+        if (numMovementsChecked == numMovements) {
+            item.checked = false;
+
+            return;
+        }
+        
+        if (!item.checked) {
+            item.checked = true;
+
+        }
+    });
+});

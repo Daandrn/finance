@@ -10,7 +10,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div>
-                        <button type="button"><a href="{{ Route('administrator') }}">{{ __('Voltar') }}</a></button>
+                        <x-link-as-secondary-button href="{{ Route('administrator') }}">
+                            {{ __('Voltar') }}
+                        </x-link-as-secondary-button>
                     </div>
                     <table>
                         <thead>
@@ -34,7 +36,11 @@
                                 <td> {{ __($user->adm ? 'Sim' : 'Não') }} </td>
                                 <td> {{ __($user->status ? 'Ativo' : 'Inativo') }} </td>
                                 <td> {{ $user->created_at->format('d/m/Y') }} </td>
-                                <td><a href="{{ Route('user.edit', $user->id) }}">{{ __('Alterar') }}</a></td>
+                                <td>
+                                    <x-link-as-secondary-button href="{{ Route('user.edit', $user->id) }}">
+                                        {{ __('Alterar') }}
+                                    </x-link-as-secondary-button>
+                                </td>
                                 <td>
                                     <form
                                         id="userDelete"
@@ -45,7 +51,9 @@
                                         @method('DELETE')
 
                                         <input type="hidden" id="delete{{ $user->id }}" value="{{ $user->name }}"></input>
-                                        <button type="submit">{{ __('Excluir') }}</button>
+                                        <x-danger-button class="ms-3">
+                                            {{ __('Excluir') }}
+                                        </x-danger-button>
                                     </form>
                                 </td>
                             </tr>

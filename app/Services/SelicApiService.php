@@ -7,14 +7,14 @@ use App\RepositoriesApi\SelicRepository;
 class SelicApiService
 {
     public function __construct(
-        protected SelicRepository $selicRepository,
+        protected SelicRepository $repository,
     ) {
         //
     }
 
     public function getCurrentSelic()
     {
-        $current = $this->selicRepository->getCurrentSelic();
+        $current = $this->repository->getCurrentSelic();
 
         return $current->isNotEmpty()
                     ? $current->value('valor')

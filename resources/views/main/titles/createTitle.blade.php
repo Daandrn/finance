@@ -5,6 +5,8 @@
         </h2>
     </x-slot>
 
+    <x-alert-error/>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -18,8 +20,13 @@
 
                         @include('main.partials.titleForm')
 
-                        <button type="submit">{{ __('Criar') }}</button>
-                        <button type="button"><a href="{{ Route('dashboard') }}">{{ __('Voltar') }}</a></button>
+                        <x-create-button class="mt-3">
+                            {{ __('Criar') }}
+                        </x-create-button>
+
+                        <x-link-as-secondary-button href="{{ Route('dashboard') }}">
+                            {{ __('Voltar') }}
+                        </x-link-as-secondary-button>
                     </form>
                 </div>
 
@@ -37,15 +44,17 @@
                                 type="file" 
                                 name="fileUpload" 
                                 id="fileUpload"
+                                accept=".xlsx"
                             >
                         </div>
                         
-                        <button type="submit">{{ __('Importar') }}</button>
+                        <x-create-button class="mt-3">
+                            {{ __('Importar') }}
+                        </x-create-button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-    <x-alert-error/>
     
 </x-app-layout>

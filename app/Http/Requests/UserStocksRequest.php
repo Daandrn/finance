@@ -28,7 +28,8 @@ class UserStocksRequest extends FormRequest
             ],
             'quantity' => [
                 'required',
-                'regex:/^\d{1,12}(\,\d{1,2})?$/',
+                'integer',
+                'min:1',
             ],
             'average_value' => [
                 'required',

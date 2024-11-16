@@ -40,13 +40,13 @@ class UserStocksMovementRepository
         return $userStocks;
     }
 
-    public function insert(UserStocksMovementCreateUpdateDTO $userStocksMovementCreateUpdateDTO): UserStocksMovement
+    public function insert(UserStocksMovementCreateUpdateDTO $dto): UserStocksMovement
     {
-        $insertedUserStocks = $this->userStocksMovement->create(
-            $userStocksMovementCreateUpdateDTO->toArray()
+        $inserted = $this->userStocksMovement->create(
+            $dto->toArray()
         );
         
-        return $insertedUserStocks;
+        return $inserted;
     }
 
     public function update(UserStocksMovement $updatedUserStocksMovement, UserStocksMovementCreateUpdateDTO $userStocksMovementCreateUpdateDTO): UserStocksMovement

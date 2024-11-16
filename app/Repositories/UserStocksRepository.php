@@ -24,11 +24,11 @@ class UserStocksRepository
     public function all(int $user_id, ?bool $activeOnly = true): Collection
     {
         $userAllStocks = $this->userStocks
-                            ->with('stocks')
-                            ->where('user_id', '=', $user_id);
+            ->with('stocks')
+            ->where('user_id', '=', $user_id);
 
         if ($activeOnly) {
-            $userAllStocks->where('quantity', '>', '0.00');
+            $userAllStocks->where('quantity', '>', 0);
         }
 
         return $userAllStocks->get();
