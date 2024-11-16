@@ -9,10 +9,10 @@ class UserStocksCreateUpdateDTO
     public function __construct(
         public int    $user_id,
         public int    $stocks_id,
-        public string $quantity,
+        public int    $quantity,
         public string $average_value,
     ) {
-        $this->quantity = $this->toNumeric($this->quantity);
+        $this->average_value = $this->toNumeric($this->average_value);
     }
 
     public static function make(UserStocksRequest $request): self
@@ -20,7 +20,7 @@ class UserStocksCreateUpdateDTO
         return new self(
             (int) $request->user_id,
             (int) $request->stocks_id,
-            $request->quantity,
+            (int) $request->quantity,
             $request->average_value,
         );
     }

@@ -7,19 +7,19 @@ use Carbon\Carbon;
 
 class UserStocksMovementCreateUpdateDTO
 {
-    
     public function __construct(
         public int    $user_id,
         public int    $stocks_id,
         public int    $user_stocks_id,
         public ?int   $movement_type_id = null,
-        public string $quantity,
+        public int    $quantity,
         public string $value,
         public Carbon $date,
         public ?string $average_value,
     ) {
-        $this->quantity = $this->toNumeric($this->quantity);
         $this->value = $this->toNumeric($this->value);
+
+        if (isset($this->average_value)) $this->average_value = $this->toNumeric($this->average_value);
     }
 
     public static function make(UserStocksMovementRequest $request): self
@@ -29,7 +29,7 @@ class UserStocksMovementCreateUpdateDTO
             (int) $request->stocks_id,
             (int) $request->user_stocks_id,
             $request->movement_type_id ? (int) $request->movement_type_id : $request->movement_type_id,
-            $request->quantity,
+            (int) $request->quantity,
             $request->value,
             Carbon::parse($request->date),
             $request->average_value,
