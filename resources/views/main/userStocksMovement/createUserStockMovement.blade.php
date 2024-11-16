@@ -35,14 +35,15 @@
                         id="userStocksMovement_import"
                         action="{{ Route('userStocksMovement.import') }}" 
                         method="post"
+                        enctype="multipart/form-data"
                     >
                         @csrf()
                         @method('POST')
 
                         <div>
                             <input 
-                                type="file" 
-                                name="fileUpload" 
+                                type="file"
+                                name="fileUpload"
                                 id="fileUpload"
                                 accept=".xlsx"
                             >

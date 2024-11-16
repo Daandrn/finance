@@ -11,6 +11,7 @@ use App\Repositories\StocksRepository;
 use App\Services\StocksServiceApi;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\JsonResponse;
 
 class StocksController extends Controller
 {
@@ -61,18 +62,16 @@ class StocksController extends Controller
     }
 
     public function destroy(int $id): RedirectResponse
-    {dd('concerta aqui');
+    {
         $stocksDeleted = $this->repository->get($id)
             ->select([
                 'stocks.id', 'stocks.ticker', 'user_stocks.stocks_id'
             ])
-            ->join('user_stocks', 'stocks.id', '=', 'user_stocks.stocks_id')
+            ->leftJoin('user_stocks', 'stocks.id', '=', 'user_stocks.stocks_id')
             ->where('stocks.id', $id)
             ->first();
-            
-            ddd($stocksDeleted->isNotEmpty());
-
-        if ($stocksDeleted->isNotEmpty()) {
+        
+        if (isset($stocksDeleted->stocks_id)) {
             return redirect()
                 ->back()
                 ->withErrors(['error' => "Não foi possível realizar exclusão. O código de negociação {$stocksDeleted->ticker} já está sendo utilizado!"]);
@@ -92,7 +91,7 @@ class StocksController extends Controller
         return $stocks;
     }
 
-    public function updateStocksValues()
+    public function updateStocksValues(): JsonResponse
     {
         $stocks = $this->repository->all();
 
@@ -101,14 +100,11 @@ class StocksController extends Controller
         });
 
         if ($stocks->isEmpty()) {
-            echo(
-                json_encode([
+            return response()
+                ->json([
                     'message' => "Nenhuma pendencia para atualizar!",
                     'error' => false
-                ])
-            );
-
-            return;
+            ]);
         }
 
         $stocks->get('ticker');
@@ -118,14 +114,11 @@ class StocksController extends Controller
             isset($stocksValues['error'])
             && $stocksValues['error']
         ) {
-            echo(
-                json_encode([
+            return response()
+                ->json([
                     'message' => $stocksValues['message'],
                     'error' => true
-                ])
-            );
-
-            return;
+            ]);
         }
 
         $stocks->each(function ($stocks) use ($stocksValues) {            
@@ -141,13 +134,10 @@ class StocksController extends Controller
             $stocks->save();
         });
 
-        echo(
-            json_encode([
+        return response()
+            ->json([
                 'message' => "Ações atualizadas com sucesso!",
                 'error' => false
-            ])
-        );
-
-        return;
+        ]);
     }
 }

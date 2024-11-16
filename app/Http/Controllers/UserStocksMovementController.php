@@ -67,7 +67,7 @@ class UserStocksMovementController extends Controller
         
         $message = match (true) {
             empty($file)         => 'Anexe um arquivo.',
-            !$file->isValid()    => 'Arquivo inválido. Formato aceito: XLSX. Em breve: CSV!',
+            !$file->isValid()    => 'Anexe um arquivo válido. Formato aceito: XLSX. Em breve: CSV!',
             $file->getMimeType() !== $xlsx => 'A extensão do arquivo é inválida. Extensões aceitas: XLSX. Em breve: CSV!',
             !$file->isReadable() => 'O arquivo nao permite leitura. Verifique!',
             default => null

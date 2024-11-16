@@ -59,7 +59,7 @@ class BrapiStocksApi implements StocksApiInterface
         $stocksDetails = [];
 
         foreach ($stocks as $item) {
-            $response = $this->http->get(
+            $response = $this->http::get(
                 "{$this->baseUrl}/quote/{$item['ticker']}",
                 [
                     'range'       => $this->range,
