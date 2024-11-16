@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
 class UserStocksController extends Controller
 {
     public function __construct(
-        protected UserStocksService $userStocksService,
+        protected UserStocksService $service,
         protected UserStocksMovementService $userStocksMovementService,
         protected StocksController $stocksController,
     ) {
@@ -24,7 +24,7 @@ class UserStocksController extends Controller
     public function getUserStocks(): Collection
     {   
         $user_id = Auth::user()->id;
-        $userStocksAndTotalizers = $this->userStocksService->getAll($user_id);
+        $userStocksAndTotalizers = $this->service->getAll($user_id);
 
         return collect([
             'userAllStocks' => $userStocksAndTotalizers['userAllStocks'],
@@ -35,9 +35,9 @@ class UserStocksController extends Controller
     public function show(int $user_stocks_id): View
     {
         $user_id             = Auth::id();
-        $showUserStocks      = $this->userStocksService->userStocksWithGain($user_stocks_id);
+        $showUserStocks      = $this->service->userStocksWithGain($user_stocks_id);
         $userStocksMovements = $this->userStocksMovementService->getAll($user_id, $showUserStocks->stocks_id);
-
+        
         return view('main.userStocks.userStocks', compact('showUserStocks', 'userStocksMovements'));
     }
 
@@ -68,7 +68,7 @@ class UserStocksController extends Controller
 
     public function store(UserStocksRequest $userStocksRequest): RedirectResponse
     {
-        $this->userStocksService->insert(
+        $this->service->insert(
             UserStocksCreateUpdateDTO::make($userStocksRequest)
         );
 
@@ -89,7 +89,7 @@ class UserStocksController extends Controller
 
     public function update(UserStocks $userStocks, UserStocksRequest $userStocksRequest): RedirectResponse
     {
-        $userStocks = $this->userStocksService->update($userStocks, UserStocksCreateUpdateDTO::make($userStocksRequest));
+        $userStocks = $this->service->update($userStocks, UserStocksCreateUpdateDTO::make($userStocksRequest));
 
         return redirect()
                 ->route('userStocks.edit', $userStocks->id)
@@ -98,7 +98,7 @@ class UserStocksController extends Controller
 
     public function destroy(int $user_stocks_id): RedirectResponse
     {
-        $response = $this->userStocksService->delete($user_stocks_id);
+        $response = $this->service->delete($user_stocks_id);
 
         if ($response['status']) {
             return redirect()

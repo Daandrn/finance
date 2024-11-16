@@ -12,7 +12,7 @@ use Illuminate\Http\RedirectResponse;
 class ModalityController extends Controller
 {
     public function __construct(
-        protected ModalityRepository $modalityRepository,
+        protected ModalityRepository $repository,
     ) {
         //
     }
@@ -26,7 +26,7 @@ class ModalityController extends Controller
 
     public function store(ModalityRequest $modalityRequest): RedirectResponse
     {
-        $this->modalityRepository->new(
+        $this->repository->new(
             ModalityCreateUpdateDTO::make($modalityRequest),
         );
 
@@ -37,14 +37,14 @@ class ModalityController extends Controller
 
     public function edit(string $id): view
     {
-        $modalityEdit = $this->modalityRepository->get($id);
+        $modalityEdit = $this->repository->get($id);
 
         return view('administrator.modality.alterModalities', compact('modalityEdit'));
     }
 
     public function update(int $id, ModalityRequest $modalityRequest): RedirectResponse
     {
-        $this->modalityRepository->update(
+        $this->repository->update(
             $id,
             ModalityCreateUpdateDTO::make($modalityRequest)
         );
@@ -56,7 +56,7 @@ class ModalityController extends Controller
 
     public function destroy(string $id): RedirectResponse
     {
-        $this->modalityRepository->delete($id);
+        $this->repository->delete($id);
 
         return redirect()
                 ->route('modalities')

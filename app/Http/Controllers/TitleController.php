@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Auth;
 class TitleController extends Controller
 {
     public function __construct(
-        protected TitleService $titleService,
+        protected TitleService $service,
     ) {
         //
     }
@@ -23,7 +23,7 @@ class TitleController extends Controller
     public function getUserTitles(): Collection
     {   
         $user_id = Auth::user()->id;
-        $titlesAndTotalizers = $this->titleService->getAll($user_id);
+        $titlesAndTotalizers = $this->service->getAll($user_id);
 
         return collect([
             'titles'     => $titlesAndTotalizers['titles'], 
@@ -33,7 +33,7 @@ class TitleController extends Controller
     
     public function show(string $id): view
     {
-        $title = $this->titleService->get($id);
+        $title = $this->service->get($id);
         
         return view('main.titles.title', compact('title'));
     }
@@ -64,7 +64,7 @@ class TitleController extends Controller
 
     public function store(TitleRequest $titleRequest): RedirectResponse
     {
-        $this->titleService->insert(
+        $this->service->insert(
             TitleCreateDTO::make($titleRequest)
         );
 
@@ -84,7 +84,7 @@ class TitleController extends Controller
 
     public function update(Title $title, TitleRequest $titleRequest): RedirectResponse
     {
-        $title = $this->titleService->update($title, TitleUpdateDTO::make($titleRequest));
+        $title = $this->service->update($title, TitleUpdateDTO::make($titleRequest));
 
         return redirect()
                 ->route('titles.edit', $title->id)
@@ -93,7 +93,7 @@ class TitleController extends Controller
 
     public function destroy(string $title_id): RedirectResponse
     {
-        $this->titleService->delete($title_id);
+        $this->service->delete($title_id);
 
         return redirect()
                 ->route('dashboard')
