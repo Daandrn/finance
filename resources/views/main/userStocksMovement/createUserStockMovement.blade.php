@@ -5,6 +5,8 @@
         </h2>
     </x-slot>
 
+    <x-alert-error/>
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -18,8 +20,13 @@
 
                         @include('main.partials.userStocksMovementForm')
 
-                        <button type="submit" id="createUserStockMovement">{{ __('Criar') }}</button>
-                        <button type="button" onclick="window.history.back()">{{ __('Voltar') }}</button>
+                        <x-create-button id="createUserStockMovement">
+                            {{ __('Criar') }}
+                        </x-create-button>
+
+                        <x-secondary-button onclick="window.history.back()" class="ms-3">
+                            {{ __('Voltar') }}
+                        </x-secondary-button>
                     </form>
                 </div>
 
@@ -27,8 +34,7 @@
                     <form 
                         id="userStocksMovement_import"
                         action="{{ Route('userStocksMovement.import') }}" 
-                        method="post" 
-                        enctype="multipart/form-data"
+                        method="post"
                     >
                         @csrf()
                         @method('POST')
@@ -38,10 +44,13 @@
                                 type="file" 
                                 name="fileUpload" 
                                 id="fileUpload"
+                                accept=".xlsx"
                             >
                         </div>
 
-                        <button type="submit">{{ __('Importar') }}</button>
+                        <x-create-button>
+                            {{ __('Importar') }}
+                        </x-create-button>
                     </form>
                 </div>
             </div>
@@ -49,8 +58,7 @@
 
     </div>
 
-    <x-alert-error/>
     <x-modal-loading/>
-    
     @vite('resources/js/userStocksMovement.js')
+    
 </x-app-layout>

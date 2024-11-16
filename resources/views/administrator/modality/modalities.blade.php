@@ -5,6 +5,7 @@
         </h2>
     </x-slot>
 
+    <x-alert-error/>
     <x-input-sucess/>
 
     <div class="py-12">
@@ -18,10 +19,12 @@
                         @style('display:none;')
                     >
                         <span 
-                            @style('display: inline-block; background-color: rgba(255, 255, 255, 1); border-radius: 6px; box-shadow: 0 0 10px black; padding: 1%; max-height: 130px; margin-top: 250px;')
+                            @style('display: inline-block; background-color: rgba(255, 255, 255, 1); border-radius: 6px; box-shadow: 0 0 10px black; padding: 1%; max-height: 170px; margin-top: 250px;')
                         >
                             <div>
-                                <button id="fecharNewModality">{{ __('X') }}</button>
+                                <x-danger-button id="fecharNewModality">
+                                    {{ __('X') }}
+                                </x-danger-button>
                             </div>
                             <form 
                                 action="{{ Route('modality.store') }}" 
@@ -32,13 +35,19 @@
                     
                                 @include('administrator.partials.formModality')
                     
-                                <button type="submit">{{ __('Criar') }}</button>
+                                <x-create-button class="mt-2">
+                                    {{ __('Criar') }}
+                                </x-create-button>
                             </form>
                         </span>
                     </div>
                     <div>
-                        <button id="newModality">{{ __('Nova modalidade') }}</button>
-                        <button type="button"><a href="{{ Route('administrator') }}">{{ __('Voltar') }}</a></button>
+                        <x-secondary-button id="newModality">
+                            {{ __('Nova modalidade') }}
+                        </x-secondary-button>
+                        <x-link-as-secondary-button href="{{ Route('administrator') }}" class="ms-3">
+                            {{ __('Voltar') }}
+                        </x-link-as-secondary-button>
                     </div>
                     <table>
                         <thead>
@@ -54,7 +63,11 @@
                                 <tr>
                                     <td>{{ $modality->id }}</td>
                                     <td>{{ $modality->description }}</td>
-                                    <td><a href="{{ Route('modality.edit', $modality->id) }}">{{ __('Alterar') }}</a></td>
+                                    <td>
+                                        <x-link-as-secondary-button href="{{ Route('modality.edit', $modality->id) }}" class="ms-3">
+                                            {{ __('Alterar') }}
+                                        </x-link-as-secondary-button>
+                                    </td>
                                     <td>
                                         <form 
                                             id="deleteModality" 
@@ -65,7 +78,10 @@
                                             @method('DELETE')
                                             
                                             <input type="hidden" id="modalityDelete" value="{{ $modality->description }}">
-                                            <button type="submit">{{ __('Excluir') }}</button>
+
+                                            <x-danger-button class="ms-3">
+                                                {{ __('Excluir') }}
+                                            </x-danger-button>
                                         </form>
                                     </td>
                                 </tr>
@@ -88,6 +104,5 @@
     </div>
     
     @vite('resources/js/modalities.js')
-    <x-alert-error/>
     
 </x-app-layout>
