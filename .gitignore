@@ -22,3 +22,7 @@ yarn-error.log
 /.vscode
 Anotacoes.md
 Stack.md
+composer.lock
+composer.json
+package-lock.json
+package.json
