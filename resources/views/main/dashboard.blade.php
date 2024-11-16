@@ -12,60 +12,57 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="flex flex-col items-center p-6 text-gray-900">
-                    <div class="x-fit">
+                    <div class="w-full">
                         <div>
-                            <x-link-as-secondary-button href="{{ Route('titles.create') }}">
+                            <x-link-as-secondary-button class="hover:bg-gray-800 hover:text-gray-50" href="{{ Route('titles.create') }}">
                                 {{ __('Novo Título') }}
                             </x-link-as-secondary-button>
                         </div>
-                        <table class="x-fit text-center">
-                            <thead>
+                        <table class="w-full mt-5">
+                            <thead class="bg-gray-200 border-b-2 border-gray-300 bg">
                                 <tr>
-                                    <th>{{ __('Descrição') }}</th>
-                                    <th>{{ __('Tipo') }}</th>
-                                    <th>{{ __('Indexador') }}</th>
-                                    <th>{{ __('Vencimento') }}</th>
-                                    <th></th>
-                                    <th>{{ __('Valor na compra') }}</th>
-                                    <th>{{ __('Valor atual') }}</th>
-                                    <th>{{ __('Valorização') }}</th>
-                                    <th>{{ __('Percentual') }}</th>
-                                    <th colspan="2">{{ __('Ações') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Descrição') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Tipo') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Indexador') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Vencimento') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Valor na compra') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Valor atual') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Valorização') }}</th>
+                                    <th class="p-2 text-sm font-semibold tracking-wide text-center">{{ __('Percentual') }}</th>
+                                    <th colspan="1">{{ __('Ações') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                     @if ($titles->isNotEmpty())
                                         @foreach ($titles as $title)
-                                        <tr>
-                                            <td>{{ $title->title }}</td>
-                                            <td>{{ $title->title_type->description }}</td>
+                                        <tr class="bg-gray-50 dark:bg-gray-700 odd:bg-gray-50 even:bg-gray-200 dark:odd:bg-gray-700 dark:even:bg-gray-600">
+                                            <td class="p-3 text-sm text-gray-700 ">{{ $title->title }}</td>
+                                            <td class="p-3 text-sm text-gray-700">{{ $title->title_type->description }}</td>
                                             @switch($title->modality->id)
                                                 @case(1)
-                                                    <td>PRÉ {{ @valueFormat($title->tax) }}% a.a</td>
+                                                    <td class="p-3 text-sm text-gray-700">PRÉ {{ @valueFormat($title->tax) }}% a.a</td>
                                                     @break
                                                 @case(2)
-                                                    <td>{{ @valueFormat($title->tax)."% ".$title->modality->description }} a.a</td>
+                                                    <td class="p-3 text-sm text-gray-700">{{ @valueFormat($title->tax)."% ".$title->modality->description }} a.a</td>
                                                     @break
                                                 @case(3)
                                                 @case(5)
                                                 @case(7)
-                                                    <td>{{ $title->modality->description." ".@valueFormat($title->tax)}}% a.a</td>
+                                                    <td class="p-3 text-sm text-gray-700">{{ $title->modality->description." ".@valueFormat($title->tax)}}% a.a</td>
                                                     @break
                                                 @default
-                                                    <td>{{ @valueFormat($title->tax) }}% a.a</td>
+                                                    <td class="p-3 text-sm text-gray-700">{{ @valueFormat($title->tax) }}% a.a</td>
                                             @endswitch
-                                            <td id="dateDue">{{ @carbonDate($title->date_due) }}<td>
-                                            <td id="valueBuy">R${{ @valueRealFormat($title->value_buy) }}</td>
-                                            <td id="valueCurrent">R${{ @valueRealFormat($title->value_current) }}</td>
-                                            <td id="valuegain">R${{ @valueRealFormat($title->gain) }}</td>
-                                            <td>{{ @valueFormat($title->gain_percent) }}%</td>
+                                            <td class="p-3 text-sm text-gray-700" id="dateDue">{{ @carbonDate($title->date_due) }}</td>
+                                            <td class="p-3 text-sm text-gray-700" id="valueBuy">R${{ @valueRealFormat($title->value_buy) }}</td>
+                                            <td class="p-3 text-sm text-gray-700" id="valueCurrent">R${{ @valueRealFormat($title->value_current) }}</td>
+                                            <td class="p-3 text-sm text-gray-700" id="valuegain">R${{ @valueRealFormat($title->gain) }}</td>
+                                            <td class="p-3 text-sm text-gray-700">{{ @valueFormat($title->gain_percent) }}%</td>
                                             <td>
-                                                <x-link-as-secondary-button href="{{ Route('titles.show', $title->id) }}" class="ms-3">
+                                                <x-link-as-secondary-button href="{{ Route('titles.show', $title->id) }}" class="ms-1 hover:bg-gray-800 hover:text-gray-50">
                                                     {{ __("Ver") }}
                                                 </x-link-as-secondary-button>
-                                            </td>
-                                            <td>
-                                                <x-link-as-secondary-button href="{{ Route('titles.edit', $title->id) }}" class="ms-3">
+                                                <x-link-as-secondary-button href="{{ Route('titles.edit', $title->id) }}" class="ms-1 btn hover:bg-gray-800 hover:text-gray-50">
                                                     {{ __("Alterar") }}
                                                 </x-link-as-secondary-button>
                                             </td>
