@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php 
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
@@ -7,6 +9,7 @@ use App\Http\Requests\UserStocksMovementRequest;
 use App\Imports\UserStocksMovementsImport;
 use App\Models\{StocksMovementType, UserStocksMovement};
 use App\Services\UserStocksMovementService;
+use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\{RedirectResponse, Request};
 use Illuminate\Support\Facades\{Auth, DB};
@@ -19,8 +22,9 @@ class UserStocksMovementController extends Controller
     public function __construct(
         protected StocksController $stocksController,
         protected StocksMovementType $stocksMovementType,
-        protected UserStocksMovementService $userStocksMovementService,
-        protected UserStocksMovementsImport $userStocksMovementsImport,
+        protected UserStocksMovementService $service,
+        protected UserStocksMovementsImport $import,
+        protected Excel $excel,
     ) {
         //
     }
@@ -28,7 +32,7 @@ class UserStocksMovementController extends Controller
     public function getAll(): Collection
     {
         $user_id = Auth::user()->id;
-        $userStocksAndTotalizers = $this->userStocksMovementService->getAll($user_id);
+        $userStocksAndTotalizers = $this->service->getAll($user_id);
 
         return collect([
             'userAllStocks' => $userStocksAndTotalizers['userAllStocks'], 
@@ -38,11 +42,11 @@ class UserStocksMovementController extends Controller
 
     public function show(int $ticker_id): View
     {
-        $user_id                = Auth::id();
-        $showUserStocksMovement = $this->userStocksMovementService->get($ticker_id);
-        $userStocksMovements    = $this->userStocksMovementService->getAll($user_id, $ticker_id);
+        $user_id             = Auth::id();
+        $userStocksMovement  = $this->service->get($ticker_id);
+        $userStocksMovements = $this->service->getAll($user_id, $ticker_id);
 
-        return view('main.userStocksMovement.userStocksMovement', compact('showUserStocksMovement', 'userStocksMovements'));
+        return view('main.userStocksMovement.userStocksMovement', compact('userStocksMovement', 'userStocksMovements'));
     }
 
     public function create(int $stocks_id = null): View
@@ -77,39 +81,50 @@ class UserStocksMovementController extends Controller
 
         $file->store('files');
 
-        set_time_limit(300);
         DB::beginTransaction();
         
-        Excel::import(
-            $this->userStocksMovementsImport, 
-            $file, 
-            null, 
-            ExcelType::XLSX
-        );
+        try {
+            $this->excel::import(
+                $this->import, 
+                $file, 
+                null, 
+                ExcelType::XLSX
+            );
 
-        DB::commit();
-        set_time_limit(30);
+            DB::commit();
+        } catch (\Throwable $error) {
+            DB::rollBack();
+            
+            return redirect()
+                ->back()
+                ->withErrors(['error' => $error->getMessage()]);
+        }
 
         return redirect()
-                ->route('dashboard', status: 201)
-                ->with(['message' => "Importação realizada com sucesso!"]);
+            ->route('dashboard', status: 201)
+            ->with(['message' => "Importação realizada com sucesso!"]);
     }
 
-    public function store(UserStocksMovementRequest $userStocksMovementRequest): RedirectResponse
+    public function store(UserStocksMovementRequest $request): RedirectResponse
     {
-        $userStocksMovement = $this->userStocksMovementService->insert(
-            UserStocksMovementCreateUpdateDTO::make($userStocksMovementRequest)
+        DB::beginTransaction();
+        
+        $userStocksMovement = $this->service->insert(
+            UserStocksMovementCreateUpdateDTO::make($request)
         );
 
-        if ($userStocksMovement['status']) {
+        if (!$userStocksMovement['status']) {
             return redirect()
-                    ->route('userStocks.show', $userStocksMovement['body']->user_stocks_id, status: 201)
-                    ->with('message', $userStocksMovement['message']);
+                ->back()
+                ->withInput()
+                ->withErrors(['error' => $userStocksMovement['errors']]);
         }
+
+        DB::commit();
         
         return redirect()
-                ->route('userStocksMovement.create')
-                ->withErrors(['error' => $userStocksMovement['errors']]);
+            ->route('userStocks.show', $userStocksMovement['body']->user_stocks_id, status: 201)
+            ->with('message', $userStocksMovement['message']);
     }
 
     public function edit(UserStocksMovement $userStocksMovement): View
@@ -124,7 +139,7 @@ class UserStocksMovementController extends Controller
 
     public function update(UserStocksMovement $userStocksMovement, UserStocksMovementRequest $userStocksMovementRequest): RedirectResponse
     {
-        $userStocksMovement = $this->userStocksMovementService->update(
+        $userStocksMovement = $this->service->update(
             $userStocksMovement, 
             UserStocksMovementCreateUpdateDTO::make($userStocksMovementRequest)
         );
@@ -134,18 +149,40 @@ class UserStocksMovementController extends Controller
                 ->with(['message' => "Movimento alterado com sucesso!"], compact('userStocksMoviment'));
     }
 
-    public function destroy(int $user_stock_movement_id): RedirectResponse
+    public function destroy(Request $request): RedirectResponse
     {
-        $response = $this->userStocksMovementService->delete($user_stock_movement_id);
+        $movementsDelete = collect($request->movementsDelete)
+            ->map(function ($item) {
+                $item = explode( ', ', $item);
 
+                $item[1] = Carbon::parse($item[1]);
+
+                return $item;
+            })
+            ->sortByDesc(function ($item) {
+                return $item[1];
+            });
+        
+        DB::beginTransaction();
+        
+        foreach ($movementsDelete as $item) {
+            $response = $this->service->delete((int) $item[0]);
+
+            if ($response['error']) break;
+
+            $movementsDeleted[] = $item[0];
+        }
+        
         if ($response['error']) {
             return redirect()
-                ->route('userStocks.show', $response['user_stocks_id'])
+                ->back()
                 ->withErrors(['error' => $response['message']]);
         }
             
+        DB::commit();
+        
         return redirect()
             ->route('userStocks.show', $response['user_stocks_id'])
-            ->with(['message' => "Movimento {$user_stock_movement_id} excluído com sucesso!"]);
+            ->with(['message' => "Movimento(s) " . implode(', ', $movementsDeleted) . " excluído(s) com sucesso!"]);
     }
 }
