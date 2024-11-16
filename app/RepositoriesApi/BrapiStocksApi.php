@@ -3,7 +3,7 @@
 namespace App\RepositoriesApi;
 
 use App\Repositories\StocksRepository;
-use Illuminate\Http\Client\Factory as Http;
+use Illuminate\Support\Facades\Http;
 
 class BrapiStocksApi implements StocksApiInterface
 {
@@ -85,6 +85,19 @@ class BrapiStocksApi implements StocksApiInterface
         }
 
         return $stocksDetails;
+    }
+
+    public function splits(string|array $stocks): array|null
+    {
+        if (is_string($stocks)) {
+            $stocks[] = $stocks;
+        }
+
+        foreach ($stocks as $key => $value) {
+            # code...
+        }
+        
+        return [];
     }
 
     public function errorExists(): bool
