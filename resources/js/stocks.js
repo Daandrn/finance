@@ -43,17 +43,16 @@ function updateStocksValues() {
             'Content-Type': 'application/json'
         }
     })
-    .then(response =>
-        response.json()
-    )
-    .then(data =>
+    .then(response => {
+        return response.json()
+    })
+    .then(data => {
         alert(data.message)
-    )
+    })
     .catch(error => {
-        alert('Erro durante a requisição');
         console.error('Erro durante a requisição.', error);
     })
-    .finally(() =>{
+    .finally(() => {
         loadingModal.style.display = 'none';
 
         window.location.reload();
