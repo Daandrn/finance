@@ -5,16 +5,16 @@ namespace App\Services;
 use App\DTO\title\{TitleCreateDTO, TitleUpdateDTO};
 use App\Models\Title;
 use App\Repositories\TitleRepository;
-use App\Traits\{MoneyOperations, Scales};
+use App\Traits\{Operations, Scales};
 use Illuminate\Support\Collection;
 
 class TitleService
 {
-    use MoneyOperations;
+    use Operations;
     use Scales;
 
     public function __construct(
-        protected TitleRepository $titleRepository,
+        protected TitleRepository $repository,
         protected SelicApiService $selicApiService,
     ) {
         //
@@ -22,7 +22,7 @@ class TitleService
 
     public function getAll(int $user_id): Collection
     {
-        $titles = $this->titleRepository->all($user_id);
+        $titles = $this->repository->all($user_id);
 
         $totalizersInit = collect([
             'patrimony'               => "0.00",
@@ -46,8 +46,8 @@ class TitleService
                 $title->tax = $this->selicApiService->getCurrentSelic();
             }
     
-            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $title->value_current, self::TWO_DECIMALS);
-            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $title->value_buy, self::TWO_DECIMALS);
+            $totalizers['patrimony']       = self::add($totalizers['patrimony'], $title->value_current, self::DECIMALS_TWO);
+            $totalizers['buy_cumulative']  = self::add($totalizers['buy_cumulative'], $title->value_buy, self::DECIMALS_TWO);
             $totalizers['gain_cumulative'] = self::calculateGain($totalizers['patrimony'], $totalizers['buy_cumulative']);
     
             return $totalizers;
@@ -63,7 +63,7 @@ class TitleService
 
     public function get(string $id): Title
     {
-        $oneTitle               = $this->titleRepository->get($id);
+        $oneTitle               = $this->repository->get($id);
         $oneTitle->gain         = self::calculateGain($oneTitle->value_current, $oneTitle->value_buy);
         $oneTitle->gain_percent = self::calculateGainPercent($oneTitle->gain, $oneTitle->value_buy);
 
@@ -72,21 +72,21 @@ class TitleService
 
     public function insert(TitleCreateDTO $TitleCreateDTO): Title
     {
-        $insertedTitle = $this->titleRepository->insert($TitleCreateDTO);
+        $insertedTitle = $this->repository->insert($TitleCreateDTO);
 
         return $insertedTitle;
     }
 
     public function update(Title $title, TitleUpdateDTO $updateDTO): Title
     {
-        $updatedTitle = $this->titleRepository->update($title, $updateDTO);
+        $updatedTitle = $this->repository->update($title, $updateDTO);
 
         return $updatedTitle;
     }
 
     public function delete(string $title_id): void
     {
-        $this->titleRepository->delete((int) $title_id);
+        $this->repository->delete((int) $title_id);
 
         return;
     }
@@ -109,8 +109,8 @@ class TitleService
             return $value_buy;
         }
         
-        $gain_Percent = self::div($gain, $value_buy, self::EIGHT_DECIMALS);
-        $gain_Percent = self::mult($gain_Percent, "100", self::EIGHT_DECIMALS);
+        $gain_Percent = self::div($gain, $value_buy, self::DECIMALS_EIGHT);
+        $gain_Percent = self::mult($gain_Percent, "100", self::DECIMALS_EIGHT);
         $gain_Percent = sprintf('%.2f', $gain_Percent);
 
         return $gain_Percent;
