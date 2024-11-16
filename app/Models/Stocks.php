@@ -44,6 +44,16 @@ class Stocks extends Model
     }
 
     /**
+     * Get all of the split for the Stocks
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function split(): HasMany
+    {
+        return $this->hasMany(Stocks::class, 'stocks_id', 'id');
+    }
+
+    /**
      * Get the stocks_types that owns the Stocks
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
