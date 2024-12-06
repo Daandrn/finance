@@ -19,6 +19,7 @@ class Stocks extends Model
         'low_value',
         'last_close_value',
         'last_update_values',
+        'status',
     ];
     
     public $timestamps = false;

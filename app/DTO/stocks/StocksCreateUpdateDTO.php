@@ -11,16 +11,18 @@ class StocksCreateUpdateDTO
         public string $ticker,
         public string $name,
         public int    $stocks_types_id,
+        public bool   $status,
     ) {
         //
     }
 
-    public static function make(StocksRequest $stocksRequest): self
+    public static function make(StocksRequest $request): self
     {
         return new self(
-            $stocksRequest->ticker,
-            $stocksRequest->name,
-            (int) $stocksRequest->stocks_types_id,
+            $request->ticker,
+            $request->name,
+            $request->stocks_types_id,
+            $request->status
         );
     }
 
@@ -30,6 +32,7 @@ class StocksCreateUpdateDTO
             'ticker'          => $this->ticker,
             'name'            => $this->name,
             'stocks_types_id' => $this->stocks_types_id,
+            'status'          => $this->status,
         ];
     }
 }

@@ -20,7 +20,7 @@ class StocksRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
+    {   
         return [
             'ticker' => [
                 'required',
@@ -38,6 +38,23 @@ class StocksRequest extends FormRequest
                 'required',
                 'integer',
             ],
+            'status' => [
+                'required',
+                'in:t,f',
+            ],
         ];
+    }
+
+    public function passedValidation(): void
+    {
+        $this->merge([
+            'stocks_types_id' => (int) $this->stocks_types_id,
+            'status' => match ($this->status) {
+                't' => true,
+                'f' => false,
+            }
+        ]);
+
+        return;
     }
 }

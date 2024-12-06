@@ -61,17 +61,19 @@
                                 <th>{{ __('Código de negociação') }}</th>
                                 <th>{{ __('Nome') }}</th>
                                 <th>{{ __('Tipo') }}</th>
+                                <th>{{ __('Status') }}</th>
                                 <th colspan="2">{{ __('Ações') }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if ($stocksPage->isNotEmpty())
                                 @foreach ($stocksPage as $stocks)
-                                <tr>
+                                <tr class="text-center">
                                     <td>{{ $stocks->id }}</td>
                                     <td>{{ $stocks->ticker }}</td>
                                     <td>{{ $stocks->name }}</td>
                                     <td>{{ $stocks->stocks_types->description }}</td>
+                                    <td>{{ $stocks->status ? 'Ativo' : 'Inativo' }}</td>
                                     <td>
                                         <x-link-as-secondary-button href="{{ Route('stocks.edit', $stocks->id) }}" class="ms-3">
                                             {{ __('Alterar') }}

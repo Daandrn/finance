@@ -14,13 +14,13 @@ class SplitRequest extends FormRequest
         return true;
     }
 
-    public function prepareForValidation()
-    {
-        $this->merge([
-            'grouping' => empty($this->get('grouping')) ? null : (int) $this->get('grouping'),
-            'split' => empty($this->get('split')) ? null : (int) $this->get('split'),
-        ]);
-    }
+    // public function prepareForValidation()
+    // {
+    //     $this->merge([
+    //         'grouping' => empty($this->get('grouping')) ? null : (int) $this->get('grouping'),
+    //         'split' => empty($this->get('split')) ? null : (int) $this->get('split'),
+    //     ]);
+    // }
     
     /**
      * Get the validation rules that apply to the request.
@@ -53,5 +53,17 @@ class SplitRequest extends FormRequest
         ];
 
         return $array;
+    }
+
+    public function passedValidation(): void
+    {
+        $this->merge([
+            'grouping' => empty($this->grouping) 
+                ? null 
+                : (int) $this->grouping,
+            'split' => empty($this->split) 
+                ? null 
+                : (int) $this->split,
+        ]);
     }
 }

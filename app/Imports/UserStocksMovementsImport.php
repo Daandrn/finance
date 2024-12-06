@@ -85,6 +85,7 @@ class UserStocksMovementsImport implements OnEachRow, WithValidation, WithHeadin
         ],[
             'name' => null,
             'stocks_types_id' => 1, //trocar o 1 para inserir conforme nova coluna na planilha de acordo com o tipo
+            'status' => true
         ]);
 
         $userStocksDto = UserStocksCreateUpdateDTO::make(new UserStocksRequest([

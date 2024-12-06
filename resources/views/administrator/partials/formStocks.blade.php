@@ -39,7 +39,6 @@
         <label for="stocks_types_id">{{ __('Tipo') }}: </label>
         <select
             class="flex flex-col rounded-md min-w-full"
-            type="text" 
             name="stocks_types_id" 
             id="stocks_types_id"
         >
@@ -48,6 +47,18 @@
                     <option value="{{ $type->id }}" @selected($type->id == (isset($stocksEdit) ? (old('stocks_types_id') ?? $stocksEdit->stocks_types_id) : old('stocks_types_id')) ? true : false)>{{ $type->description }}</option>
                 @endforeach
             @endif
+        </select>
+    </div>
+
+    <div class="min-w-28">
+        <label for="status">{{ __('Ativo') }}: </label>
+        <select
+            class="flex flex-col rounded-md min-w-full"
+            name="status" 
+            id="status"
+        >
+            <option value="t" @selected(true == (isset($stocksEdit) ? (old('status') ?? $stocksEdit->status) : old('status')))>{{ __('Sim') }}</option>
+            <option value="f" @selected(false == (isset($stocksEdit) ? (old('status') ?? $stocksEdit->status) : old('status')))>{{ __('Não') }}</option>
         </select>
     </div>
 </div>

@@ -96,7 +96,12 @@ class StocksController extends Controller
         $stocks = $this->repository->all();
 
         $stocks = $stocks->filter(function ($stocks) {
-            return empty($stocks->last_update_values) || Carbon::parse($stocks->last_update_values)->lt('today');
+            return 
+                (
+                    empty($stocks->last_update_values) 
+                    || Carbon::parse($stocks->last_update_values)->lt('today')
+                ) 
+                && $stocks->status === true;
         });
 
         if ($stocks->isEmpty()) {
