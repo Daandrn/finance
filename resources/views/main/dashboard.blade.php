@@ -96,6 +96,9 @@
                                     <td>R${{ @valueRealFormat($totalizers->get('gain_cumulative')) }}</td>
                                     <td>{{ @valueFormat($totalizers->get('gain_percent_cumulative')) }}%</td>
                                 </tr>
+                                <tr>
+                                    <td colspan="9">{{ $titles->links() }}</td>
+                                </tr>
                             </tfoot>
                         </table>
                     </div>

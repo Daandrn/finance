@@ -18,29 +18,55 @@ class DashBoardController extends Controller
     public function index(Request $request): View
     {
         $userTitles = $this->titleController->getUserTitles();
-        $userStocks = $this->userStocksController->getUserStocks();
-        $userAllStocks = $userStocks->get('userAllStocks');
+        $userAllTitles = $userTitles->get('titles');
 
-        $currentPage = $request->get('page', 1);
-        $perPage = 20; 
-        $total = count($userAllStocks); 
+        //Paginator titles
+        $currentPageTitles = $request->get('titlespage', 1);
+        $titlesPerPage = 10; 
+        $totalTitles = count($userAllTitles); 
 
-        $itemsForCurrentPage = $userAllStocks->slice(($currentPage - 1) * $perPage, $perPage)->values();
+        $titlesForCurrentPage = $userAllTitles->slice(($currentPageTitles - 1) * $titlesPerPage, $titlesPerPage)->values();
 
-        $paginator = new LengthAwarePaginator(
-            items: $itemsForCurrentPage,
-            total: $total,
-            perPage: $perPage,
-            currentPage: $currentPage,
+        $paginatorTitles = new LengthAwarePaginator(
+            items: $titlesForCurrentPage,
+            total: $totalTitles,
+            perPage: $titlesPerPage,
+            currentPage: $currentPageTitles,
             options: [
                 'path' => '/inicio',
             ]
         );
 
+        $paginatorTitles->setPageName('titlespage');
+        /*************************************/
+        
+        $userStocks = $this->userStocksController->getUserStocks();
+        $userAllStocks = $userStocks->get('userAllStocks');
+
+        //Paginator stocks
+        $currentPageStocks = $request->get('stockspage', 1);
+        $stocksPerPage = 10; 
+        $totalStocks = count($userAllStocks); 
+
+        $stocksForCurrentPage = $userAllStocks->slice(($currentPageStocks - 1) * $stocksPerPage, $stocksPerPage)->values();
+
+        $paginatorStocks = new LengthAwarePaginator(
+            items: $stocksForCurrentPage,
+            total: $totalStocks,
+            perPage: $stocksPerPage,
+            currentPage: $currentPageStocks,
+            options: [
+                'path' => '/inicio',
+            ]
+        );
+
+        $paginatorStocks->setPageName('stockspage');
+        /*************************************/
+
         return view('main.dashboard', [
-            'titles'               => $userTitles->get('titles'), 
+            'titles'               => $paginatorTitles, 
             'totalizers'           => $userTitles->get('totalizers'),
-            'userAllStocks'        => $paginator,
+            'userAllStocks'        => $paginatorStocks,
             'userStockstotalizers' => $userStocks->get('totalizers'),
         ]);
     }
